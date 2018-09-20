@@ -9,8 +9,8 @@ require("./process-timer/timer_phandle.js");
 //require("./process-https/https_phandle.js");
 
 logger.info('[main] create main process..., pid =', process.pid);
-require("./process-https/https_main.js");
-
+//require("./process-https/https_main.js");
+require('./process-main/main_main.js');
 
 //const fork = require('child_process').fork;
 

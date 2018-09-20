@@ -4,61 +4,39 @@ const mongoose = require('mongoose');
 //import cityData from '../../InitData/cities'
 var ObjectId = mongoose.Schema.Types.ObjectId;
 
+
+//设备建立全量的表，不同设备公用，如果没有的项 填写NA
 const deviceSchema = new mongoose.Schema({
-    mac:String,
-    user_name: {type: String, default: ''},    //用户就是渠道，一个mac唯一归属于一个用户
-    dev_type: String,   //设备型号
-    old_rom_version: String,   //	前一个固件版本
-    rom_version: String,   //	固件版本
-    //plugin_status: String,   //安装插件
-    printer_status: String,   //打印机状态
-    box51_status: String,   //51盒子状态
-    location: {type: String, default: ''},   //设备位置，精确到市
-    inet_ip: {type: String, default: ''},   //外网ip
-    status: String,   //设备状态， online:在线，offline:离线，inactive:未激活
+    device_name:String,
+    device_local: {type: String, default: ''},    //设备位置
+    device_type: String,   //设备型号
+    device_link_status: String,   //设备链路状态
+    device_run_status: String,   //设备运行状态
+
+
+
+    O2_tempture: [{ value: String, fault: {type: Boolean, default: false}}], //氧气温度
+    O2_flowrate: [{ value: String, fault: Boolean}], //氧气流量
+    O2_pressure: [{ value: String, fault: Boolean}],  //氧气压力
+    O2_dewpoint: [{ value: String, fault: Boolean}],  //氧气露点
+
+
+    H2O_tempture_inner: [{ value: String, fault: Boolean}], //内水温度
+    H2O_pressure_inner: [{ value: String, fault: Boolean}],  //内水压力
+
+
+    O3_density: [{ value: String, fault: Boolean}],  //臭氧浓度
+    CO_density: [{ value: String, fault: Boolean}],  //一氧化碳检测值
+
+
+
+    POWER_status: [{ value: String, fault: Boolean}],  //电源状态，40组设备
+
+
     update_time:String, //状态更新时间
     logs: Array,   //一些上下线的日志信息，辅助定位问题，记录5条
     sort_time:Number, //排序时间戳，
 });
-
-
-/**
- * 分页查询
- * find（）   查询商品，
- * limit(),   限制显示文档个数
- * skip();    跳过文档个数，
- * sort(),    这个是排序规则
- * @param {Object} devDocObj - task object
- * @returns {MqttClient} this - for chaining
- * @api public
- *
- * @example getByPager(uuid, mac, topic, newJsonMsg);
- */
-deviceSchema.statics.findByPage = function (condition, page_size, current_page, sort){
-    return new Promise(async (resolve, reject) => {
-
-        console.log("page_size:" + page_size);
-        var skipnum = (current_page - 1) * page_size;   //跳过数
-
-        try{
-            await this.find(condition).skip(skipnum).limit(page_size).sort(sort).exec(function (err, res) {
-                if (err) {
-                    //console.log("Error:" + err);
-                    resolve(err)
-                }
-                else{
-                    //console.log("query:" + res);
-                    resolve(res);
-                }
-            });
-            //console.log('task status 111');
-            //resolve('done');
-        }catch(err){
-            reject({name: 'ERROR_DATA', message: '查找数据失败'});
-            console.error(err);
-        }
-    })
-}
 
 
 

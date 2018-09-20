@@ -15,8 +15,8 @@
 const mqtt = require('mqtt');
 const config = require('config-lite');
 
-var fs = require('fs')
-var path = require('path')
+var fs = require('fs');
+var path = require('path');
 /*
 var KEY = fs.readFileSync(path.join(__dirname, '/files/apfree.key'))
 var CERT = fs.readFileSync(path.join(__dirname, '/files/apfree.crt'))

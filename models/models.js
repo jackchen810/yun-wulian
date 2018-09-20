@@ -6,6 +6,7 @@ const RomUpgradeTable= require("../models/rom/rom_upgrade.js");
 const TaskTable= require("../models/task/task.js");
 const SysinfoTable= require("../models/sysinfo/sysinfo.js");
 const DeviceTable= require("../models/device/device.js");
+const GatewayIDE4gTable= require("./device/gateway_ide4g.js");
 const DevtypeTable= require("../models/devtype/devtype.js");
 const InvoiceHourTable= require("./stats/invoice_stats_hour.js");
 const InvoiceDayTable= require("../models/stats/invoice_stats_day.js");
@@ -21,6 +22,7 @@ function DB() {
     this.TaskTable = TaskTable;
     this.SysinfoTable = SysinfoTable;
     this.DeviceTable = DeviceTable;
+    this.GatewayIDE4gTable = GatewayIDE4gTable;
     this.DevtypeTable = DevtypeTable;
     this.InvoiceHourTable = InvoiceHourTable;
     this.InvoiceDayTable = InvoiceDayTable;

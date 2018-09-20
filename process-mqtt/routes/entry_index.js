@@ -9,11 +9,10 @@ const config = require('config-lite');
  function mqtt_router(client) {
      //订阅 1) 上下线   2） 上报的sysinfo
      client.subscribe(config.mqtt.node_topic + 'clients/#',{qos:1});
-     client.subscribe('YunAC/+/CMD_SYNC/',{qos:1});
-     client.subscribe('YunAC/+/CMD_GET/',{qos:1});
-     client.subscribe('YunAC/+/CMD_EXE/',{qos:1});
-     client.subscribe('YunAC/+/CMD_SET/',{qos:1});
-
+     //client.subscribe(config.mqtt.node_topic,{qos:1});
+     client.subscribe('YunWL/+/post/#',{qos:1});
+     //client.subscribe('$SYS/#',{qos:1});
+     //client.subscribe('YunWL/+/CMD_GET/',{qos:1});
 
      client.on('message', MqttDispatchHandle.onMessage);
      //client.on('message', MqttDispatchHandle.onMessage);
