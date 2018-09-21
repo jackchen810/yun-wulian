@@ -6,8 +6,8 @@ logger.info('[timer] create timer process..., pid =', process.pid);
 
 require('../mongodb/db.js');
 require("./controller/rom_upgrade.js");
-require("./controller/manage.js");
-require("./controller/admin.js");
+//require("./controller/manage.js");
+//require("./controller/admin.js");
 
 
 
