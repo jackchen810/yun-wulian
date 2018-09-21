@@ -8,6 +8,8 @@ const config = require('config-lite');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const web_router = require('./routes/entry_index');
+const session = require('express-session');
+const connectMongo = require('connect-mongo');
 
 
 
@@ -23,29 +25,57 @@ app.all('*', (req, res, next) => {
 	if (req.method == 'OPTIONS') {
 	  	res.send(200);
 	} else {
-		console.log('method:', req.method)
-		/*
+		console.log('method:', req.method, req.path);
+		///*
         req.on('data', function (data) {
             console.log('entry, url:', req.hostname + req.path, ';body data', data.toString());
         });
-        */
+        //*/
 	    next();
 	}
 });
 
-// 使用中间件解析body
+
+// 2. 使用中间件解析body
 // body-parser 能处理 text/plain, application/json和application/x-www-form-urlencoded的数据，解析完放到req.body里。
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
 app.use(cookieParser());
 
-//注册路由分发
+
+
+
+
+// 3. session连接数据库
+const MongoStore = connectMongo(session);
+app.use(session({
+    name: config.session.name,
+    secret: config.session.secret,
+    resave: true,
+    saveUninitialized: false,
+    cookie: config.session.cookie,
+    store: new MongoStore({
+        url: config.url
+    })
+}));
+
+// use this middleware to reset cookie expiration time
+// when user hit page every time
+app.use(function(req, res, next){
+    req.session._garbage = Date();
+    req.session.touch();
+    next();
+});
+
+
+
+
+// 4. 注册路由分发
 web_router(app);
 
 
-app.listen(config.upload_port);
-console.log('[http] Http listening at ' + config.upload_port);
+app.listen(config.vue_service_port);
+console.log('[http] Http listening at ' + config.vue_service_port);
 
 
 

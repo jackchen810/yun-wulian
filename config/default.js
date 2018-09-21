@@ -5,7 +5,8 @@ module.exports = {
 	device_dir:'./public/device',
 	pkg_dir:'./public/packages',
 	script_dir:'./public/scripts',
-	upload_port:'9100',
+	vue_service_port:'8000',
+    upload_port:'9100',
 	url: 'mongodb://localhost:27017/iotks',
 	amount_every_task: '500',
 	interval_every_task: '600000',  //单位：ms
@@ -35,4 +36,4 @@ module.exports = {
 		trusted_ca_list : 'yun-client.ca',
 		node_topic: '$SYS/brokers/emq@127.0.0.1/',
 	}
-}
+};

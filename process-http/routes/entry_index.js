@@ -1,15 +1,19 @@
 'use strict';
 
 
-const stats_router = require("./stats.js");
-
+const gateway_router = require("./rt_gateway_ide4g.js");
+const admin_router = require('./rt_acount.js');
 
 
  function http_web_router(app) {
 
 
      //stats
-     app.use('/stats', stats_router);
+     app.use('/api/gateway', gateway_router);
+
+
+     //用户登录相关
+     app.use('/api/admin', admin_router);
 }
 
 
