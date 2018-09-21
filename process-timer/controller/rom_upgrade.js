@@ -1,6 +1,4 @@
 'use strict';
-const TaskHandle = require("../../mqttclient/publish/mqtt_task.js");
-const DB = require( "../../models/models.js");
 const dtime = require( 'time-formater');
 const logger = require( '../../logs/logs.js');
 const schedule = require('node-schedule');
