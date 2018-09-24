@@ -1,2 +1,2 @@
 #start server ln 
-sudo ln -s ../../IoTKS-admin/dist/ public
+sudo ln -s ../../yun-wulian-vue/dist/ public
