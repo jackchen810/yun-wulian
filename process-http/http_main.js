@@ -74,6 +74,17 @@ app.use(function(req, res, next){
 web_router(app);
 
 
+
+// 5. 托管静态文件
+if ( process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'development') {
+//通过 Express 内置的 express.static 可以方便地托管静态文件，例如图片、CSS、JavaScript 文件等。
+    app.use(express.static('./public'));
+    console.log('express.static');
+}
+
+
+
+// 6. 监听端口
 app.listen(config.vue_service_port);
 console.log('[http] Http listening at ' + config.vue_service_port);
 
