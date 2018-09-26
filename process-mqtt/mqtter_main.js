@@ -5,7 +5,7 @@ logger.info('[mqtt] create mqtt process..., pid =', process.pid);
 const mqttClient = require('../mqttclient/mqttclient.js');
 const mqtt_router = require('./routes/entry_index.js');
 require('../mongodb/db.js');
-require("./controller/device_ide4g.js");
+require("./controller/mqtt_device_ide4g.js");
 
 
 

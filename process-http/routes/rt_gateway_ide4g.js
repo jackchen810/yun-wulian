@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const Gateway = require('../controller/device/ctl_gateway_ide4g.js');
+const Gateway = require('../controller/device/ctl_device_ide4g.js');
 const router = express.Router();
 
 console.log("enter route of gateway_ide4g");

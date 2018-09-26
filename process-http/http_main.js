@@ -79,7 +79,7 @@ web_router(app);
 if ( process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'development') {
 //通过 Express 内置的 express.static 可以方便地托管静态文件，例如图片、CSS、JavaScript 文件等。
     app.use(express.static('./public'));
-    console.log('express.static');
+    console.log('express static dir: public');
 }
 
 
