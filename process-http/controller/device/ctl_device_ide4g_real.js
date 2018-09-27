@@ -42,9 +42,11 @@ class DeviceIde4gHandle {
             var query = await DB.GatewayIDE4g_Real_Table.findOne(filter).sort(sort).limit(10);
 
             // 功率值矫正
-            for (var i = 0; i < query.data.C1_D1.length; i++){
-                if (query.data.C1_D1[i].id == 'Tag_gonglv'){
-                    query.data.C1_D1[i].value = query.data.C1_D1[i].value/2;
+            if (query.data.hasOwnProperty("C1_D1")) {                 //判断C1_D1是否存在于obj里面
+                for (var i = 0; i < query.data.C1_D1.length; i++) {
+                    if (query.data.C1_D1[i].id == 'Tag_gonglv') {
+                        query.data.C1_D1[i].value = query.data.C1_D1[i].value / 2;
+                    }
                 }
             }
             res.send({ret_code: 0, ret_msg: '成功', extra: {query,count}});
@@ -54,9 +56,11 @@ class DeviceIde4gHandle {
             var query = await DB.GatewayIDE4g_Real_Table.findOne(filter).sort(sort).skip(skipnum).limit(page_size);
 
             // 功率值矫正
-            for (var i = 0; i < query.data.C1_D1.length; i++){
-                if (query.data.C1_D1[i].id == 'Tag_gonglv'){
-                    query.data.C1_D1[i].value = query.data.C1_D1[i].value/2;
+            if (query.data.hasOwnProperty("C1_D1")) {
+                for (var i = 0; i < query.data.C1_D1.length; i++) {
+                    if (query.data.C1_D1[i].id == 'Tag_gonglv') {
+                        query.data.C1_D1[i].value = query.data.C1_D1[i].value / 2;
+                    }
                 }
             }
             res.send({ret_code: 0, ret_msg: '成功', extra: query.data.C1_D1});
