@@ -1,18 +1,82 @@
 'use strict';
 const DB = require( "../../../models/models.js");
-const dtime = require( 'time-formater');
-const config = require( "config-lite");
 const logger = require( '../../../logs/logs.js');
 
-//引入事件模块
-const events = require("events");
+
 
 class DeviceIde4gHandle {
     constructor(){
         //logger.info('init 111');
+        this.update_data_hour();
+        //this.update_data_day();
+
     }
 
+    async update_data_hour() {
+        let wherestr = {'device_name': 'jinxi_1'};
+        let channel_name = 'C1_D1';
+        let tag_name = 'Tag_gonglv';
+        let queryList = await DB.GatewayIDE4g_Hour_Table.find(wherestr).exec();
+        //logger.info('queryList:', queryList);
+        for (var i = 0; i < queryList.length; i++){
 
+            //查看data的属性, 遍历各个通道（C1_D1）
+            for(var key in queryList[i].data){
+                //console.log('data key:', key);
+                if (key == channel_name) {
+                    var tagList = queryList[i].data[key];
+                    //遍历各个Tag（Tag_H2O_wendu）
+                    for (var m = 0; m < tagList.length; m++) {
+                        if (tagList[m].id == tag_name && tagList[m].value > 1000) {
+                            // 符合条件的
+                            tagList[m].value = tagList[m].value / 2;
+
+                            await DB.GatewayIDE4g_Hour_Table.findByIdAndUpdate(queryList[i]['_id'], queryList[i]).exec();
+                            break;
+                        }
+                    }
+
+                    // 符合条件的
+                    logger.info('update:', i, key, channel_name);
+                    break;
+                }
+            }
+
+        }
+    }
+
+    async update_data_day() {
+        let wherestr = {'device_name': 'jinxi_1'};
+        let channel_name = 'C1_D1';
+        let tag_name = 'Tag_gonglv';
+        let queryList = await DB.GatewayIDE4g_Day_Table.find(wherestr).exec();
+        //logger.info('queryList:', queryList);
+        for (var i = 0; i < queryList.length; i++){
+
+            //查看data的属性, 遍历各个通道（C1_D1）
+            for(var key in queryList[i].data){
+                //console.log('data key:', key);
+                if (key == channel_name) {
+                    var tagList = queryList[i].data[key];
+                    //遍历各个Tag（Tag_H2O_wendu）
+                    for (var m = 0; m < tagList.length; m++) {
+                        if (tagList[m].id == tag_name && tagList[m].value > 1000) {
+                            // 符合条件的
+                            tagList[m].value = tagList[m].value / 2;
+
+                            await DB.GatewayIDE4g_Day_Table.findByIdAndUpdate(queryList[i]['_id'], queryList[i]).exec();
+                            break;
+                        }
+                    }
+
+                    // 符合条件的
+                    logger.info('update:', i, key, channel_name);
+                    break;
+                }
+            }
+
+        }
+    }
 
     async minute1_list(req, res, next) {
 
@@ -59,7 +123,7 @@ class DeviceIde4gHandle {
                     }
 
                     // 符合条件的
-                    logger.info('found:', i, key, channel_name, tagList[m].id);
+                    logger.info('found:', i, key, channel_name);
                     break;
                 }
             }
@@ -117,7 +181,7 @@ class DeviceIde4gHandle {
                     }
 
                     // 符合条件的
-                    //logger.info('found:', i, key, channel_name, tagList[m].id);
+                    //logger.info('found:', i, key, channel_name);
                     break;
                 }
             }
@@ -175,7 +239,7 @@ class DeviceIde4gHandle {
                     }
 
                     // 符合条件的
-                    //logger.info('found:', i, key, channel_name, tagList[m].id);
+                    //logger.info('found:', i, key, channel_name);
                     break;
                 }
             }

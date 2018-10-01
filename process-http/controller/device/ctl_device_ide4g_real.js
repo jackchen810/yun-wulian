@@ -10,6 +10,8 @@ const events = require("events");
 class DeviceIde4gHandle {
     constructor(){
         //logger.info('init 111');
+        // 功率值矫正
+
     }
 
     async list(req, res, next) {
