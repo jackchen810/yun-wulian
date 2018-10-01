@@ -7,8 +7,8 @@ const logger = require( '../../../logs/logs.js');
 class DeviceIde4gHandle {
     constructor(){
         //logger.info('init 111');
-        this.update_data_hour();
-        this.update_data_day();
+        //this.update_data_hour();
+        //this.update_data_day();
 
     }
 
