@@ -15,9 +15,19 @@ class MqttDeviceIDE4gHandle {
 
 
     // 监听器 #1 ,
-    //
+    // device_name
     async updateDeviceInfo (device_name, josnObj) {
-        logger.info('Hello updateDeviceInfo:', JSON.stringify(josnObj));
+        logger.info('Hello updateDeviceInfo:', device_name, JSON.stringify(josnObj));
+
+        // 功率值矫正
+        if (josnObj.data.hasOwnProperty('C1_D1')) {                 //判断C1_D1是否存在于obj里面
+            for (var i = 0; i < josnObj.data['C1_D1'].length; i++) {
+                if (josnObj.data['C1_D1'][i].id == 'Tag_gonglv') {
+                    josnObj.data['C1_D1'][i].value = josnObj.data['C1_D1'][i].value / 2;
+                    break;
+                }
+            }
+        }
 
         // 1. 更新到设备数据库，sysinfo库
         //SysinfoTable

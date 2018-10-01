@@ -12,68 +12,181 @@ class DeviceIde4gHandle {
         //logger.info('init 111');
     }
 
-    async list(req, res, next) {
 
-        logger.info('device list');
+
+    async minute1_list(req, res, next) {
+
+        logger.info('minute1 list');
         //logger.info(req.body);
 
         //获取表单数据，josn
-        var page_size = req.body['page_size'];
-        var current_page = req.body['current_page'];
-        var sort = req.body['sort'];
-        var filter = req.body['filter'];
+        var device_name = req.body['device_name'];
+        var channel_name = req.body['channel_name'];
+        var tag_name = req.body['tag_name'];
+        var limit = req.body['limit'];    //限制文档个数
+        var user_type = req.session.user_type;
 
-        // 如果没有定义排序规则，添加默认排序
-        if(typeof(sort)==="undefined"){
-            logger.info('sort undefined');
-            sort = {"sort_time":-1};
+        if (!limit) {
+            limit = 100;
         }
 
+        logger.info('device_name:', device_name);
+        logger.info('channel_name:', channel_name);
+        logger.info('tag_name:', tag_name);
+        logger.info('user_type:', user_type);
+        logger.info('limit:', limit);
 
-        // 如果没有定义排序规则，添加默认排序
-        if(typeof(filter)==="undefined"){
-            logger.info('filter undefined');
-            filter = {};
-        }
+        var dataList = [];
+        var timeList = [];
+        var wherestr = {'device_name': device_name};
+        var queryList = await DB.GatewayIDE4g_M1_Table.find(wherestr).limit(limit).exec();
+        //logger.info('queryList:', queryList);
+        for (var i = 0; i < queryList.length; i++){
 
-        //参数有效性检查
-        if(typeof(page_size)==="undefined" && typeof(current_page)==="undefined"){
-            var count = await DB.GatewayIDE4g_M1_Table.count(filter);
-            var query = await DB.GatewayIDE4g_M1_Table.findOne(filter).sort(sort).limit(10);
-
-            // 功率值矫正
-            if (query.data.hasOwnProperty("C1_D1")) {                 //判断C1_D1是否存在于obj里面
-                for (var i = 0; i < query.data.C1_D1.length; i++) {
-                    if (query.data.C1_D1[i].id == 'Tag_gonglv') {
-                        query.data.C1_D1[i].value = query.data.C1_D1[i].value / 2;
+            //查看data的属性, 遍历各个通道（C1_D1）
+            for(var key in queryList[i].data){
+                //console.log('data key:', key);
+                if (key == channel_name) {
+                    var tagList = queryList[i].data[key];
+                    //遍历各个Tag（Tag_H2O_wendu）
+                    for (var m = 0; m < tagList.length; m++) {
+                        if (tagList[m].id == tag_name) {
+                            // 符合条件的
+                            dataList.push(tagList[m].value);
+                            timeList.push(queryList[i].update_time);
+                            break;
+                        }
                     }
+
+                    // 符合条件的
+                    logger.info('found:', i, key, channel_name, tagList[m].id);
+                    break;
                 }
             }
-            res.send({ret_code: 0, ret_msg: '成功', extra: {query,count}});
-        }
-        else if (page_size > 0 && current_page > 0) {
-            var skipnum = (current_page - 1) * page_size;   //跳过数
-            var query = await DB.GatewayIDE4g_M1_Table.findOne(filter).sort(sort).skip(skipnum).limit(page_size);
 
-            // 功率值矫正
-            if (query.data.hasOwnProperty("C1_D1")) {
-                for (var i = 0; i < query.data.C1_D1.length; i++) {
-                    if (query.data.C1_D1[i].id == 'Tag_gonglv') {
-                        query.data.C1_D1[i].value = query.data.C1_D1[i].value / 2;
+        }
+
+        logger.info('dataList:', dataList);
+        logger.info('timeList:', timeList);
+        res.send({ret_code: 0, ret_msg: '成功', extra: {dataList, timeList}, total: limit});
+        logger.info('minute1 list end');
+    }
+
+    async hour1_list(req, res, next) {
+
+        logger.info('hour1 list');
+        //logger.info(req.body);
+
+        //获取表单数据，josn
+        var device_name = req.body['device_name'];
+        var channel_name = req.body['channel_name'];
+        var tag_name = req.body['tag_name'];
+        var limit = req.body['limit'];    //限制文档个数
+        var user_type = req.session.user_type;
+
+        if (!limit) {
+            limit = 100;
+        }
+
+        logger.info('device_name:', device_name);
+        logger.info('channel_name:', channel_name);
+        logger.info('tag_name:', tag_name);
+        logger.info('user_type:', user_type);
+        logger.info('limit:', limit);
+
+        var dataList = [];
+        var timeList = [];
+        var wherestr = {'device_name': device_name};
+        var queryList = await DB.GatewayIDE4g_Hour_Table.find(wherestr).limit(limit).exec();
+        //logger.info('queryList:', queryList);
+        for (var i = 0; i < queryList.length; i++){
+
+            //查看data的属性, 遍历各个通道（C1_D1）
+            for(var key in queryList[i].data){
+                //console.log('data key:', key);
+                if (key == channel_name) {
+                    var tagList = queryList[i].data[key];
+                    //遍历各个Tag（Tag_H2O_wendu）
+                    for (var m = 0; m < tagList.length; m++) {
+                        if (tagList[m].id == tag_name) {
+                            // 符合条件的
+                            dataList.push(tagList[m].value);
+                            timeList.push(queryList[i].update_time);
+                            break;
+                        }
                     }
+
+                    // 符合条件的
+                    //logger.info('found:', i, key, channel_name, tagList[m].id);
+                    break;
                 }
             }
-            res.send({ret_code: 0, ret_msg: '成功', extra: query.data.C1_D1});
-            //console.log('GatewayIDE4g_M1_Table:', query.data.C1_D1);
-        }
-        else{
-            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: ''});
+
         }
 
-        logger.info('device list end');
+        logger.info('dataList:', dataList);
+        logger.info('timeList:', timeList);
+        res.send({ret_code: 0, ret_msg: '成功', extra: {dataList, timeList}, total: limit});
+        logger.info('hour1 list end');
     }
 
 
+    async day1_list(req, res, next) {
+
+        logger.info('day1_list list');
+
+        //获取表单数据，josn
+        var device_name = req.body['device_name'];
+        var channel_name = req.body['channel_name'];
+        var tag_name = req.body['tag_name'];
+        var limit = req.body['limit'];    //限制文档个数
+        var user_type = req.session.user_type;
+
+        if (!limit) {
+            limit = 100;
+        }
+
+        logger.info('device_name:', device_name);
+        logger.info('channel_name:', channel_name);
+        logger.info('tag_name:', tag_name);
+        logger.info('user_type:', user_type);
+        logger.info('limit:', limit);
+
+        var dataList = [];
+        var timeList = [];
+        var wherestr = {'device_name': device_name};
+        var queryList = await DB.GatewayIDE4g_Day_Table.find(wherestr).limit(limit).exec();
+        //logger.info('queryList:', queryList);
+        for (var i = 0; i < queryList.length; i++){
+
+            //查看data的属性, 遍历各个通道（C1_D1）
+            for(var key in queryList[i].data){
+                //console.log('data key:', key);
+                if (key == channel_name) {
+                    var tagList = queryList[i].data[key];
+                    //遍历各个Tag（Tag_H2O_wendu）
+                    for (var m = 0; m < tagList.length; m++) {
+                        if (tagList[m].id == tag_name) {
+                            // 符合条件的
+                            dataList.push(tagList[m].value);
+                            timeList.push(queryList[i].update_time);
+                            break;
+                        }
+                    }
+
+                    // 符合条件的
+                    //logger.info('found:', i, key, channel_name, tagList[m].id);
+                    break;
+                }
+            }
+
+        }
+
+        logger.info('dataList:', dataList);
+        logger.info('timeList:', timeList);
+        res.send({ret_code: 0, ret_msg: '成功', extra: {dataList, timeList}, total: limit});
+        logger.info('day1_list list end');
+    }
 }
 
 
