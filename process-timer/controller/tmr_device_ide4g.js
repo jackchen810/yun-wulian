@@ -25,15 +25,16 @@ class GatewayIDE4gTimerHandle {
         for (var i = 0; i < queryList.length; i++){
 
             //更新每天的汇总统计
+            var device_name = queryList[i].device_name;
             var wherestr = {
-                'device_name': queryList[i].device_name,
+                'device_name': device_name,
                 'update_time': update_time,
             };
 
             var query = await DB.GatewayIDE4g_Hour_Table.findOne(wherestr).exec();
             if (query == null){
                 var updatestr = {
-                    'device_name': queryList[i].device_name,
+                    'device_name': device_name,
                     'update_time': update_time,
                     'sort_time': queryList[i].sort_time,
                     'data': queryList[i].data,
@@ -72,15 +73,16 @@ class GatewayIDE4gTimerHandle {
         for (var i = 0; i < queryList.length; i++){
 
             //更新每天的汇总统计
+            var device_name = queryList[i].device_name;
             var wherestr = {
-                'device_name': queryList[i].device_name,
+                'device_name': device_name,
                 'update_time': update_time,
             };
 
             var query = await DB.GatewayIDE4g_Day_Table.findOne(wherestr).exec();
             if (query == null){
                 var updatestr = {
-                    'device_name': queryList[i].device_name,
+                    'device_name': device_name,
                     'update_time': update_time,
                     'sort_time': queryList[i].sort_time,
                     'data': queryList[i].data,
