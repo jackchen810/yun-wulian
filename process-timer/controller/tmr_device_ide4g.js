@@ -108,8 +108,8 @@ class GatewayIDE4gTimerHandle {
 
 const IDE4gTimerHnd = new GatewayIDE4gTimerHandle();
 
-//场景：每小时采样一次，记录历史数据, 0, 10 分的时候，更新两次，增加可靠性
-schedule.scheduleJob('0 0,20 * * * *', IDE4gTimerHnd.ide4gHour1Process);
-//场景：超时失败, 每天夜里12:00, 1:00进行更新, 更新两次，增加可靠性
-schedule.scheduleJob('0 0 0,1 * * *', IDE4gTimerHnd.ide4gHour24Process);
+//场景：每小时采样一次，记录历史数据, 0, 30 分的时候，更新两次，增加可靠性
+schedule.scheduleJob('0 0,30 * * * *', IDE4gTimerHnd.ide4gHour1Process);
+//场景：超时失败, 每天夜里12:00, 中午12:00进行更新, 更新两次，增加可靠性
+schedule.scheduleJob('0 0 0,12 * * *', IDE4gTimerHnd.ide4gHour24Process);
 
