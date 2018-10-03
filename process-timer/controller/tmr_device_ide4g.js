@@ -48,7 +48,7 @@ class GatewayIDE4gTimerHandle {
             var amount = await DB.GatewayIDE4g_Hour_Table.count(wherestr);
             if (amount > keep_record_num){
                 //删除数据， sort_time  单位：ms
-                var old_sort_time = mytime.getTime() - keep_record_num * 60000;
+                var old_sort_time = mytime.getTime() - keep_record_num * 3600000;
                 var wherestr = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
                 //logger.info('delete record of GatewayIDE4g_Hour_Table, condition:', wherestr);
                 DB.GatewayIDE4g_Hour_Table.deleteMany(wherestr).exec();
@@ -96,7 +96,7 @@ class GatewayIDE4gTimerHandle {
             var amount = await DB.GatewayIDE4g_Day_Table.count(wherestr);
             if (amount > keep_record_num){
                 //删除数据， sort_time  单位：ms
-                var old_sort_time = mytime.getTime() - keep_record_num * 60000;
+                var old_sort_time = mytime.getTime() - keep_record_num * 86400000;
                 var wherestr = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
                 //logger.info('delete record of GatewayIDE4g_Hour_Table, condition:', wherestr);
                 DB.GatewayIDE4g_Day_Table.deleteMany(wherestr).exec();
