@@ -14,7 +14,7 @@ class MqttDeviceIDE4gHandle {
     }
 
 
-    // 监听器 #1 ,
+    // 监听器 #1 ,  每分钟更新1次
     // device_name
     async updateDeviceInfo (device_name, josnObj) {
         logger.info('Hello updateDeviceInfo:', device_name, JSON.stringify(josnObj));
