@@ -18,7 +18,7 @@ class GatewayIDE4gTimerHandle {
         logger.info('hour1 timer out:', dtime().format('YYYY-MM-DD HH:mm:ss'));
 
         var mytime = new Date();
-        var update_time = dtime(mytime).format('YYYY-MM-DD HH:mm');
+        var update_time = dtime(mytime).format('YYYY-MM-DD HH');
 
         // 将实时数据存储到历史数据库
         var queryList = await DB.GatewayIDE4g_Real_Table.find();
@@ -66,7 +66,7 @@ class GatewayIDE4gTimerHandle {
         logger.info('hour24 timer out:', dtime().format('YYYY-MM-DD HH:mm:ss'));
 
         var mytime = new Date();
-        var update_time = dtime(mytime).format('YYYY-MM-DD HH');
+        var update_time = dtime(mytime).format('YYYY-MM-DD');
 
         // 将实时数据存储到历史数据库
         var queryList = await DB.GatewayIDE4g_Real_Table.find();
