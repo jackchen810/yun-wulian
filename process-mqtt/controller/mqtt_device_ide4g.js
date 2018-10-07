@@ -28,6 +28,22 @@ class MqttDeviceIDE4gHandle {
                 }
             }
         }
+        else if (josnObj.data.hasOwnProperty('C2_D1')) {                 //判断C2_D1是否存在于obj里面
+            for (var i = 0; i < josnObj.data['C2_D1'].length; i++) {
+                if (josnObj.data['C2_D1'][i].id == 'Tag_gonglv') {
+                    josnObj.data['C2_D1'][i].value = josnObj.data['C2_D1'][i].value / 2;
+                    break;
+                }
+            }
+        }
+        else if (josnObj.data.hasOwnProperty('C3_D1')) {                 //判断C3_D1是否存在于obj里面
+            for (var i = 0; i < josnObj.data['C3_D1'].length; i++) {
+                if (josnObj.data['C3_D1'][i].id == 'Tag_gonglv') {
+                    josnObj.data['C3_D1'][i].value = josnObj.data['C3_D1'][i].value / 2;
+                    break;
+                }
+            }
+        }
 
         // 1. 更新到设备数据库，sysinfo库
         //SysinfoTable
