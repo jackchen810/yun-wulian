@@ -7,12 +7,13 @@ const logger = require( '../../../logs/logs.js');
 class DeviceIde4gHandle {
     constructor(){
         //logger.info('init 111');
-        //this.update_data_hour();
-        //this.update_data_day();
+        //this.tmp_correction_data_hour();
+        //this.tmp_correction_data_day();
 
     }
 
-    async update_data_hour() {
+    //调整错误的功率数据，临时使用该函数
+    async tmp_correction_data_hour() {
         let wherestr = {'device_name': 'jinxi_1'};
         let channel_name = 'C1_D1';
         let tag_name = 'Tag_gonglv';
@@ -44,8 +45,8 @@ class DeviceIde4gHandle {
 
         }
     }
-
-    async update_data_day() {
+    //调整错误的功率数据，临时使用该函数
+    async tmp_correction_data_day() {
         let wherestr = {'device_name': 'jinxi_1'};
         let channel_name = 'C1_D1';
         let tag_name = 'Tag_gonglv';
@@ -91,7 +92,7 @@ class DeviceIde4gHandle {
         var user_type = req.session.user_type;
 
         if (!limit) {
-            limit = 100;
+            limit = 60;
         }
 
         logger.info('device_name:', device_name);
@@ -123,15 +124,15 @@ class DeviceIde4gHandle {
                     }
 
                     // 符合条件的
-                    logger.info('found:', i, key, channel_name);
+                    //logger.info('found:', i, key, channel_name);
                     break;
                 }
             }
 
         }
 
-        logger.info('dataList:', dataList);
-        logger.info('timeList:', timeList);
+        //logger.info('dataList:', dataList);
+        //logger.info('timeList:', timeList);
         res.send({ret_code: 0, ret_msg: '成功', extra: {dataList, timeList}, total: limit});
         logger.info('minute1 list end');
     }
@@ -149,7 +150,7 @@ class DeviceIde4gHandle {
         var user_type = req.session.user_type;
 
         if (!limit) {
-            limit = 100;
+            limit = 60;
         }
 
         logger.info('device_name:', device_name);
@@ -188,8 +189,8 @@ class DeviceIde4gHandle {
 
         }
 
-        logger.info('dataList:', dataList);
-        logger.info('timeList:', timeList);
+        //logger.info('dataList:', dataList);
+        //logger.info('timeList:', timeList);
         res.send({ret_code: 0, ret_msg: '成功', extra: {dataList, timeList}, total: limit});
         logger.info('hour1 list end');
     }
@@ -207,7 +208,7 @@ class DeviceIde4gHandle {
         var user_type = req.session.user_type;
 
         if (!limit) {
-            limit = 100;
+            limit = 60;
         }
 
         logger.info('device_name:', device_name);
@@ -246,8 +247,8 @@ class DeviceIde4gHandle {
 
         }
 
-        logger.info('dataList:', dataList);
-        logger.info('timeList:', timeList);
+        //logger.info('dataList:', dataList);
+        //logger.info('timeList:', timeList);
         res.send({ret_code: 0, ret_msg: '成功', extra: {dataList, timeList}, total: limit});
         logger.info('day1_list list end');
     }

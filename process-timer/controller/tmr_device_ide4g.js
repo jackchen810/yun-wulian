@@ -4,7 +4,7 @@ const dtime = require( 'time-formater');
 const logger = require( '../../logs/logs.js');
 const schedule = require('node-schedule');
 
-const keep_record_num = 60;
+const keep_record_num = 120;
 
 
 class GatewayIDE4gTimerHandle {
@@ -62,7 +62,7 @@ class GatewayIDE4gTimerHandle {
 
 
     // 监听器 #4
-    async ide4gHour24Process () {
+    async ide4gDay1Process () {
         logger.info('hour24 timer out:', dtime().format('YYYY-MM-DD HH:mm:ss'));
 
         var mytime = new Date();
@@ -113,5 +113,5 @@ const IDE4gTimerHnd = new GatewayIDE4gTimerHandle();
 //场景：每小时采样一次，记录历史数据, 0, 30 分的时候，更新两次，增加可靠性
 schedule.scheduleJob('0 0,30 * * * *', IDE4gTimerHnd.ide4gHour1Process);
 //场景：超时失败, 每天夜里12:00, 中午12:00进行更新, 更新两次，增加可靠性
-schedule.scheduleJob('0 0 0,12 * * *', IDE4gTimerHnd.ide4gHour24Process);
+schedule.scheduleJob('0 0 0,12 * * *', IDE4gTimerHnd.ide4gDay1Process);
 

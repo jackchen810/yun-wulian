@@ -5,7 +5,7 @@ const dtime = require( 'time-formater');
 const logger = require( '../../logs/logs.js');
 
 //每个设备保持记录数
-const keep_record_num = 60;
+const keep_record_num = 120;
 
 
 class MqttDeviceIDE4gHandle {
