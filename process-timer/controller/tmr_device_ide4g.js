@@ -1,10 +1,11 @@
 'use strict';
+const config = require( "config-lite");
 const DB = require( "../../models/models.js");
 const dtime = require( 'time-formater');
 const logger = require( '../../logs/logs.js');
 const schedule = require('node-schedule');
 
-const keep_record_num = 120;
+const keep_record_num = config.keep_record_num;
 
 
 class GatewayIDE4gTimerHandle {
