@@ -14,6 +14,11 @@ const admin_router = require('./rt_acount.js');
 
      //用户登录相关
      app.use('/api/admin', admin_router);
+
+     // Welcome test
+     app.get('/test', function(req, res) {
+         res.status(200).send('Welcome http, this is test!');
+     });
 }
 
 

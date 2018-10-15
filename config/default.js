@@ -12,9 +12,9 @@ module.exports = {
 	interval_every_task: '600000',  //单位：ms
     keep_record_num: '60',  //记录的数据数量
 	ssl:{
-		port: 443,
-		key:'../ssl/2_ssl.key',
-		cert:'../ssl/1_ssl.crt',
+		port: 4433,
+		key:'../ssl/1541291635469.key',
+		cert:'../ssl/1541291635469.pem',
 	},
 	session: {
 		name: 'SID',

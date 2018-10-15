@@ -1,45 +1,19 @@
 'use strict';
-const db = require('../mongodb/db.js');
+const logger = require( '../logs/logs.js');
+require('../mongodb/db.js');
 const express = require('express');
 const config = require('config-lite');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const web_router = require('./routes/entry_index');
 const session = require('express-session');
 const connectMongo = require('connect-mongo');
-const history = require('connect-history-api-fallback');
-const web_router = require('./routes/entry_index');
-//const mqttClient = require('../mqttclient/mqttclient.js');
-//const mqtt_router = require('./routes-mqtt/entry_index.js');
+
 const path = require('path');
 const https = require('https');
 const fs = require("fs");
 
 
-//固件存放位置， 不存在则创建
-fs.exists(config.firmware_dir, function(exists) {
-    console.log(exists ? "固件目录存在" : "固件目录不存在", config.firmware_dir);
-    if (!exists) fs.mkdirSync(config.firmware_dir);
-});
-
-
-//excel导入文件存放位置， 不存在则创建
-fs.exists(config.device_dir, function(exists) {
-    console.log(exists ? "设备excel目录存在" : "设备excel目录不存在", config.device_dir);
-    if (!exists) fs.mkdirSync(config.device_dir);
-});
-
-
-//插件存放位置， 不存在则创建
-fs.exists(config.pkg_dir, function(exists) {
-    console.log(exists ? "插件目录存在" : "插件目录不存在", config.pkg_dir);
-    if (!exists) fs.mkdirSync(config.pkg_dir);
-});
-
-//脚本存放位置， 不存在则创建
-fs.exists(config.script_dir, function(exists) {
-    console.log(exists ? "脚本目录存在" : "脚本目录不存在", config.script_dir);
-    if (!exists) fs.mkdirSync(config.script_dir);
-});
 
 const app = express();
 
@@ -53,59 +27,66 @@ app.all('*', (req, res, next) => {
 	if (req.method == 'OPTIONS') {
 	  	res.send(200);
 	} else {
-		//console.log('method:', req.method)
-		/*
+		console.log('method:', req.method, req.path);
+		///*
         req.on('data', function (data) {
             console.log('entry, url:', req.hostname + req.path, ';body data', data.toString());
         });
-        */
+        //*/
 	    next();
 	}
 });
 
-// app.use(Statistic.apiRecord)
-//连接数据库
-const MongoStore = connectMongo(session);
 
-// 使用中间件解析body
+// 2. 使用中间件解析body
 // body-parser 能处理 text/plain, application/json和application/x-www-form-urlencoded的数据，解析完放到req.body里。
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
 app.use(cookieParser());
+
+
+
+
+
+// 3. session连接数据库
+const MongoStore = connectMongo(session);
 app.use(session({
-	  	name: config.session.name,
-		secret: config.session.secret,
-		resave: true,
-		saveUninitialized: false,
-		cookie: config.session.cookie,
-		store: new MongoStore({
-	  	url: config.url
-	})
-}))
+    name: config.session.name,
+    secret: config.session.secret,
+    resave: true,
+    saveUninitialized: false,
+    cookie: config.session.cookie,
+    store: new MongoStore({
+        url: config.url
+    })
+}));
+
+// use this middleware to reset cookie expiration time
+// when user hit page every time
 app.use(function(req, res, next){
-	req.session._garbage = Date();
-	req.session.touch();
-	next();
+    req.session._garbage = Date();
+    req.session.touch();
+    next();
 });
 
-//注册路由分发
+
+
+
+// 4. 注册路由分发
 web_router(app);
 
-//注册mqtt分发
-//mqtt_router(mqttClient);
 
 
-app.use(history());
-
+// 5. 托管静态文件
+if ( process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'development') {
 //通过 Express 内置的 express.static 可以方便地托管静态文件，例如图片、CSS、JavaScript 文件等。
-app.use(express.static('./public'));
-app.use(express.static(path.join(__dirname,'../public/dist')))
-app.get('*',function(req,res){
-	const html = fs.readFileSync(path.resolve(__dirname,'../public/dist/index.html'),'utf8');
-	res.send(html);
-});
-//app.listen(config.port);
+    app.use(express.static('./public'));
+    console.log('express static dir: public');
+}
+
+
+
+
 var options = {
 	key:fs.readFileSync(path.join(__dirname,config.ssl.key),'utf8'),
 	cert:fs.readFileSync(path.join(__dirname,config.ssl.cert),'utf8')
@@ -114,3 +95,14 @@ https.createServer(options,app).listen(config.ssl.port)
 
 console.log('Https listening at ' + config.ssl.port);
 
+
+
+
+process.on('unhandledRejection', (reason, p) => {
+    logger.info("Unhandled Rejection:", p);
+    // application specific logging, throwing an error, or other logic here
+});
+
+process.on('uncaughtException', (err) => {
+    logger.error("[http] uncaughtException：", err);
+});

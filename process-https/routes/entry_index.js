@@ -1,45 +1,24 @@
 'use strict';
 
 
-const admin_router = require('./admin.js');
-const script_router = require('./script.js');
-const rom_router = require('./rom.js');
-const pkg_router = require('./pkg.js');
-const manage_router = require('./manage.js');
-const task_router = require('./task.js');
-const device_router = require('./device.js');
-const devtype_router = require('./devtype.js');
-const stats_router = require('./stats.js');
-
+const gateway_router = require("../../process-http/routes/rt_gateway_ide4g.js");
+const admin_router = require('../../process-http/routes/rt_acount.js');
 
 
  function https_web_router(app) {
-     //渠道相关
-     app.use('/admin', admin_router);
-     
-     //脚本相关
-     app.use('/script', script_router);
 
-     //固件相关
-     app.use('/rom', rom_router);
 
-     //插件相关
-     app.use('/pkg', pkg_router);
+     //stats
+     app.use('/api/gateway', gateway_router);
 
-     //管理功能
-     app.use('/manage', manage_router);
 
-     //任务功能
-     app.use('/task', task_router);
+     //用户登录相关
+     app.use('/api/admin', admin_router);
 
-     //设备管理功能
-     app.use('/device', device_router);
-
-     //设备型号管理功能
-     app.use('/devtype', devtype_router);
-
-     //数据统计功能
-     app.use('/stats', stats_router);
+     // Welcome
+     app.get('/test', function(req, res) {
+         res.status(200).send('Welcome Https, this is test!');
+     });
 }
 
 
