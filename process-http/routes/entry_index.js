@@ -17,7 +17,7 @@ const admin_router = require('./rt_acount.js');
 
      // Welcome test
      app.get('/test', function(req, res) {
-         res.status(200).send('Welcome http, this is test!');
+         res.status(200).send('Welcome, this is test!');
      });
 }
 

@@ -3,6 +3,7 @@
 
 const gateway_router = require("../../process-http/routes/rt_gateway_ide4g.js");
 const admin_router = require('../../process-http/routes/rt_acount.js');
+const http_router = require('../../process-http/routes/entry_index.js');
 
 
  function https_web_router(app) {
@@ -23,4 +24,6 @@ const admin_router = require('../../process-http/routes/rt_acount.js');
 
 
 //导出模块
-module.exports = https_web_router;
+//module.exports = https_web_router;
+//http 中的所有接口提供https
+module.exports = http_router;
