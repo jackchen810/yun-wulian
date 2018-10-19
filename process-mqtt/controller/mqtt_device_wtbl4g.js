@@ -9,7 +9,7 @@ const logger = require( '../../logs/logs.js');
 const keep_record_num = config.keep_record_num;
 
 
-class MqttDeviceIDE4gHandle {
+class MqttDeviceWTBL4gHndle {
     constructor(){
 
     }
@@ -20,45 +20,18 @@ class MqttDeviceIDE4gHandle {
     async updateDeviceInfo (device_name, josnObj) {
         logger.info('Hello updateDeviceInfo:', device_name, JSON.stringify(josnObj));
 
-        // 功率值矫正
-        if (josnObj.data.hasOwnProperty('C1_D1')) {                 //判断C1_D1是否存在于obj里面
-            for (var i = 0; i < josnObj.data['C1_D1'].length; i++) {
-                if (josnObj.data['C1_D1'][i].id == 'Tag_gonglv') {
-                    josnObj.data['C1_D1'][i].value = josnObj.data['C1_D1'][i].value / 2;
-                    break;
-                }
-            }
-        }
-        else if (josnObj.data.hasOwnProperty('C2_D1')) {                 //判断C2_D1是否存在于obj里面
-            for (var i = 0; i < josnObj.data['C2_D1'].length; i++) {
-                if (josnObj.data['C2_D1'][i].id == 'Tag_gonglv') {
-                    josnObj.data['C2_D1'][i].value = josnObj.data['C2_D1'][i].value / 2;
-                    break;
-                }
-            }
-        }
-        else if (josnObj.data.hasOwnProperty('C3_D1')) {                 //判断C3_D1是否存在于obj里面
-            for (var i = 0; i < josnObj.data['C3_D1'].length; i++) {
-                if (josnObj.data['C3_D1'][i].id == 'Tag_gonglv') {
-                    josnObj.data['C3_D1'][i].value = josnObj.data['C3_D1'][i].value / 2;
-                    break;
-                }
-            }
-        }
-
         // 1. 更新到设备数据库，sysinfo库
         //SysinfoTable
         var mytime = new Date();
         var wherestr = { 'device_name': device_name};
         var updatestr = {
             'device_name': device_name,
-            'device_local': josnObj['sn'],
-            'device_type': 'aidejiachuang',
+            'device_local': device_name,
             'device_link_status': 'online',
             'update_time':dtime(mytime).format('YYYY-MM-DD HH:mm:ss'),
             'sort_time':mytime.getTime(),
             'logs': [],
-            'data': josnObj['data'],
+            'data': josnObj,
         };
 
         DB.Gateway_Real_Table.findOneAndUpdate(wherestr, updatestr).exec(function (err, doc) {
@@ -120,9 +93,9 @@ class MqttDeviceIDE4gHandle {
 
 }
 
-const MqttDeviceIDE4gHnd = new MqttDeviceIDE4gHandle();
+const MqttDeviceWTBL4gHnd = new MqttDeviceWTBL4gHndle();
 
 
 //监听事件some_event
-MqttSubHandle.addLoopListener('yunWL', MqttDeviceIDE4gHnd.updateDeviceInfo);
-MqttSubHandle.addLoopListener('$SYS', MqttDeviceIDE4gHnd.updateDeviceStatus);
+MqttSubHandle.addLoopListener('yunWTBL', MqttDeviceWTBL4gHnd.updateDeviceInfo);
+MqttSubHandle.addLoopListener('$SYS', MqttDeviceWTBL4gHnd.updateDeviceStatus);

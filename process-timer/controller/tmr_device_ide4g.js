@@ -22,7 +22,7 @@ class GatewayIDE4gTimerHandle {
         var update_time = dtime(mytime).format('YYYY-MM-DD HH');
 
         // 将实时数据存储到历史数据库
-        var queryList = await DB.GatewayIDE4g_Real_Table.find();
+        var queryList = await DB.Gateway_Real_Table.find();
         for (var i = 0; i < queryList.length; i++){
 
             //更新每天的汇总统计
@@ -32,7 +32,7 @@ class GatewayIDE4gTimerHandle {
                 'update_time': update_time,
             };
 
-            var query = await DB.GatewayIDE4g_Hour_Table.findOne(wherestr).exec();
+            var query = await DB.Gateway_Hour_Table.findOne(wherestr).exec();
             if (query == null){
                 var updatestr = {
                     'device_name': device_name,
@@ -40,19 +40,19 @@ class GatewayIDE4gTimerHandle {
                     'sort_time': queryList[i].sort_time,
                     'data': queryList[i].data,
                 };
-                DB.GatewayIDE4g_Hour_Table.create(updatestr);
+                DB.Gateway_Hour_Table.create(updatestr);
             }
 
             // 2. 限制数量
             //存最近60条记录
             var wherestr = { 'device_name': device_name};
-            var amount = await DB.GatewayIDE4g_Hour_Table.count(wherestr);
+            var amount = await DB.Gateway_Hour_Table.count(wherestr);
             if (amount > keep_record_num){
                 //删除数据， sort_time  单位：ms
                 var old_sort_time = mytime.getTime() - keep_record_num * 3600000;
                 var wherestr = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
-                //logger.info('delete record of GatewayIDE4g_Hour_Table, condition:', wherestr);
-                DB.GatewayIDE4g_Hour_Table.deleteMany(wherestr).exec();
+                //logger.info('delete record of Gateway_Hour_Table, condition:', wherestr);
+                DB.Gateway_Hour_Table.deleteMany(wherestr).exec();
             }
 
         }
@@ -70,7 +70,7 @@ class GatewayIDE4gTimerHandle {
         var update_time = dtime(mytime).format('YYYY-MM-DD');
 
         // 将实时数据存储到历史数据库
-        var queryList = await DB.GatewayIDE4g_Real_Table.find();
+        var queryList = await DB.Gateway_Real_Table.find();
         for (var i = 0; i < queryList.length; i++){
 
             //更新每天的汇总统计
@@ -80,7 +80,7 @@ class GatewayIDE4gTimerHandle {
                 'update_time': update_time,
             };
 
-            var query = await DB.GatewayIDE4g_Day_Table.findOne(wherestr).exec();
+            var query = await DB.Gateway_Day_Table.findOne(wherestr).exec();
             if (query == null){
                 var updatestr = {
                     'device_name': device_name,
@@ -88,19 +88,19 @@ class GatewayIDE4gTimerHandle {
                     'sort_time': queryList[i].sort_time,
                     'data': queryList[i].data,
                 };
-                DB.GatewayIDE4g_Day_Table.create(updatestr);
+                DB.Gateway_Day_Table.create(updatestr);
             }
 
             // 2. 限制数量
             //存最近60条记录
             var wherestr = { 'device_name': device_name};
-            var amount = await DB.GatewayIDE4g_Day_Table.count(wherestr);
+            var amount = await DB.Gateway_Day_Table.count(wherestr);
             if (amount > keep_record_num){
                 //删除数据， sort_time  单位：ms
                 var old_sort_time = mytime.getTime() - keep_record_num * 86400000;
                 var wherestr = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
-                //logger.info('delete record of GatewayIDE4g_Hour_Table, condition:', wherestr);
-                DB.GatewayIDE4g_Day_Table.deleteMany(wherestr).exec();
+                //logger.info('delete record of Gateway_Hour_Table, condition:', wherestr);
+                DB.Gateway_Day_Table.deleteMany(wherestr).exec();
             }
 
         }

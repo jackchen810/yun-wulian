@@ -15,6 +15,7 @@ const config = require('config-lite');
      client.subscribe(config.mqtt.node_topic + 'clients/#',{qos:1});
      //client.subscribe(config.mqtt.node_topic,{qos:1});
      client.subscribe('yunWL/+/post/#',{qos:1});
+     client.subscribe('yunWTBL/+/post/#',{qos:1});
      //client.subscribe('$SYS/#',{qos:1});
      //client.subscribe('yunWL/+/CMD_GET/',{qos:1});
 

@@ -6,6 +6,7 @@ const mqttClient = require('../mqttclient/mqttclient.js');
 const mqtt_router = require('./routes/entry_index.js');
 require('../mongodb/db.js');
 require("./controller/mqtt_device_ide4g.js");
+require("./controller/mqtt_device_wtbl4g.js");
 
 
 

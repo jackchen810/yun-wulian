@@ -19,20 +19,38 @@ class MqttDispatchHandle {
     async onMessage(topic, message) {
 
         //var msg_string = message.toString();
-        var msg_string = iconv.decode(message, 'gb2312');
-        if (process.env.NODE_ENV == 'local'){
-            console.log('[emqtt] response:', topic, msg_string);
-        }
+        //var msg_string = iconv.decode(message, 'gb2312');
+        //if (process.env.NODE_ENV == 'local'){
+        //    console.log('[emqtt] response:', topic, msg_string);
+        //}
 
         //分解topic 字段
         var topic_array = topic.split('/')
 
         if (topic_array[0] == '$SYS') {
+            var msg_string = message.toString();
+            if (process.env.NODE_ENV == 'local'){
+                console.log('[emqtt] response:', topic, msg_string);
+            }
             this.onMssage_SYS(topic_array, topic, msg_string);
         }
-        else {
+        // 爱德佳创设备是gb2312编码
+        else if (topic_array[0] == 'yunWL') {
+            var msg_string = iconv.decode(message, 'gb2312');
+            if (process.env.NODE_ENV == 'local'){
+                console.log('[emqtt] response:', topic, msg_string);
+            }
+
             this.onMessage_YunAC(topic_array, topic, msg_string);
         }
+        else {
+            var msg_string = message.toString();
+            if (process.env.NODE_ENV == 'local'){
+                console.log('[emqtt] response:', topic, msg_string);
+            }
+            this.onMessage_YunAC(topic_array, topic, msg_string);
+        }
+
     }
 
 
@@ -69,7 +87,7 @@ class MqttDispatchHandle {
 
         //解析mac地址
         var source = topic_array[1];
-        var command = topic_array[2];
+        var command = topic_array[0];
 
         //1. 发送event:task_id 事件， 任务更新使用
         emitter.emit(command, source, josnObj);

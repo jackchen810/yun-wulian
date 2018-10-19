@@ -22,8 +22,8 @@ const gatewayDataSchema = new mongoose.Schema({
 
 
 
-const GatewayIDE4g_Real_Table = mongoose.model('GatewayIDE4g_Real_Table', gatewayDataSchema);
+const Gateway_Real_Table = mongoose.model('GatewayIDE4g_Real_Table', gatewayDataSchema);
 
 
 //导出模块
-module.exports = GatewayIDE4g_Real_Table;
+module.exports = Gateway_Real_Table;

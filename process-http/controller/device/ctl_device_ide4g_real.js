@@ -39,18 +39,18 @@ class DeviceIde4gHandle {
             filter = {};
         }
 
-        var total = await DB.GatewayIDE4g_Real_Table.count(filter);
+        var total = await DB.Gateway_Real_Table.count(filter);
 
         //参数有效性检查
         if(typeof(page_size)==="undefined" && typeof(current_page)==="undefined"){
-            var query = await DB.GatewayIDE4g_Real_Table.findOne(filter).sort(sort).limit(10);
+            var query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).limit(10);
             res.send({ret_code: 0, ret_msg: '成功', extra: query.data[channel_name], total: query.data[channel_name].length});
         }
         else if (page_size > 0 && current_page > 0) {
             var skipnum = (current_page - 1) * page_size;   //跳过数
-            var query = await DB.GatewayIDE4g_Real_Table.findOne(filter).sort(sort).skip(skipnum).limit(page_size);
+            var query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).skip(skipnum).limit(page_size);
             res.send({ret_code: 0, ret_msg: '成功', extra: query.data[channel_name], total: query.data[channel_name].length});
-            //console.log('GatewayIDE4g_Real_Table:', query.data.C1_D1);
+            //console.log('Gateway_Real_Table:', query.data.C1_D1);
         }
         else{
             res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: ''});

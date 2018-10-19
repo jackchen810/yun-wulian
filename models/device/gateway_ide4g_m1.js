@@ -15,8 +15,8 @@ const gatewayDataSchema = new mongoose.Schema({
 });
 
 
-const GatewayIDE4g_M1_Table = mongoose.model('GatewayIDE4g_M1_Table', gatewayDataSchema);
+const Gateway_Minute_Table = mongoose.model('GatewayIDE4g_M1_Table', gatewayDataSchema);
 
 
 //导出模块
-module.exports = GatewayIDE4g_M1_Table;
+module.exports = Gateway_Minute_Table;

@@ -17,7 +17,7 @@ class DeviceIde4gHandle {
         let wherestr = {'device_name': 'jinxi_1'};
         let channel_name = 'C1_D1';
         let tag_name = 'Tag_gonglv';
-        let queryList = await DB.GatewayIDE4g_Hour_Table.find(wherestr).exec();
+        let queryList = await DB.Gateway_Hour_Table.find(wherestr).exec();
         //logger.info('queryList:', queryList);
         for (var i = 0; i < queryList.length; i++){
 
@@ -32,7 +32,7 @@ class DeviceIde4gHandle {
                             // 符合条件的
                             tagList[m].value = tagList[m].value / 2;
 
-                            await DB.GatewayIDE4g_Hour_Table.findByIdAndUpdate(queryList[i]['_id'], queryList[i]).exec();
+                            await DB.Gateway_Hour_Table.findByIdAndUpdate(queryList[i]['_id'], queryList[i]).exec();
                             break;
                         }
                     }
@@ -50,7 +50,7 @@ class DeviceIde4gHandle {
         let wherestr = {'device_name': 'jinxi_1'};
         let channel_name = 'C1_D1';
         let tag_name = 'Tag_gonglv';
-        let queryList = await DB.GatewayIDE4g_Day_Table.find(wherestr).exec();
+        let queryList = await DB.Gateway_Day_Table.find(wherestr).exec();
         //logger.info('queryList:', queryList);
         for (var i = 0; i < queryList.length; i++){
 
@@ -65,7 +65,7 @@ class DeviceIde4gHandle {
                             // 符合条件的
                             tagList[m].value = tagList[m].value / 2;
 
-                            await DB.GatewayIDE4g_Day_Table.findByIdAndUpdate(queryList[i]['_id'], queryList[i]).exec();
+                            await DB.Gateway_Day_Table.findByIdAndUpdate(queryList[i]['_id'], queryList[i]).exec();
                             break;
                         }
                     }
@@ -104,7 +104,7 @@ class DeviceIde4gHandle {
         var dataList = [];
         var timeList = [];
         var wherestr = {'device_name': device_name};
-        var queryList = await DB.GatewayIDE4g_M1_Table.find(wherestr).limit(limit).exec();
+        var queryList = await DB.Gateway_Minute_Table.find(wherestr).limit(limit).exec();
         //logger.info('queryList:', queryList);
         for (var i = 0; i < queryList.length; i++){
 
@@ -162,7 +162,7 @@ class DeviceIde4gHandle {
         var dataList = [];
         var timeList = [];
         var wherestr = {'device_name': device_name};
-        var queryList = await DB.GatewayIDE4g_Hour_Table.find(wherestr).limit(limit).exec();
+        var queryList = await DB.Gateway_Hour_Table.find(wherestr).limit(limit).exec();
         //logger.info('queryList:', queryList);
         for (var i = 0; i < queryList.length; i++){
 
@@ -220,7 +220,7 @@ class DeviceIde4gHandle {
         var dataList = [];
         var timeList = [];
         var wherestr = {'device_name': device_name};
-        var queryList = await DB.GatewayIDE4g_Day_Table.find(wherestr).limit(limit).exec();
+        var queryList = await DB.Gateway_Day_Table.find(wherestr).limit(limit).exec();
         //logger.info('queryList:', queryList);
         for (var i = 0; i < queryList.length; i++){
 
