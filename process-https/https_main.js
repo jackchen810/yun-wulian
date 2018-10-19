@@ -1,5 +1,7 @@
 'use strict';
 const logger = require( '../logs/logs.js');
+logger.info('[http] create https process..., pid =', process.pid);
+
 require('../mongodb/db.js');
 const express = require('express');
 const config = require('config-lite');

@@ -12,6 +12,7 @@ const accountSchema = new Schema({
     user_email: String,
 	user_phone: String,
     user_city: String,
+    user_wechat: String,
 
 	user_create_time: String,
 	user_last_login_time: String,
@@ -19,7 +20,7 @@ const accountSchema = new Schema({
 	user_status: Number, //0:用户正常,1:用户冻结
 	user_avatar: {type: String, default: 'default.jpg'},
     login_logs: Array,   //一些上下线的日志信息，辅助定位问题，记录5条
-})
+});
 
 accountSchema.index({user_id: 1});
 const AccountTable = mongoose.model('AccountTable',accountSchema);
