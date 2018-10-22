@@ -76,8 +76,12 @@ class ProjectHandle {
 
         let query = await DB.ProjectTable.findByIdAndRemove(_id).exec();
 
-        console.log('del image:', query['project_image']);
-        fs.unlinkSync(query['project_image']);
+        try {
+            console.log('del image:', query['project_image']);
+            fs.unlinkSync(query['project_image']);
+        }catch(err){
+            console.log('del image fail');
+        }
         res.send({ret_code: 0, ret_msg: '成功', extra: query});
         logger.info('project del end');
     }
