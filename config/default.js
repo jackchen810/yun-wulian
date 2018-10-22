@@ -2,15 +2,15 @@
 
 module.exports = {
 	image_dir:'./public/image',
-	device_dir:'./public/device',
+	firmware_dir:'./public/firmware',
 	pkg_dir:'./public/packages',
 	script_dir:'./public/scripts',
-	vue_service_port:'8000',
-    upload_port:'9100',
+	backend_port:'8000',
+	upload_port:'9100',
 	url: 'mongodb://localhost:27017/iotks',
 	amount_every_task: '500',
 	interval_every_task: '600000',  //单位：ms
-    keep_record_num: '60',  //记录的数据数量
+	keep_record_num: '60',  //记录的数据数量
 	ssl:{
 		port: 443,
 		key:'../ssl/1541291635469.key',

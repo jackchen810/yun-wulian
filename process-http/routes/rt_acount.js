@@ -13,7 +13,8 @@ router.all('/logout', Check.checkAdminStatus,Account.logout);
 router.all('/change',/* Check.checkSuperAdmin,*/ Account.changePassword);
 router.all('/revoke',Check.checkSuperAdmin, Account.revoke);
 router.all('/restore',Check.checkSuperAdmin, Account.restore);
-router.all('/list', Check.checkSuperAdmin, Account.getAllAdmin);
+router.all('/list', Check.checkSuperAdmin, Account.account_list);
+router.all('/array', Check.checkSuperAdmin, Account.account_array);
 //router.all('/count', Account.getAdminCount);
 //router.all('/update/avatar/:admin_id', Account.updateAvatar);
 

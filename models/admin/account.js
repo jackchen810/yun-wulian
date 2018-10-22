@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 
 const accountSchema = new Schema({
 	user_account: String,   //用户账号
+    user_detail: String,   //用户名称
     user_type: Number, //0:管理员, 1:用户
 
 	user_password: String,

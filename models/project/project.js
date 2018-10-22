@@ -12,7 +12,7 @@ const projectSchema = new mongoose.Schema({
 
     project_local: {type: String, default: ''},    //项目的地址
     project_image: {type: String, default: ''},    //项目图片
-    project_status: {type: String, default: 'normal'},    //项目状态， normal， protect
+    project_status: {type: String, default: 'normal'},    //项目状态， normal， hide
 
     comment: String,   //项目备注
 

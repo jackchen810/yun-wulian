@@ -15,7 +15,7 @@ class Account extends BaseComponent {
 		this.changePassword = this.changePassword.bind(this);
 		this.revoke = this.revoke.bind(this);
 		this.restore = this.restore.bind(this);
-		this.getAllAdmin = this.getAllAdmin.bind(this);
+		this.account_list = this.account_list.bind(this);
 		this.logout = this.logout.bind(this);
 	    //	this.updateAvatar = this.updateAvatar.bind(this);
 
@@ -274,7 +274,7 @@ class Account extends BaseComponent {
         console.log('[website] account end');
 	}
 
-	async getAllAdmin(req, res, next) {
+	async account_list(req, res, next) {
         console.log('[website] account list');
         //console.log(req.body);
 
@@ -313,13 +313,25 @@ class Account extends BaseComponent {
             res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:queryList, total:total});
         }
         else{
-            res.send({ret_code: 1002, ret_msg: 'FAILED', extra:'josn para invalid'});
+            res.send({ret_code: 1002, ret_msg: 'json 参数无效', extra:req.body});
         }
 
         console.log('[website] account list end');
 	}
 
+    async account_array(req, res, next) {
+        console.log('[website] account array');
+        //console.log(req.body);
 
+        let queryList = await DB.AccountTable.find();
+        let accountList = [];
+        for (let i = 0; i < queryList.length; i++){
+            accountList.push(queryList[i]['user_account']);
+        }
+
+        res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:accountList, total:queryList.length});
+        console.log('[website] account array end');
+    }
 
     async addDefaultAccount(user_account, user_password) {
 

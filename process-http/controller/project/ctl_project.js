@@ -14,8 +14,8 @@ class ProjectHandle {
         //logger.info('init 111');
         //this.tmp_correction_data_hour();
         //this.tmp_correction_data_day();
-
     }
+
 
     async project_list(req, res, next) {
 
@@ -23,21 +23,106 @@ class ProjectHandle {
         //logger.info(req.body);
 
         //获取表单数据，josn
-        let project_owner = req.body['project_owner'];
+        let user_account = req.body['user_account'];
         let user_type = req.session.user_type;
 
-        logger.info('project_owner:', project_owner);
+        if (!user_account){
+            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: req.body});
+            return;
+        }
+
+        logger.info('user_account:', user_account);
         logger.info('user_type:', user_type);
 
+        //
+        let wherestr = {};
+        if (user_type == 1) {
+            wherestr = {'project_owner': user_account};
+        }
 
-        let wherestr = {'project_owner': project_owner};
         let queryList = await DB.ProjectTable.find(wherestr).exec();
-        //logger.info('queryList:', queryList);
-
-        //logger.info('dataList:', dataList);
-        //logger.info('timeList:', timeList);
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
         logger.info('project list end');
+    }
+
+    async project_array(req, res, next) {
+        console.log('project array');
+        //console.log(req.body);
+
+        let queryList = await DB.ProjectTable.find();
+        let projectList = [];
+        for (let i = 0; i < queryList.length; i++){
+            projectList.push(queryList[i]['project_name']);
+        }
+
+        res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:projectList, total:queryList.length});
+        console.log('project array end');
+    }
+
+    async project_del(req, res, next) {
+
+        logger.info('project del');
+        //logger.info(req.body);
+
+        //获取表单数据，josn
+        //let project_name = req.body['project_name'];
+        let _id = req.body['_id'];
+        if (!_id){
+            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: req.body});
+            return;
+        }
+
+        logger.info('_id:', _id);
+
+        let query = await DB.ProjectTable.findByIdAndRemove(_id).exec();
+        res.send({ret_code: 0, ret_msg: '成功', extra: query});
+        logger.info('project del end');
+    }
+
+
+
+    async project_hide(req, res, next) {
+
+        logger.info('project hide');
+        //logger.info(req.body);
+
+        //获取表单数据，josn
+        //let project_name = req.body['project_name'];
+        let _id = req.body['_id'];
+        if (!_id){
+            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: req.body});
+            return;
+        }
+
+        logger.info('_id:', _id);
+
+        let updatestr = {'project_status': 'hide'};
+        let query = await DB.ProjectTable.findByIdAndUpdate(_id, updatestr).exec();
+        res.send({ret_code: 0, ret_msg: '成功', extra: query});
+        logger.info('project hide end');
+    }
+
+
+
+    async project_resume(req, res, next) {
+
+        logger.info('project resume');
+        //logger.info(req.body);
+
+        //获取表单数据，josn
+        //let project_name = req.body['project_name'];
+        let _id = req.body['_id'];
+        if (!_id){
+            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: req.body});
+            return;
+        }
+
+        logger.info('_id:', _id);
+
+        let updatestr = {'project_status': 'normal'};
+        let query = await DB.ProjectTable.findByIdAndUpdate(_id, updatestr).exec();
+        res.send({ret_code: 0, ret_msg: '成功', extra: query});
+        logger.info('project resume end');
     }
 
 
@@ -57,9 +142,9 @@ class ProjectHandle {
      * [options],可选参数，可指定flag 默认为‘r’，encoding 默认为null，在读取的时候，需要手动指定
      * callback 读取文件后的回调函数，参数默认第一个err,第二个data 数据
      */
-    async project_add(req, res){
+    async project_add(req, res, next){
 
-        console.log('project add');
+        console.log('project upload');
         //console.log(req);
 
         //生成multiparty对象，并配置上传目标路径
@@ -73,8 +158,8 @@ class ProjectHandle {
         let uploadedPath = '';
         let form = new formidable.IncomingForm({
             encoding: 'utf-8',
-            keepExtensions: true,
-            maxFieldsSize: 10 * 1024 * 1024,
+            keepExtensions: true,  //保持原有扩展名
+            maxFieldsSize: 2 * 1024 * 1024,
             uploadDir: config.image_dir
         });
 
@@ -96,13 +181,13 @@ class ProjectHandle {
 
         form.on('end', function () {
             console.log('upload end: ');
-            console.log("uploadedPath:", uploadedPath);
-            console.log("fields:", fields);
+            //console.log("uploadedPath:", uploadedPath);
+            //console.log("fields:", fields);
 
             //参数有效性检查
-            if (!fields.project_name){
-                res.send({ret_code: 1002, ret_msg: 'FAILED', extra: '用户输入参数无效'});
-                fs.unlink(uploadedPath);
+            if (!uploadedPath || !fields.project_name){
+                res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: fields});
+                fs.unlinkSync(uploadedPath);
                 return;
             }
 
@@ -114,8 +199,8 @@ class ProjectHandle {
                     return;
                 }
                 else{
-                    let mytime =  new Date();
                     //写入数据库
+                    let mytime =  new Date();
                     let myDocObj = {
                         "project_name" : fields.project_name,
                         "project_owner": fields.project_owner,
@@ -145,21 +230,8 @@ class ProjectHandle {
             res.send({ret_code: -1, ret_msg: '上传出错', extra:err});
         });
 
-        //form.parse(req);
-        form.parse(req, function(err, fields, files){
-            let project_name = fields.project_name;
-            let project_owner = fields.project_owner;
-            console.log('parse project_name:', project_name);
-            console.log('parse project_owner:', project_owner);
-
-            if (err) {
-                console.log('err:', err.toString());
-                throw err;
-            }
-
-            res.send({ret_code: 0, ret_msg: '上传成功', extra: myDocObj});
-        });
-        console.log('upload ok');
+        form.parse(req);
+        console.log('project upload ok');
     }
 
 }

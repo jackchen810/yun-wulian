@@ -23,7 +23,6 @@ fs.exists(config.image_dir, function(exists) {
 });
 
 
-
 const app = express();
 
 app.all('*', (req, res, next) => {
@@ -37,11 +36,12 @@ app.all('*', (req, res, next) => {
 	  	res.send(200);
 	} else {
 		console.log('method:', req.method, req.path);
-		///*
+        ///** 尼玛，打开下面开关后，文件上传不好使
+        /*   //不能开
         req.on('data', function (data) {
             console.log('entry, url:', req.hostname + req.path, ';body data', data.toString().substr(0, 60));
         });
-        //*/
+        */
 	    next();
 	}
 });
@@ -94,7 +94,7 @@ if ( process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'developmen
 }
 
 
-
+//app.listen(config.backend_port);
 
 var options = {
 	key:fs.readFileSync(path.join(__dirname,config.ssl.key),'utf8'),
