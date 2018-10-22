@@ -8,7 +8,7 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 const projectSchema = new mongoose.Schema({
     project_name:{type: String, default: ''},    //项目名称，建议字母编码
     //project_display_cn: {type: String, default: ''},    //项目的中文名称
-    project_owner: String,   //项目的管理员，等同于[account.user_account] 可能多个项目对应同一管理员
+    user_account: String,   //项目的管理员，等同于[account.user_account] 可能多个项目对应同一管理员
 
     project_local: {type: String, default: ''},    //项目的地址
     project_image: {type: String, default: ''},    //项目图片

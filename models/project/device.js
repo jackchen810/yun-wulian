@@ -7,9 +7,11 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 //设备建立全量的表，不同设备公用，如果没有的项 填写NA
 const deviceSchema = new mongoose.Schema({
     device_name: {type: String, default: ''},    //设备的中文名称，例如 津西1#高级氧化设备
-    device_owner: {type: String, default: ''},   //设备的所属项目， 等同于[project.project_name] 可能多个设备对应同一项目
+    project_name: {type: String, default: ''},   //设备的所属项目， 等同于[project.project_name] 可能多个设备对应同一项目
+    user_account: {type: String, default: ''},   //用户账号
 
     device_image: {type: String, default: ''},    //设备图片
+    device_status: {type: String, default: 'normal'},    //设备状态， normal， hide
 
     comment: String,   //设备备注
 

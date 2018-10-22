@@ -4,7 +4,7 @@ const express = require('express');
 const CtlDevice = require('../controller/project/ctl_device.js');
 const router = express.Router();
 
-console.log("enter route of project");
+console.log("enter route of device");
 
 
 router.all('/list',  CtlDevice.device_list);

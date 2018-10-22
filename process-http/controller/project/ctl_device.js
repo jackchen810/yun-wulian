@@ -23,21 +23,26 @@ class CtlDeviceHandle {
         //logger.info(req.body);
 
         //获取表单数据，josn
-        var project_owner = req.body['project_owner'];
-        var user_type = req.session.user_type;
+        let user_account = req.body['user_account'];
+        let user_type = req.session.user_type;
 
-        logger.info('project_owner:', project_owner);
+        if (!user_account){
+            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: req.body});
+            return;
+        }
+
+        logger.info('user_account:', user_account);
         logger.info('user_type:', user_type);
 
+        //
+        let wherestr = {};
+        if (user_type == 1) {
+            wherestr = {'user_account': user_account};
+        }
 
-        var wherestr = {'project_owner': project_owner};
-        var queryList = await DB.ProjectTable.find(wherestr).exec();
-        //logger.info('queryList:', queryList);
-
-        //logger.info('dataList:', dataList);
-        //logger.info('timeList:', timeList);
+        let queryList = await DB.DeviceTable.find(wherestr).exec();
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
-        logger.info('project list end');
+        logger.info('device list end');
     }
 
 
@@ -99,29 +104,29 @@ class CtlDeviceHandle {
             //console.log(fields);
 
             //参数有效性检查
-            if (!fields.project_name){
+            if (!fields.device_name){
                 res.send({ret_code: 1002, ret_msg: 'FAILED', extra: '用户输入参数无效'});
                 fs.unlinkSync(uploadedPath);
                 return;
             }
 
-            DB.ProjectTable.findOne({'project_name': fields.project_name}).exec(function (err, doc) {
+            DB.DeviceTable.findOne({'device_name': fields.device_name}).exec(function (err, doc) {
                 if (doc != null){
                     console.log('the same file already exist');
                     fs.unlinkSync(uploadedPath);
-                    res.send({ret_code: 1008, ret_msg: '项目名重复', extra: fields.project_name});
+                    res.send({ret_code: 1008, ret_msg: '项目名重复', extra: fields.device_name});
                     return;
                 }
                 else{
                     var mytime =  new Date();
                     //写入数据库
                     var myDocObj = {
-                        "project_name" : fields.project_name,
-                        "project_owner": fields.project_owner,
+                        "device_name" : fields.device_name,
+                        "prject_name": fields.prject_name,
+                        "user_account":  req.session.user_account,
 
-                        "project_local": fields.project_local,
-                        "project_image": uploadedPath,
-                        "project_status" : 'normal',  //上架
+                        "device_image": uploadedPath,
+                        "device_status" : 'normal',  //上架
 
                         "comment" : fields.comment,
 
@@ -130,13 +135,13 @@ class CtlDeviceHandle {
                     };
 
                     //console.log('romDocObj fields: ', romDocObj);
-                    DB.ProjectTable.create(myDocObj);
+                    DB.DeviceTable.create(myDocObj);
                     res.send({ret_code: 0, ret_msg: '上传成功', extra: myDocObj});
                     return;
                 }
             });
 
-            console.log('new project:', fields.project_name);
+            console.log('new device:', fields.device_name);
         });
 
         form.on('error', function(err) {

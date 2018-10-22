@@ -37,7 +37,7 @@ class ProjectHandle {
         //
         let wherestr = {};
         if (user_type == 1) {
-            wherestr = {'project_owner': user_account};
+            wherestr = {'user_account': user_account};
         }
 
         let queryList = await DB.ProjectTable.find(wherestr).exec();
@@ -75,6 +75,9 @@ class ProjectHandle {
         logger.info('_id:', _id);
 
         let query = await DB.ProjectTable.findByIdAndRemove(_id).exec();
+
+        console.log('del image:', query['project_image']);
+        fs.unlinkSync(query['project_image']);
         res.send({ret_code: 0, ret_msg: '成功', extra: query});
         logger.info('project del end');
     }
@@ -203,7 +206,7 @@ class ProjectHandle {
                     let mytime =  new Date();
                     let myDocObj = {
                         "project_name" : fields.project_name,
-                        "project_owner": fields.project_owner,
+                        "user_account": fields.user_account,
 
                         "project_local": fields.project_local,
                         "project_image": uploadedPath,
