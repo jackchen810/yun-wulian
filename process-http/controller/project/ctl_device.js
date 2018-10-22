@@ -46,6 +46,20 @@ class CtlDeviceHandle {
     }
 
 
+    async device_array(req, res, next) {
+        console.log('device array');
+        //console.log(req.body);
+
+        let queryList = await DB.DeviceTable.find();
+        let deviceList = [];
+        for (let i = 0; i < queryList.length; i++){
+            deviceList.push(queryList[i]['device_name']);
+        }
+
+        res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:deviceList, total:queryList.length});
+        console.log('device array end');
+    }
+
     //1.fs.writeFile(filename,data,[options],callback); 创建并写入文件
     /**
      * filename, 必选参数，文件名
