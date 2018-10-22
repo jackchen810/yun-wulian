@@ -136,7 +136,7 @@ class CtlDeviceHandle {
                     //写入数据库
                     var myDocObj = {
                         "device_name" : fields.device_name,
-                        "prject_name": fields.prject_name,
+                        "project_name": fields.project_name,
                         "user_account":  req.session.user_account,
 
                         "device_image": uploadedPath,
