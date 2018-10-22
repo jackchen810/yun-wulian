@@ -28,7 +28,7 @@ app.all('*', (req, res, next) => {
 		console.log('method:', req.method, req.path);
 		///*
         req.on('data', function (data) {
-            console.log('entry, url:', req.hostname + req.path, ';body data', data.toString());
+            console.log('entry, url:', req.hostname + req.path, ';body data', data.toString().substr(0, 60));
         });
         //*/
 	    next();

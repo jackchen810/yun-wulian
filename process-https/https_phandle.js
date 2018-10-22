@@ -13,6 +13,18 @@ https_p.on('message', function () {
 });
 
 
+https_p.on('error', (err) => {
+    logger.info('https error:', err);
+});
+
+https_p.on('exit', (err) => {
+    logger.error('https exit:', err);
+});
+
+https_p.on('close', (err) => {
+    logger.error('https close:', err);
+});
+
 
 //导出模块
 module.exports = https_p;

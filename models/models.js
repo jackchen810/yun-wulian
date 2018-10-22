@@ -5,7 +5,8 @@ const RomTable = require("../models/rom/rom.js");
 const RomUpgradeTable= require("../models/rom/rom_upgrade.js");
 const TaskTable= require("../models/task/task.js");
 const SysinfoTable= require("../models/sysinfo/sysinfo.js");
-const DeviceTable= require("../models/device/device.js");
+const ProjectTable= require("../models/project/project.js");
+const DeviceTable= require("../models/project/device.js");
 const Gateway_Real_Table= require("./device/gateway_ide4g_real.js");
 const Gateway_Minute_Table= require("./device/gateway_ide4g_m1.js");
 const Gateway_Hour_Table= require("./history_gateway/gateway_ide4g_hour1.js");
@@ -23,6 +24,7 @@ function DB() {
     this.RomUpgradeTable = RomUpgradeTable;
     this.TaskTable = TaskTable;
     this.SysinfoTable = SysinfoTable;
+    this.ProjectTable = ProjectTable;
     this.DeviceTable = DeviceTable;
     this.Gateway_Real_Table = Gateway_Real_Table;
     this.Gateway_Minute_Table = Gateway_Minute_Table;

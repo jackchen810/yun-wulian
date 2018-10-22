@@ -3,17 +3,21 @@
 
 const gateway_router = require("./rt_gateway_ide4g.js");
 const admin_router = require('./rt_acount.js');
+const project_router = require('./rt_project.js');
 
 
  function http_web_router(app) {
 
+     //用户登录相关
+     app.use('/api/admin', admin_router);
 
      //stats
      app.use('/api/gateway', gateway_router);
 
+     //project
+     app.use('/api/project', project_router);
 
-     //用户登录相关
-     app.use('/api/admin', admin_router);
+
 
      // Welcome test
      app.get('/test', function(req, res) {

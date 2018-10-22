@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-	firmware_dir:'./public/firmware',
+	image_dir:'./public/image',
 	device_dir:'./public/device',
 	pkg_dir:'./public/packages',
 	script_dir:'./public/scripts',

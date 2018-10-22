@@ -16,6 +16,13 @@ const https = require('https');
 const fs = require("fs");
 
 
+//图片存放位置， 不存在则创建
+fs.exists(config.image_dir, function(exists) {
+    console.log(exists ? "图片目录存在" : "图片目录不存在", config.image_dir);
+    if (!exists) fs.mkdirSync(config.image_dir);
+});
+
+
 
 const app = express();
 
@@ -32,7 +39,7 @@ app.all('*', (req, res, next) => {
 		console.log('method:', req.method, req.path);
 		///*
         req.on('data', function (data) {
-            console.log('entry, url:', req.hostname + req.path, ';body data', data.toString());
+            console.log('entry, url:', req.hostname + req.path, ';body data', data.toString().substr(0, 60));
         });
         //*/
 	    next();
@@ -106,5 +113,5 @@ process.on('unhandledRejection', (reason, p) => {
 });
 
 process.on('uncaughtException', (err) => {
-    logger.error("[http] uncaughtException：", err);
+    logger.error("[https] uncaughtException：", err);
 });
