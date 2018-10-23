@@ -23,27 +23,69 @@ class CtlDeviceHandle {
         //logger.info(req.body);
 
         //获取表单数据，josn
+        let filter = req.body.hasOwnProperty('filter') ? req.body['filter'] : {};
+        let sort = req.body.hasOwnProperty('sort') ? req.body['sort'] : {};
         let user_account = req.body['user_account'];
         let user_type = req.session.user_type;
 
+        //参数有效性检查
         if (!user_account){
             res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: req.body});
             return;
         }
 
-        logger.info('user_account:', user_account);
-        logger.info('user_type:', user_type);
-
-        //
-        let wherestr = {};
         if (user_type == 1) {
-            wherestr = {'user_account': user_account};
+            filter['user_account'] = user_account;
         }
 
-        let queryList = await DB.DeviceTable.find(wherestr).exec();
+
+        logger.info('user_account:', user_account);
+        logger.info('user_type:', user_type);
+        logger.info('filter:', filter);
+        logger.info('sort:', sort);
+
+
+        var queryList = await DB.DeviceTable.find(filter).sort(sort).exec();
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
         logger.info('device list end');
     }
+
+    async device_page_list(req, res, next) {
+        logger.info('device page list');
+        //logger.info(req.body);
+
+        //获取表单数据，josn
+        let page_size = req.body['page_size'];
+        let current_page = req.body['current_page'];
+        let filter = req.body.hasOwnProperty('filter') ? req.body['filter'] : {};
+        let sort = req.body.hasOwnProperty('sort') ? req.body['sort'] : {"sort_time":-1};
+        let user_account = req.session.user_account;
+        let user_type = req.session.user_type;
+
+        //参数有效性检查
+        if (!page_size || !current_page){
+            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: req.body});
+            return;
+        }
+
+        if (user_type == 1) {
+            filter['user_account'] = user_account;
+        }
+
+        logger.info('user_account:', user_account);
+        logger.info('user_type:', user_type);
+        logger.info('page_size:', page_size);
+        logger.info('current_page:', current_page);
+        logger.info('filter:', filter);
+        logger.info('sort:', sort);
+
+
+        var skipnum = (current_page - 1) * page_size;   //跳过数
+        var queryList = await DB.DeviceTable.find(filter).sort(sort).skip(skipnum).limit(page_size).exec();
+        res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
+        logger.info('device page list end');
+    }
+
 
 
     async device_array(req, res, next) {
@@ -59,6 +101,37 @@ class CtlDeviceHandle {
         res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:deviceList, total:queryList.length});
         console.log('device array end');
     }
+
+    async device_del(req, res, next) {
+
+        logger.info('device del');
+        //logger.info(req.body);
+
+        //获取表单数据，josn
+        let _id = req.body['_id'];
+
+        //参数有效性检查
+        if (!_id){
+            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: req.body});
+            return;
+        }
+
+        logger.info('_id:', _id);
+
+        let query = await DB.DeviceTable.findByIdAndRemove(_id).exec();
+
+        //删除文件
+        try {
+            console.log('del image:', query['device_image']);
+            fs.unlinkSync(query['device_image']);
+        }catch(err){
+            console.log('del image fail');
+        }
+        res.send({ret_code: 0, ret_msg: '成功', extra: query});
+        logger.info('device del end');
+    }
+
+
 
     //1.fs.writeFile(filename,data,[options],callback); 创建并写入文件
     /**

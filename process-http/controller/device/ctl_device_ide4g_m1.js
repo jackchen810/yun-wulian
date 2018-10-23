@@ -85,15 +85,13 @@ class DeviceIde4gHandle {
         //logger.info(req.body);
 
         //获取表单数据，josn
-        var device_name = req.body['device_name'];
-        var channel_name = req.body['channel_name'];
-        var tag_name = req.body['tag_name'];
-        var limit = req.body['limit'];    //限制文档个数
-        var user_type = req.session.user_type;
+        let device_name = req.body['device_name'];
+        let channel_name = req.body['channel_name'];
+        let tag_name = req.body['tag_name'];
+        let limit = req.body.hasOwnProperty('limit') ? req.body['limit'] : 60; //限制文档个数
+        let sort = {"sort_time":1};
+        let user_type = req.session.user_type;
 
-        if (!limit) {
-            limit = 60;
-        }
 
         logger.info('device_name:', device_name);
         logger.info('channel_name:', channel_name);
@@ -101,18 +99,20 @@ class DeviceIde4gHandle {
         logger.info('user_type:', user_type);
         logger.info('limit:', limit);
 
-        var dataList = [];
-        var timeList = [];
-        var wherestr = {'device_name': device_name};
-        var queryList = await DB.Gateway_Minute_Table.find(wherestr).limit(limit).exec();
+        let dataList = [];
+        let timeList = [];
+        let wherestr = {'device_name': device_name};
+        let total = await DB.Gateway_Minute_Table.count(wherestr);
+        let skipnum = (total > limit) ? (total - limit) : 0;   //跳过数
+        let queryList = await DB.Gateway_Minute_Table.find(wherestr).sort(sort).skip(skipnum).exec();
         //logger.info('queryList:', queryList);
-        for (var i = 0; i < queryList.length; i++){
+        for (let i = 0; i < queryList.length; i++){
 
             //查看data的属性, 遍历各个通道（C1_D1）
-            for(var key in queryList[i].data){
+            for(let key in queryList[i].data){
                 //console.log('data key:', key);
                 if (key == channel_name) {
-                    var tagList = queryList[i].data[key];
+                    let tagList = queryList[i].data[key];
                     //遍历各个Tag（Tag_H2O_wendu）
                     for (var m = 0; m < tagList.length; m++) {
                         if (tagList[m].id == tag_name) {
@@ -146,12 +146,9 @@ class DeviceIde4gHandle {
         var device_name = req.body['device_name'];
         var channel_name = req.body['channel_name'];
         var tag_name = req.body['tag_name'];
-        var limit = req.body['limit'];    //限制文档个数
+        let limit = req.body.hasOwnProperty('limit') ? req.body['limit'] : 60; //限制文档个数
+        let sort = {"sort_time":1};
         var user_type = req.session.user_type;
-
-        if (!limit) {
-            limit = 60;
-        }
 
         logger.info('device_name:', device_name);
         logger.info('channel_name:', channel_name);
@@ -162,7 +159,9 @@ class DeviceIde4gHandle {
         var dataList = [];
         var timeList = [];
         var wherestr = {'device_name': device_name};
-        var queryList = await DB.Gateway_Hour_Table.find(wherestr).limit(limit).exec();
+        let total = await DB.Gateway_Hour_Table.count(wherestr);
+        let skipnum = (total > limit) ? (total - limit) : 0;   //跳过数
+        var queryList = await DB.Gateway_Hour_Table.find(wherestr).sort(sort).skip(skipnum).exec();
         //logger.info('queryList:', queryList);
         for (var i = 0; i < queryList.length; i++){
 
@@ -204,12 +203,10 @@ class DeviceIde4gHandle {
         var device_name = req.body['device_name'];
         var channel_name = req.body['channel_name'];
         var tag_name = req.body['tag_name'];
-        var limit = req.body['limit'];    //限制文档个数
-        var user_type = req.session.user_type;
+        let limit = req.body.hasOwnProperty('limit') ? req.body['limit'] : 60; //限制文档个数
+        let sort = {"sort_time":1};
+        let user_type = req.session.user_type;
 
-        if (!limit) {
-            limit = 60;
-        }
 
         logger.info('device_name:', device_name);
         logger.info('channel_name:', channel_name);
@@ -217,20 +214,22 @@ class DeviceIde4gHandle {
         logger.info('user_type:', user_type);
         logger.info('limit:', limit);
 
-        var dataList = [];
-        var timeList = [];
-        var wherestr = {'device_name': device_name};
-        var queryList = await DB.Gateway_Day_Table.find(wherestr).limit(limit).exec();
+        let dataList = [];
+        let timeList = [];
+        let wherestr = {'device_name': device_name};
+        let total = await DB.Gateway_Day_Table.count(wherestr);
+        let skipnum = (total > limit) ? (total - limit) : 0;   //跳过数
+        let queryList = await DB.Gateway_Day_Table.find(wherestr).sort(sort).skip(skipnum).exec();
         //logger.info('queryList:', queryList);
-        for (var i = 0; i < queryList.length; i++){
+        for (let i = 0; i < queryList.length; i++){
 
             //查看data的属性, 遍历各个通道（C1_D1）
-            for(var key in queryList[i].data){
+            for(let key in queryList[i].data){
                 //console.log('data key:', key);
                 if (key == channel_name) {
-                    var tagList = queryList[i].data[key];
+                    let tagList = queryList[i].data[key];
                     //遍历各个Tag（Tag_H2O_wendu）
-                    for (var m = 0; m < tagList.length; m++) {
+                    for (let m = 0; m < tagList.length; m++) {
                         if (tagList[m].id == tag_name) {
                             // 符合条件的
                             dataList.push(tagList[m].value);

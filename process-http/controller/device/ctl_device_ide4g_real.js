@@ -59,7 +59,65 @@ class DeviceIde4gHandle {
         logger.info('device list end');
     }
 
+    async real_list(req, res, next) {
 
+        logger.info('device real list');
+        //logger.info(req.body);
+
+        //获取表单数据，josn
+        let filter = req.body.hasOwnProperty('filter') ? req.body['filter'] : {};
+        let sort = req.body.hasOwnProperty('sort') ? req.body['sort'] : {"sort_time":-1};
+        let channel_name = req.body['channel_name'];
+
+        //参数有效性检查
+        if (!channel_name){
+            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: req.body});
+            return;
+        }
+
+
+        logger.info('filter:', filter);
+        logger.info('sort:', sort);
+        logger.info('channel_name:', channel_name);
+
+
+        var query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).exec();
+        res.send({ret_code: 0, ret_msg: '成功', extra: query.data[channel_name], total: query.data[channel_name].length});
+        logger.info('device real list end');
+    }
+
+
+    async page_list(req, res, next) {
+        logger.info('device real page list');
+        //logger.info(req.body);
+
+        //获取表单数据，josn
+        let page_size = req.body['page_size'];
+        let current_page = req.body['current_page'];
+        let channel_name = req.body['channel_name'];
+        let filter = req.body.hasOwnProperty('filter') ? req.body['filter'] : {};
+        let sort = req.body.hasOwnProperty('sort') ? req.body['sort'] : {"sort_time":-1};
+
+
+        //参数有效性检查
+        if (!page_size || !current_page || !channel_name){
+            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: req.body});
+            return;
+        }
+
+
+        logger.info('page_size:', page_size);
+        logger.info('current_page:', current_page);
+        logger.info('filter:', filter);
+        logger.info('sort:', sort);
+        logger.info('channel_name:', channel_name);
+
+
+        var skipnum = (current_page - 1) * page_size;   //跳过数
+        var query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).skip(skipnum).limit(page_size).exec();
+        res.send({ret_code: 0, ret_msg: '成功', extra: query.data[channel_name], total: query.data[channel_name].length});
+        logger.info('device real page list end');
+    }
 }
 
 
