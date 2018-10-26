@@ -9,7 +9,7 @@ const path = require('path');
 const formidable = require('formidable');
 
 
-class ProjectHandle {
+class ProjectManageTable {
     constructor(){
         //logger.info('init 111');
         //this.tmp_correction_data_hour();
@@ -25,7 +25,7 @@ class ProjectHandle {
         //获取表单数据，josn
         let filter = req.body.hasOwnProperty('filter') ? req.body['filter'] : {};
         let sort = req.body.hasOwnProperty('sort') ? req.body['sort'] : {};
-        let user_account = req.body['user_account'];
+        let user_account = req.session.user_account;
         let user_type = req.session.user_type;
 
         //参数有效性检查
@@ -45,7 +45,7 @@ class ProjectHandle {
         logger.info('sort:', sort);
 
 
-        var queryList = await DB.DeviceTable.find(filter).sort(sort).exec();
+        let queryList = await DB.ProjectManageTable.find(filter).sort(sort).exec();
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
         logger.info('project list end');
     }
@@ -80,8 +80,8 @@ class ProjectHandle {
         logger.info('filter:', filter);
         logger.info('sort:', sort);
 
-        var skipnum = (current_page - 1) * page_size;   //跳过数
-        var queryList = await DB.ProjectManageTable.find(filter).sort(sort).skip(skipnum).limit(page_size).exec();
+        let skipnum = (current_page - 1) * page_size;   //跳过数
+        let queryList = await DB.ProjectManageTable.find(filter).sort(sort).skip(skipnum).limit(page_size).exec();
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
         logger.info('project page list end');
     }
@@ -271,5 +271,5 @@ class ProjectHandle {
 }
 
 
-module.exports = new ProjectHandle();
+module.exports = new ProjectManageTable();
 
