@@ -22,5 +22,5 @@ const projectSchema = new mongoose.Schema({
 
 
 
-const ProjectTable = mongoose.model('ProjectTable', projectSchema);
-module.exports = ProjectTable;
+const ProjectManageTable = mongoose.model('ProjectManageTable', projectSchema);
+module.exports = ProjectManageTable;

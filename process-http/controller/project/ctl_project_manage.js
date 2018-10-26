@@ -9,17 +9,17 @@ const path = require('path');
 const formidable = require('formidable');
 
 
-class CtlDeviceHandle {
+class ProjectHandle {
     constructor(){
         //logger.info('init 111');
         //this.tmp_correction_data_hour();
         //this.tmp_correction_data_day();
-
     }
 
-    async device_list(req, res, next) {
 
-        logger.info('device list');
+    async project_list(req, res, next) {
+
+        logger.info('project list');
         //logger.info(req.body);
 
         //获取表单数据，josn
@@ -47,11 +47,12 @@ class CtlDeviceHandle {
 
         var queryList = await DB.DeviceTable.find(filter).sort(sort).exec();
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
-        logger.info('device list end');
+        logger.info('project list end');
     }
 
-    async device_page_list(req, res, next) {
-        logger.info('device page list');
+
+    async project_page_list(req, res, next) {
+        logger.info('project page list');
         //logger.info(req.body);
 
         //获取表单数据，josn
@@ -79,32 +80,31 @@ class CtlDeviceHandle {
         logger.info('filter:', filter);
         logger.info('sort:', sort);
 
-
         var skipnum = (current_page - 1) * page_size;   //跳过数
-        var queryList = await DB.DeviceTable.find(filter).sort(sort).skip(skipnum).limit(page_size).exec();
+        var queryList = await DB.ProjectManageTable.find(filter).sort(sort).skip(skipnum).limit(page_size).exec();
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
-        logger.info('device page list end');
+        logger.info('project page list end');
     }
 
 
 
-    async device_array(req, res, next) {
-        console.log('device array');
+    async project_array(req, res, next) {
+        console.log('project array');
         //console.log(req.body);
 
-        let queryList = await DB.DeviceTable.find();
-        let deviceList = [];
+        let queryList = await DB.ProjectManageTable.find();
+        let projectList = [];
         for (let i = 0; i < queryList.length; i++){
-            deviceList.push(queryList[i]['device_name']);
+            projectList.push(queryList[i]['project_name']);
         }
 
-        res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:deviceList, total:queryList.length});
-        console.log('device array end');
+        res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:projectList, total:queryList.length});
+        console.log('project array end');
     }
 
-    async device_del(req, res, next) {
+    async project_del(req, res, next) {
 
-        logger.info('device del');
+        logger.info('project del');
         //logger.info(req.body);
 
         //获取表单数据，josn
@@ -118,18 +118,45 @@ class CtlDeviceHandle {
 
         logger.info('_id:', _id);
 
-        let query = await DB.DeviceTable.findByIdAndRemove(_id).exec();
+        let query = await DB.ProjectManageTable.findByIdAndRemove(_id).exec();
 
         //删除文件
         try {
-            console.log('del image:', query['device_image']);
-            fs.unlinkSync(query['device_image']);
+            console.log('del image:', query['project_image']);
+            fs.unlinkSync(query['project_image']);
         }catch(err){
             console.log('del image fail');
         }
         res.send({ret_code: 0, ret_msg: '成功', extra: query});
-        logger.info('device del end');
+        logger.info('project del end');
     }
+
+
+
+    async project_status_update(req, res, next) {
+
+        logger.info('project hide');
+        //logger.info(req.body);
+
+        //获取表单数据，josn
+        let project_status = req.body['project_status'];
+        let _id = req.body['_id'];
+
+        //参数有效性检查
+        if (!_id || !project_status){
+            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: req.body});
+            return;
+        }
+
+        logger.info('_id:', _id);
+        logger.info('project_status:', project_status);
+
+        let updatestr = {'project_status': project_status};
+        let query = await DB.ProjectManageTable.findByIdAndUpdate(_id, updatestr).exec();
+        res.send({ret_code: 0, ret_msg: '成功', extra: query});
+        logger.info('project hide end');
+    }
+
 
 
 
@@ -149,9 +176,9 @@ class CtlDeviceHandle {
      * [options],可选参数，可指定flag 默认为‘r’，encoding 默认为null，在读取的时候，需要手动指定
      * callback 读取文件后的回调函数，参数默认第一个err,第二个data 数据
      */
-    async device_add(req, res){
+    async project_add(req, res, next){
 
-        console.log('device add');
+        console.log('project upload');
         //console.log(req);
 
         //生成multiparty对象，并配置上传目标路径
@@ -161,16 +188,16 @@ class CtlDeviceHandle {
         */
 
         //var form = new multiparty.Form({uploadDir: config.image_dir});
-        var fileName = '';
-        var uploadedPath = '';
-        var form = new formidable.IncomingForm({
+        let fileName = '';
+        let uploadedPath = '';
+        let form = new formidable.IncomingForm({
             encoding: 'utf-8',
-            keepExtensions: true,
-            maxFieldsSize: 10 * 1024 * 1024,
+            keepExtensions: true,  //保持原有扩展名
+            maxFieldsSize: 2 * 1024 * 1024,
             uploadDir: config.image_dir
         });
 
-        var fields = {};   //各个字段值
+        let fields = {};   //各个字段值
         form.on('field', function (field, value) {
             console.log('upload field: ', field, value);
             fields[field] = value;
@@ -183,37 +210,38 @@ class CtlDeviceHandle {
         });
 
         form.on('fileBegin', function () {
-            console.log('begin upload...');
+            console.log('upload fileBegin...');
         });
 
         form.on('end', function () {
             console.log('upload end: ');
-            //console.log(fields);
+            //console.log("uploadedPath:", uploadedPath);
+            //console.log("fields:", fields);
 
             //参数有效性检查
-            if (!fields.device_name){
-                res.send({ret_code: 1002, ret_msg: 'FAILED', extra: '用户输入参数无效'});
+            if (!uploadedPath || !fields.project_name){
+                res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: fields});
                 fs.unlinkSync(uploadedPath);
                 return;
             }
 
-            DB.DeviceTable.findOne({'device_name': fields.device_name}).exec(function (err, doc) {
+            DB.ProjectManageTable.findOne({'project_name': fields.project_name}).exec(function (err, doc) {
                 if (doc != null){
                     console.log('the same file already exist');
                     fs.unlinkSync(uploadedPath);
-                    res.send({ret_code: 1008, ret_msg: '项目名重复', extra: fields.device_name});
+                    res.send({ret_code: 1008, ret_msg: '项目名重复', extra: fields.project_name});
                     return;
                 }
                 else{
-                    var mytime =  new Date();
                     //写入数据库
-                    var myDocObj = {
-                        "device_name" : fields.device_name,
-                        "project_name": fields.project_name,
-                        "user_account":  req.session.user_account,
+                    let mytime =  new Date();
+                    let myDocObj = {
+                        "project_name" : fields.project_name,
+                        "user_account": fields.user_account,
 
-                        "device_image": uploadedPath,
-                        "device_status" : 'normal',  //上架
+                        "project_local": fields.project_local,
+                        "project_image": uploadedPath,
+                        "project_status" : 'normal',  //上架
 
                         "comment" : fields.comment,
 
@@ -222,13 +250,13 @@ class CtlDeviceHandle {
                     };
 
                     //console.log('romDocObj fields: ', romDocObj);
-                    DB.DeviceTable.create(myDocObj);
+                    DB.ProjectManageTable.create(myDocObj);
                     res.send({ret_code: 0, ret_msg: '上传成功', extra: myDocObj});
                     return;
                 }
             });
 
-            console.log('new device:', fields.device_name);
+            console.log('new project:', fields.project_name);
         });
 
         form.on('error', function(err) {
@@ -237,11 +265,11 @@ class CtlDeviceHandle {
         });
 
         form.parse(req);
-        console.log('upload ok');
+        console.log('project upload ok');
     }
 
 }
 
 
-module.exports = new CtlDeviceHandle();
+module.exports = new ProjectHandle();
 

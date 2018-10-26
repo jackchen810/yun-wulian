@@ -3,8 +3,8 @@
 
 const gateway_router = require("./rt_gateway_ide4g.js");
 const admin_router = require('./rt_acount.js');
-const project_router = require('./rt_project.js');
-const device_router = require('./rt_device.js');
+const prj_manage_router = require('./rt_project_manage.js');
+const dev_manage_router = require('./rt_device_manage.js');
 
 
  function http_web_router(app) {
@@ -16,10 +16,10 @@ const device_router = require('./rt_device.js');
      app.use('/api/gateway', gateway_router);
 
      //project
-     app.use('/api/project', project_router);
+     app.use('/api/project/manage', prj_manage_router);
 
      //device
-     app.use('/api/device', device_router);
+     app.use('/api/device/manage', dev_manage_router);
 
 
 

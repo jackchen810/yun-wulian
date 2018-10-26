@@ -81,8 +81,13 @@ class DeviceIde4gHandle {
         logger.info('channel_name:', channel_name);
 
 
-        var query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).exec();
-        res.send({ret_code: 0, ret_msg: '成功', extra: query.data[channel_name], total: query.data[channel_name].length});
+        let query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).exec();
+        if (query.data.hasOwnProperty(channel_name)){
+            res.send({ret_code: 0, ret_msg: '成功', extra: query.data[channel_name], total: query.data[channel_name].length});
+        }
+        else{
+            res.send({ret_code: -1,ret_msg: '失败，参数错误',extra: channel_name});
+        }
         logger.info('device real list end');
     }
 
