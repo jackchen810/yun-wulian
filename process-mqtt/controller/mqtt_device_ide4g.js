@@ -21,7 +21,7 @@ class MqttDeviceIDE4gHandle {
         logger.info('Hello updateDeviceInfo:', device_name, JSON.stringify(josnObj));
 
         // 功率值矫正
-        if (josnObj.data.hasOwnProperty('C1_D1')) {                 //判断C1_D1是否存在于obj里面
+        if (josnObj.data.hasOwnProperty('C1_D1') && device_name == 'jinxi_1') {                 //判断C1_D1是否存在于obj里面
             for (var i = 0; i < josnObj.data['C1_D1'].length; i++) {
                 if (josnObj.data['C1_D1'][i].id == 'Tag_gonglv') {
                     josnObj.data['C1_D1'][i].value = josnObj.data['C1_D1'][i].value / 2;
@@ -29,16 +29,16 @@ class MqttDeviceIDE4gHandle {
                 }
             }
         }
-        else if (josnObj.data.hasOwnProperty('C2_D1')) {                 //判断C2_D1是否存在于obj里面
-            for (var i = 0; i < josnObj.data['C2_D1'].length; i++) {
+        else if (josnObj.data.hasOwnProperty('C2_D1') && device_name == 'jinxi_2') {                 //判断C2_D1是否存在于obj里面
+            for (let i = 0; i < josnObj.data['C2_D1'].length; i++) {
                 if (josnObj.data['C2_D1'][i].id == 'Tag_gonglv') {
                     josnObj.data['C2_D1'][i].value = josnObj.data['C2_D1'][i].value / 2;
                     break;
                 }
             }
         }
-        else if (josnObj.data.hasOwnProperty('C3_D1')) {                 //判断C3_D1是否存在于obj里面
-            for (var i = 0; i < josnObj.data['C3_D1'].length; i++) {
+        else if (josnObj.data.hasOwnProperty('C3_D1') && device_name == 'jinxi_3') {                 //判断C3_D1是否存在于obj里面
+            for (let i = 0; i < josnObj.data['C3_D1'].length; i++) {
                 if (josnObj.data['C3_D1'][i].id == 'Tag_gonglv') {
                     josnObj.data['C3_D1'][i].value = josnObj.data['C3_D1'][i].value / 2;
                     break;
@@ -48,9 +48,9 @@ class MqttDeviceIDE4gHandle {
 
         // 1. 更新到设备数据库，sysinfo库
         //SysinfoTable
-        var mytime = new Date();
-        var wherestr = { 'device_name': device_name};
-        var updatestr = {
+        let mytime = new Date();
+        let wherestr = { 'device_name': device_name};
+        let updatestr = {
             'device_name': device_name,
             'device_local': josnObj['sn'],
             'device_type': 'aidejiachuang',
@@ -77,11 +77,11 @@ class MqttDeviceIDE4gHandle {
 
 
         //存最近60条记录
-        var amount = await DB.Gateway_Minute_Table.count(wherestr);
+        let amount = await DB.Gateway_Minute_Table.count(wherestr);
         if (amount > keep_record_num){
             //删除数据， sort_time  单位：ms
-            var old_sort_time = mytime.getTime() - keep_record_num * 60000;
-            var wherestr = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
+            let old_sort_time = mytime.getTime() - keep_record_num * 60000;
+            let wherestr = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
             logger.info('delete record of DeviceHistoryInfo, condition:', wherestr);
             DB.Gateway_Minute_Table.deleteMany(wherestr).exec();
         }
@@ -93,11 +93,11 @@ class MqttDeviceIDE4gHandle {
     //
     async updateDeviceStatus(device_name, status) {
         //logger.info('Hello updateDeviceStatus:', status);
-        var mytime = new Date();
+        let mytime = new Date();
 
         //更新到设备数据库
-        var wherestr = {'device_name': device_name};
-        var updatestr = {
+        let wherestr = {'device_name': device_name};
+        let updatestr = {
             'device_name': device_name,
             'device_link_status': status,
             'update_time':dtime(mytime).format('YYYY-MM-DD HH:mm:ss'),
@@ -105,7 +105,7 @@ class MqttDeviceIDE4gHandle {
             'logs': [],
         };
 
-        var query = await DB.Gateway_Real_Table.findOne(wherestr).exec();
+        let query = await DB.Gateway_Real_Table.findOne(wherestr).exec();
         if (query != null){
             //复制数组，logs记录上下线日志
             updatestr['logs'] = query['logs'].slice();

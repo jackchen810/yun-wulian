@@ -18,23 +18,23 @@ class GatewayIDE4gTimerHandle {
     async ide4gHour1Process () {
         logger.info('hour1 timer out:', dtime().format('YYYY-MM-DD HH:mm:ss'));
 
-        var mytime = new Date();
-        var update_time = dtime(mytime).format('YYYY-MM-DD HH');
+        let mytime = new Date();
+        let update_time = dtime(mytime).format('YYYY-MM-DD HH');
 
         // 将实时数据存储到历史数据库
-        var queryList = await DB.Gateway_Real_Table.find();
-        for (var i = 0; i < queryList.length; i++){
+        let queryList = await DB.Gateway_Real_Table.find();
+        for (let i = 0; i < queryList.length; i++){
 
             //更新每天的汇总统计
-            var device_name = queryList[i].device_name;
-            var wherestr = {
+            let device_name = queryList[i].device_name;
+            let wherestr = {
                 'device_name': device_name,
                 'update_time': update_time,
             };
 
-            var query = await DB.Gateway_Hour_Table.findOne(wherestr).exec();
+            let query = await DB.Gateway_Hour_Table.findOne(wherestr).exec();
             if (query == null){
-                var updatestr = {
+                let updatestr = {
                     'device_name': device_name,
                     'update_time': update_time,
                     'sort_time': queryList[i].sort_time,
@@ -45,12 +45,12 @@ class GatewayIDE4gTimerHandle {
 
             // 2. 限制数量
             //存最近60条记录
-            var wherestr = { 'device_name': device_name};
-            var amount = await DB.Gateway_Hour_Table.count(wherestr);
+            let wherestr = { 'device_name': device_name};
+            let amount = await DB.Gateway_Hour_Table.count(wherestr);
             if (amount > keep_record_num){
                 //删除数据， sort_time  单位：ms
-                var old_sort_time = mytime.getTime() - keep_record_num * 3600000;
-                var wherestr = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
+                let old_sort_time = mytime.getTime() - keep_record_num * 3600000;
+                let wherestr = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
                 //logger.info('delete record of Gateway_Hour_Table, condition:', wherestr);
                 DB.Gateway_Hour_Table.deleteMany(wherestr).exec();
             }
@@ -66,23 +66,23 @@ class GatewayIDE4gTimerHandle {
     async ide4gDay1Process () {
         logger.info('hour24 timer out:', dtime().format('YYYY-MM-DD HH:mm:ss'));
 
-        var mytime = new Date();
-        var update_time = dtime(mytime).format('YYYY-MM-DD');
+        let mytime = new Date();
+        let update_time = dtime(mytime).format('YYYY-MM-DD');
 
         // 将实时数据存储到历史数据库
-        var queryList = await DB.Gateway_Real_Table.find();
-        for (var i = 0; i < queryList.length; i++){
+        let queryList = await DB.Gateway_Real_Table.find();
+        for (let i = 0; i < queryList.length; i++){
 
             //更新每天的汇总统计
-            var device_name = queryList[i].device_name;
-            var wherestr = {
+            let device_name = queryList[i].device_name;
+            let wherestr = {
                 'device_name': device_name,
                 'update_time': update_time,
             };
 
-            var query = await DB.Gateway_Day_Table.findOne(wherestr).exec();
+            let query = await DB.Gateway_Day_Table.findOne(wherestr).exec();
             if (query == null){
-                var updatestr = {
+                let updatestr = {
                     'device_name': device_name,
                     'update_time': update_time,
                     'sort_time': queryList[i].sort_time,
@@ -93,12 +93,12 @@ class GatewayIDE4gTimerHandle {
 
             // 2. 限制数量
             //存最近60条记录
-            var wherestr = { 'device_name': device_name};
-            var amount = await DB.Gateway_Day_Table.count(wherestr);
+            let wherestr = { 'device_name': device_name};
+            let amount = await DB.Gateway_Day_Table.count(wherestr);
             if (amount > keep_record_num){
                 //删除数据， sort_time  单位：ms
-                var old_sort_time = mytime.getTime() - keep_record_num * 86400000;
-                var wherestr = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
+                let old_sort_time = mytime.getTime() - keep_record_num * 86400000;
+                let wherestr = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
                 //logger.info('delete record of Gateway_Hour_Table, condition:', wherestr);
                 DB.Gateway_Day_Table.deleteMany(wherestr).exec();
             }

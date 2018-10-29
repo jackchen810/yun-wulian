@@ -22,9 +22,9 @@ class MqttDeviceWTBL4gHndle {
 
         // 1. 更新到设备数据库，sysinfo库
         //SysinfoTable
-        var mytime = new Date();
-        var wherestr = { 'device_name': device_name};
-        var updatestr = {
+        let mytime = new Date();
+        let wherestr = { 'device_name': device_name};
+        let updatestr = {
             'device_name': device_name,
             'device_local': device_name,
             'device_link_status': 'online',
@@ -50,11 +50,11 @@ class MqttDeviceWTBL4gHndle {
 
 
         //存最近60条记录
-        var amount = await DB.Gateway_Minute_Table.count(wherestr);
+        let amount = await DB.Gateway_Minute_Table.count(wherestr);
         if (amount > keep_record_num){
             //删除数据， sort_time  单位：ms
-            var old_sort_time = mytime.getTime() - keep_record_num * 60000;
-            var wherestr = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
+            let old_sort_time = mytime.getTime() - keep_record_num * 60000;
+            let wherestr = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
             logger.info('delete record of DeviceHistoryInfo, condition:', wherestr);
             DB.Gateway_Minute_Table.deleteMany(wherestr).exec();
         }
@@ -66,11 +66,11 @@ class MqttDeviceWTBL4gHndle {
     //
     async updateDeviceStatus(device_name, status) {
         //logger.info('Hello updateDeviceStatus:', status);
-        var mytime = new Date();
+        let mytime = new Date();
 
         //更新到设备数据库
-        var wherestr = {'device_name': device_name};
-        var updatestr = {
+        let wherestr = {'device_name': device_name};
+        let updatestr = {
             'device_name': device_name,
             'device_link_status': status,
             'update_time':dtime(mytime).format('YYYY-MM-DD HH:mm:ss'),
@@ -78,7 +78,7 @@ class MqttDeviceWTBL4gHndle {
             'logs': [],
         };
 
-        var query = await DB.Gateway_Real_Table.findOne(wherestr).exec();
+        let query = await DB.Gateway_Real_Table.findOne(wherestr).exec();
         if (query != null){
             //复制数组，logs记录上下线日志
             updatestr['logs'] = query['logs'].slice();
