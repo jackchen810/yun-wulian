@@ -14,6 +14,10 @@ router.all('/real/data',  GatewayReal.real_data);
 router.all('/minute1/list',  GatewayM1.minute1_list);
 router.all('/hour1/list',  GatewayM1.hour1_list);
 router.all('/day1/list',  GatewayM1.day1_list);
+
+
+
+router.all('/module/run/status',  GatewayM1.day1_list);
 //router.all('/update/avatar/:admin_id', Account.updateAvatar);
 
 module.exports = router;
