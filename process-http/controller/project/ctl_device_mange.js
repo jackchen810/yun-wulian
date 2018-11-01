@@ -80,8 +80,8 @@ class CtlDeviceManageHandle {
         logger.info('sort:', sort);
 
 
-        var skipnum = (current_page - 1) * page_size;   //跳过数
-        var queryList = await DB.DeviceManageTable.find(filter).sort(sort).skip(skipnum).limit(page_size).exec();
+        let skipnum = (current_page - 1) * page_size;   //跳过数
+        let queryList = await DB.DeviceManageTable.find(filter).sort(sort).skip(skipnum).limit(page_size).exec();
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
         logger.info('device page list end');
     }
@@ -100,6 +100,21 @@ class CtlDeviceManageHandle {
 
         res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:deviceList, total:queryList.length});
         console.log('device array end');
+    }
+
+
+    async device_cn_array(req, res, next) {
+        console.log('device cn array');
+        //console.log(req.body);
+
+        let queryList = await DB.DeviceManageTable.find();
+        let deviceCnList = [];
+        for (let i = 0; i < queryList.length; i++){
+            deviceCnList.push(queryList[i]['device_name_cn']);
+        }
+
+        res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:deviceCnList, total:queryList.length});
+        console.log('device cn array end');
     }
 
     async device_del(req, res, next) {
@@ -160,7 +175,7 @@ class CtlDeviceManageHandle {
         files ：是一个对象（上传名称和服务器文件路径），其属性名的字段名称和值是文件对象的数组。
         */
 
-        //var form = new multiparty.Form({uploadDir: config.image_dir});
+        //let form = new multiparty.Form({uploadDir: config.image_dir});
         let fileName = '';
         let uploadedPath = '';
         let form = new formidable.IncomingForm({

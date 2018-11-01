@@ -18,7 +18,7 @@ class MqttDeviceIDE4gHandle {
     // 监听器 #1 ,  每分钟更新1次
     // device_name
     async updateDeviceInfo (device_name, josnObj) {
-        logger.info('Hello updateDeviceInfo:', device_name, JSON.stringify(josnObj));
+        logger.info('Hello idjc updateDeviceInfo:', device_name, JSON.stringify(josnObj));
 
         // 功率值矫正
         if (josnObj.data.hasOwnProperty('C1_D1') && device_name == 'jinxi_1') {                 //判断C1_D1是否存在于obj里面
@@ -81,9 +81,9 @@ class MqttDeviceIDE4gHandle {
         if (amount > keep_record_num){
             //删除数据， sort_time  单位：ms
             let old_sort_time = mytime.getTime() - keep_record_num * 60000;
-            let wherestr = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
-            logger.info('delete record of DeviceHistoryInfo, condition:', wherestr);
-            DB.Gateway_Minute_Table.deleteMany(wherestr).exec();
+            let wheredel = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
+            logger.info('delete record of Gateway_Minute_Table, condition:', wheredel);
+            DB.Gateway_Minute_Table.deleteMany(wheredel).exec();
         }
 
     }

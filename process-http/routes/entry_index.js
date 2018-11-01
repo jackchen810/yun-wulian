@@ -6,6 +6,7 @@ const admin_router = require('./rt_acount.js');
 const prj_manage_router = require('./rt_project_manage.js');
 const dev_manage_router = require('./rt_device_manage.js');
 const dev_module_router = require('./rt_device_module.js');
+const wechat_router = require('./rt_wechat.js');
 
 
  function http_web_router(app) {
@@ -25,7 +26,8 @@ const dev_module_router = require('./rt_device_module.js');
      //module
      app.use('/api/module', dev_module_router);
 
-
+     //wechat
+     app.use('/api/wechat', wechat_router);
 
      // Welcome test
      app.get('/test', function(req, res) {

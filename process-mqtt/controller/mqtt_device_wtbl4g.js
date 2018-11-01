@@ -18,7 +18,7 @@ class MqttDeviceWTBL4gHndle {
     // 监听器 #1 ,  每分钟更新1次
     // device_name
     async updateDeviceInfo (device_name, josnObj) {
-        logger.info('Hello updateDeviceInfo:', device_name, JSON.stringify(josnObj));
+        logger.info('Hello wtbl updateDeviceInfo:', device_name, JSON.stringify(josnObj));
 
         // 1. 更新到设备数据库，sysinfo库
         //SysinfoTable
@@ -54,9 +54,9 @@ class MqttDeviceWTBL4gHndle {
         if (amount > keep_record_num){
             //删除数据， sort_time  单位：ms
             let old_sort_time = mytime.getTime() - keep_record_num * 60000;
-            let wherestr = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
-            logger.info('delete record of DeviceHistoryInfo, condition:', wherestr);
-            DB.Gateway_Minute_Table.deleteMany(wherestr).exec();
+            let wheredel = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
+            logger.info('delete record of Gateway_Minute_Table, condition:', wheredel);
+            DB.Gateway_Minute_Table.deleteMany(wheredel).exec();
         }
 
     }

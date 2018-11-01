@@ -45,14 +45,14 @@ class GatewayIDE4gTimerHandle {
 
             // 2. 限制数量
             //存最近60条记录
-            let wherestr = { 'device_name': device_name};
-            let amount = await DB.Gateway_Hour_Table.count(wherestr);
+            let wherestr_2 = { 'device_name': device_name};
+            let amount = await DB.Gateway_Hour_Table.count(wherestr_2);
             if (amount > keep_record_num){
                 //删除数据， sort_time  单位：ms
                 let old_sort_time = mytime.getTime() - keep_record_num * 3600000;
-                let wherestr = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
-                //logger.info('delete record of Gateway_Hour_Table, condition:', wherestr);
-                DB.Gateway_Hour_Table.deleteMany(wherestr).exec();
+                let wheredelwheredel = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
+                //logger.info('delete record of Gateway_Hour_Table, condition:', wheredel);
+                DB.Gateway_Hour_Table.deleteMany(wheredel).exec();
             }
 
         }
@@ -93,14 +93,14 @@ class GatewayIDE4gTimerHandle {
 
             // 2. 限制数量
             //存最近60条记录
-            let wherestr = { 'device_name': device_name};
-            let amount = await DB.Gateway_Day_Table.count(wherestr);
+            let wherestr_2 = { 'device_name': device_name};
+            let amount = await DB.Gateway_Day_Table.count(wherestr_2);
             if (amount > keep_record_num){
                 //删除数据， sort_time  单位：ms
                 let old_sort_time = mytime.getTime() - keep_record_num * 86400000;
-                let wherestr = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
-                //logger.info('delete record of Gateway_Hour_Table, condition:', wherestr);
-                DB.Gateway_Day_Table.deleteMany(wherestr).exec();
+                let wheredel = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
+                //logger.info('delete record of Gateway_Day_Table, condition:', wheredel);
+                DB.Gateway_Day_Table.deleteMany(wheredel).exec();
             }
 
         }

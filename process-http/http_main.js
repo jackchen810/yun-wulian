@@ -64,6 +64,7 @@ app.use(session({
 app.use(function(req, res, next){
     req.session._garbage = Date();
     req.session.touch();
+    //console.log('-----session-----:', req.session);
     next();
 });
 

@@ -42,6 +42,7 @@ app.all('*', (req, res, next) => {
             console.log('entry, url:', req.hostname + req.path, ';body data', data.toString().substr(0, 60));
         });
         */
+        console.log('req:', req);
 	    next();
 	}
 });
@@ -75,6 +76,7 @@ app.use(session({
 app.use(function(req, res, next){
     req.session._garbage = Date();
     req.session.touch();
+    //console.log('-----session-----:', req.session);
     next();
 });
 
