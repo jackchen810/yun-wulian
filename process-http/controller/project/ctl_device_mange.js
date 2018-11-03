@@ -20,7 +20,10 @@ class CtlDeviceManageHandle {
     async device_list(req, res, next) {
 
         logger.info('device list');
-        logger.info('req.body', req.body);
+        //logger.info('req.body', req.body);
+        //console.log('headers:', req.headers);
+        //console.log('session:', req.session);
+        //console.log('sessionID:', req.sessionID);
 
         //获取表单数据，josn
         let filter = req.body.hasOwnProperty('filter') ? req.body['filter'] : {};
@@ -110,7 +113,7 @@ class CtlDeviceManageHandle {
         let queryList = await DB.DeviceManageTable.find();
         let deviceCnList = [];
         for (let i = 0; i < queryList.length; i++){
-            deviceCnList.push(queryList[i]['device_name_cn']);
+            deviceCnList.push(queryList[i]['device_name']);
         }
 
         res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:deviceCnList, total:queryList.length});
@@ -224,10 +227,10 @@ class CtlDeviceManageHandle {
                     //写入数据库
                     let myDocObj = {
                         "device_name" : fields.device_name,
-                        "device_name_cn" : fields.device_name_cn,
+                        "devunit_name" : fields.devunit_name,
+                        "channel_name" : fields.channel_name,
                         "project_name": fields.project_name,
                         "gateway_vendor" : fields.gateway_vendor,
-                        "channel_name" : fields.channel_name,
                         "user_account":  req.session.user_account,
 
                         "device_image": uploadedPath,

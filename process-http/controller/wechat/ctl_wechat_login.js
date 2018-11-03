@@ -13,7 +13,14 @@ class WechatLoginHandle {
     async jscode2session(req, res, next) {
         console.log('wechat jscode2session');
         //console.log(req.body);
-        console.log(req.session);
+        //console.log('headers:', req.headers);
+        //console.log('session:', req.session);
+        //console.log('sessionID:', req.sessionID);
+
+        // update session
+        req.session.user_account = 'admin';
+        req.session.user_type = 0;
+        //res.setHeader("Set-Cookie", ["SID="+req.sessionID]);
 
         //获取表单数据，josn
         let js_code = req.body['js_code'];
@@ -56,6 +63,8 @@ class WechatLoginHandle {
     async user2session(req, res, next) {
         console.log('user2session ');
         //console.log(req.body);
+
+        //req.s
 
         console.log('user2session end');
     }

@@ -41,7 +41,7 @@ class Check {
 
         //一开始从static目录下载的js不需要检查
         if (req.originalUrl.indexOf("static") > 0){
-            next()
+            next();
             return;
         }
 
@@ -49,7 +49,7 @@ class Check {
             || req.baseUrl == '/api/admin/register'
             || req.originalUrl == '/') {
             console.log('login:', req.baseUrl,  req.originalUrl);
-            next()
+            next();
             return;
         }
 
@@ -73,8 +73,8 @@ class Check {
 
         //设置cookie
         res.setHeader("Set-Cookie", ["user_type="+admin.user_type, "user_account="+admin.user_account]);
-        next()
+        next();
     }
 }
 
-module.exports = new Check()
+module.exports = new Check();
