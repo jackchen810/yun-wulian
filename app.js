@@ -4,7 +4,7 @@ const logger = require( './logs/logs.js');
 
 //创建一个工作进程
 require('./process-http/http_phandle.js');
-//require('./process-mqtt/mqtter_phandle.js');
+require('./process-mqtt/mqtter_phandle.js');
 require("./process-timer/timer_phandle.js");
 require("./process-https/https_phandle.js");
 
