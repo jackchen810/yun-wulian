@@ -50,7 +50,7 @@ class GatewayIDE4gTimerHandle {
             if (amount > keep_record_num){
                 //删除数据， sort_time  单位：ms
                 let old_sort_time = mytime.getTime() - keep_record_num * 3600000;
-                let wheredelwheredel = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
+                let wheredel = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
                 //logger.info('delete record of Gateway_Hour_Table, condition:', wheredel);
                 DB.Gateway_Hour_Table.deleteMany(wheredel).exec();
             }
