@@ -19,7 +19,7 @@ class Check {
         console.log('user_account:', user_account);
         const admin = await AdminModel.findOne({user_account: user_account});
         if (!admin || admin.user_type != 0) {
-            res.send({ret_code: 1010,	ret_msg: '权限不足', extra: ''});
+            res.send({ret_code: 2001,	ret_msg: '用户无权限', extra: user_account});
             return;
         }
 
