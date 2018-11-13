@@ -44,7 +44,7 @@ class TaskPublishHandle {
         await this.createBatchTask(taskHandle, pubJsonObj);
 
         //任务检查，如果对应的mac地址不属于该渠道，直接设置结果为失败
-        await this.taskCheckUser(taskHandle['uuid'], taskHandle['user_name']);
+        //await this.taskCheckUser(taskHandle['uuid'], taskHandle['user_name']);
 
         //如果需要发布，仅仅需要创建任务，例如检查到不在线不需要发布
         if ("only_create" in taskHandle) {
