@@ -43,6 +43,14 @@ class MqttDispatchHandle {
 
             this.onMessage_YunAC(topic_array, topic, msg_string);
         }
+        // 爱德佳创部分设备是使用ntf-8编码的
+        else if (topic_array[0] == 'yunADJC') {
+            var msg_string = message.toString();
+            if (process.env.NODE_ENV == 'local'){
+                console.log('[emqtt] response:', topic, msg_string);
+            }
+            this.onMessage_YunAC(topic_array, topic, msg_string);
+        }
         else {
             var msg_string = message.toString();
             if (process.env.NODE_ENV == 'local'){

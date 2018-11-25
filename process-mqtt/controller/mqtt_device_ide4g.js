@@ -125,4 +125,5 @@ const MqttDeviceIDE4gHnd = new MqttDeviceIDE4gHandle();
 
 //监听事件some_event
 MqttSubHandle.addLoopListener('yunWL', MqttDeviceIDE4gHnd.updateDeviceInfo);
+MqttSubHandle.addLoopListener('yunADJC', MqttDeviceIDE4gHnd.updateDeviceInfo);
 MqttSubHandle.addLoopListener('$SYS', MqttDeviceIDE4gHnd.updateDeviceStatus);
