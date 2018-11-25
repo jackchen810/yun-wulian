@@ -14,6 +14,15 @@ const projectSchema = new mongoose.Schema({
     project_image: {type: String, default: ''},    //项目图片
     project_status: {type: String, default: 'normal'},    //项目状态， normal， hide
 
+
+    run_unit_count: {type: String, default: '0'},    //运行模块数量
+    stop_unit_count: {type: String, default: '0'},    //停止模块数量
+    fault_unit_count: {type: String, default: '0'},    //故障模块数量
+
+
+    installed_capacity: {type: String, default: '0'},    //装机容量
+    ozone_capacity: {type: String, default: '0'},    //臭氧产量
+
     comment: String,   //项目备注
 
     update_time:String, //状态更新时间
