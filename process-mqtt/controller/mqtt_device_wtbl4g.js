@@ -27,6 +27,7 @@ class MqttDeviceWTBL4gHndle {
         let updatestr = {
             'device_name': device_name,
             'device_local': device_name,
+            'device_type': 'wutongbolian',
             'device_link_status': 'online',
             'update_time':dtime(mytime).format('YYYY-MM-DD HH:mm:ss'),
             'sort_time':mytime.getTime(),
@@ -45,7 +46,7 @@ class MqttDeviceWTBL4gHndle {
 
 
         // 2. 更新到设备历史数据库，Gateway_Minute_Table
-        logger.info('Hello recordDeviceHistoryInfo');
+        logger.info('Hello recordDeviceHistoryInfo', dtime(mytime).format('YYYY-MM-DD HH:mm:ss'));
         DB.Gateway_Minute_Table.create(updatestr);
 
 
