@@ -130,7 +130,12 @@ class DeviceIde4gHandle {
 
 
         let query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).exec();
-        res.send({ret_code: 0, ret_msg: '成功', extra: query});
+        if (query == null){
+            res.send({ret_code: -1, ret_msg: '成功', extra: []});
+        }
+        else {
+            res.send({ret_code: 0, ret_msg: '成功', extra: query});
+        }
         logger.info('device real data end');
     }
 
