@@ -7,7 +7,7 @@ var Mixed = mongoose.Schema.Types.Mixed;
 
 //设备建立全量的表，不同设备公用，如果没有的项 填写NA
 const gatewayDataSchema = new mongoose.Schema({
-    device_name:String,
+    devunit_name:String,
     update_time:String, //状态更新时间
 
     data: Mixed,   //数据
@@ -15,7 +15,7 @@ const gatewayDataSchema = new mongoose.Schema({
 });
 
 
-const Gateway_Hour_Table = mongoose.model('GatewayIDE4g_Hour_Table', gatewayDataSchema);
+const Gateway_Hour_Table = mongoose.model('Gateway_Hour_Table', gatewayDataSchema);
 
 
 //导出模块

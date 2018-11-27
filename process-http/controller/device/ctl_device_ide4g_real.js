@@ -67,18 +67,9 @@ class DeviceIde4gHandle {
         //获取表单数据，josn
         let filter = req.body.hasOwnProperty('filter') ? req.body['filter'] : {};
         let sort = req.body.hasOwnProperty('sort') ? req.body['sort'] : {"sort_time":-1};
-        let channel_name = req.body['channel_name'];
-
-        //参数有效性检查
-        if (!channel_name){
-            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: req.body});
-            return;
-        }
-
 
         logger.info('filter:', filter);
         logger.info('sort:', sort);
-        logger.info('channel_name:', channel_name);
 
 
         let query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).exec();
@@ -87,12 +78,8 @@ class DeviceIde4gHandle {
             return;
         }
 
-        if (!query.data.hasOwnProperty(channel_name)){
-            res.send({ret_code: -1,ret_msg: '失败，参数错误',extra: channel_name});
-        }
 
-
-        res.send({ret_code: 0, ret_msg: '成功', extra: query.data[channel_name], total: query.data[channel_name].length});
+        res.send({ret_code: 0, ret_msg: '成功', extra: query.data, total: query.data.length});
         logger.info('device real list end');
     }
 
@@ -104,13 +91,12 @@ class DeviceIde4gHandle {
         //获取表单数据，josn
         let page_size = req.body['page_size'];
         let current_page = req.body['current_page'];
-        let channel_name = req.body['channel_name'];
         let filter = req.body.hasOwnProperty('filter') ? req.body['filter'] : {};
         let sort = req.body.hasOwnProperty('sort') ? req.body['sort'] : {"sort_time":-1};
 
 
         //参数有效性检查
-        if (!page_size || !current_page || !channel_name){
+        if (!page_size || !current_page){
             res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: req.body});
             return;
         }
@@ -120,12 +106,11 @@ class DeviceIde4gHandle {
         logger.info('current_page:', current_page);
         logger.info('filter:', filter);
         logger.info('sort:', sort);
-        logger.info('channel_name:', channel_name);
 
 
         let skipnum = (current_page - 1) * page_size;   //跳过数
         let query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).skip(skipnum).limit(page_size).exec();
-        res.send({ret_code: 0, ret_msg: '成功', extra: query.data[channel_name], total: query.data[channel_name].length});
+        res.send({ret_code: 0, ret_msg: '成功', extra: query.data, total: query.data.length});
         logger.info('device real page list end');
     }
 

@@ -11,17 +11,18 @@ const keep_record_num = config.keep_record_num;
 
 class MqttDeviceIDE4gHandle {
     constructor(){
+        this.updateDeviceInfo = this.updateDeviceInfo.bind(this);
 
     }
 
 
     // 监听器 #1 ,  每分钟更新1次
-    // device_name
-    async updateDeviceInfo (device_name, josnObj) {
-        logger.info('Hello idjc updateDeviceInfo:', device_name, JSON.stringify(josnObj));
+    // devunit_name
+    async updateDeviceInfo (devunit_name, josnObj) {
+        logger.info('Hello idjc updateDeviceInfo:', devunit_name, JSON.stringify(josnObj));
 
         // 功率值矫正
-        if (josnObj.data.hasOwnProperty('C1_D1') && device_name == 'jinxi_1') {                 //判断C1_D1是否存在于obj里面
+        if (josnObj.data.hasOwnProperty('C1_D1') && devunit_name == 'jinxi_1') {                 //判断C1_D1是否存在于obj里面
             for (var i = 0; i < josnObj.data['C1_D1'].length; i++) {
                 if (josnObj.data['C1_D1'][i].id == 'Tag_gonglv') {
                     josnObj.data['C1_D1'][i].value = josnObj.data['C1_D1'][i].value / 2;
@@ -29,7 +30,7 @@ class MqttDeviceIDE4gHandle {
                 }
             }
         }
-        else if (josnObj.data.hasOwnProperty('C2_D1') && device_name == 'jinxi_2') {                 //判断C2_D1是否存在于obj里面
+        else if (josnObj.data.hasOwnProperty('C2_D1') && devunit_name == 'jinxi_2') {                 //判断C2_D1是否存在于obj里面
             for (let i = 0; i < josnObj.data['C2_D1'].length; i++) {
                 if (josnObj.data['C2_D1'][i].id == 'Tag_gonglv') {
                     josnObj.data['C2_D1'][i].value = josnObj.data['C2_D1'][i].value / 2;
@@ -37,7 +38,7 @@ class MqttDeviceIDE4gHandle {
                 }
             }
         }
-        else if (josnObj.data.hasOwnProperty('C3_D1') && device_name == 'jinxi_3') {                 //判断C3_D1是否存在于obj里面
+        else if (josnObj.data.hasOwnProperty('C3_D1') && devunit_name == 'jinxi_3') {                 //判断C3_D1是否存在于obj里面
             for (let i = 0; i < josnObj.data['C3_D1'].length; i++) {
                 if (josnObj.data['C3_D1'][i].id == 'Tag_gonglv') {
                     josnObj.data['C3_D1'][i].value = josnObj.data['C3_D1'][i].value / 2;
@@ -49,12 +50,12 @@ class MqttDeviceIDE4gHandle {
         // 1. 更新到设备数据库，sysinfo库
         //SysinfoTable
         let mytime = new Date();
-        let wherestr = { 'device_name': device_name};
+        let wherestr = { 'devunit_name': devunit_name};
         let updatestr = {
-            'device_name': device_name,
-            'device_local': josnObj['sn'],
-            'device_type': 'aidejiachuang',
-            'device_link_status': 'online',
+            'devunit_name': devunit_name,
+            'devunit_local': josnObj['sn'],
+            'devunit_type': 'aidejiachuang',
+            'devunit_link_status': 'online',
             'update_time':dtime(mytime).format('YYYY-MM-DD HH:mm:ss'),
             'sort_time':mytime.getTime(),
             'logs': [],
@@ -81,7 +82,7 @@ class MqttDeviceIDE4gHandle {
         if (amount > keep_record_num){
             //删除数据， sort_time  单位：ms
             let old_sort_time = mytime.getTime() - keep_record_num * 60000;
-            let wheredel = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
+            let wheredel = { 'devunit_name': devunit_name, 'sort_time': {$lt: old_sort_time}};
             logger.info('delete record of Gateway_Minute_Table, condition:', wheredel);
             DB.Gateway_Minute_Table.deleteMany(wheredel).exec();
         }
@@ -89,17 +90,95 @@ class MqttDeviceIDE4gHandle {
     }
 
 
+    // 监听器 #1 ,  每分钟更新1次
+    // devunit_name
+    async updateDeviceInfoADJC (devunit_name, josnObj) {
+        logger.info('Hello idjc updateDeviceInfo:', devunit_name, JSON.stringify(josnObj));
+
+        // 1.0
+        let channel_name = '';
+        for(let item in josnObj['data']){
+            channel_name = item;
+            break;
+        }
+
+        //检查
+        if (!josnObj['data'].hasOwnProperty(channel_name)){
+            return;
+        }
+
+        let ch_list = josnObj['data'][channel_name];
+        let varList = [];
+        for (let i = 0; i < ch_list.length; i++) {
+            // 津西设备的功率值矫正
+            if (ch_list[i].id == 'Tag_gonglv' && (devunit_name == 'jinxi_1' || devunit_name == 'jinxi_2' || devunit_name == 'jinxi_3')) {
+                ch_list[i].value = ch_list[i].value / 2;
+            }
+
+            //转换存储格式
+            varList[i] = {
+                'varId': ch_list[i].id,
+                'varName': ch_list[i].desc,
+                'varValue': ch_list[i].value,
+            };
+        }
+
+
+        // 2. 更新到设备数据库，sysinfo库
+        //SysinfoTable
+        let mytime = new Date();
+        let wherestr = { 'devunit_name': devunit_name};
+        let updatestr = {
+            'devunit_name': devunit_name,
+            'devunit_sn': josnObj['sn'],
+            'devunit_type': 'aidejiachuang',
+            'devunit_link_status': 'online',
+            'update_time':dtime(mytime).format('YYYY-MM-DD HH:mm:ss'),
+            'sort_time':mytime.getTime(),
+            'logs': [],
+            'data': varList,
+        };
+
+        DB.Gateway_Real_Table.findOneAndUpdate(wherestr, updatestr).exec(function (err, doc) {
+            if (doc == null){
+                logger.info('doc is null');
+                DB.Gateway_Real_Table.create(updatestr);
+            }
+        });
+
+
+
+
+        // 2. 更新到设备历史数据库，Gateway_Minute_Table
+        logger.info('Hello recordDeviceHistoryInfo');
+        DB.Gateway_Minute_Table.create(updatestr);
+
+
+        //存最近60条记录
+        let amount = await DB.Gateway_Minute_Table.count(wherestr);
+        if (amount > keep_record_num){
+            //删除数据， sort_time  单位：ms
+            let old_sort_time = mytime.getTime() - keep_record_num * 60000;
+            let wheredel = { 'devunit_name': devunit_name, 'sort_time': {$lt: old_sort_time}};
+            logger.info('delete record of Gateway_Minute_Table, condition:', wheredel);
+            DB.Gateway_Minute_Table.deleteMany(wheredel).exec();
+        }
+
+    }
+
+
+
     // 监听器 #2
     //
-    async updateDeviceStatus(device_name, status) {
+    async updateDeviceStatus(devunit_name, status) {
         //logger.info('Hello updateDeviceStatus:', status);
         let mytime = new Date();
 
         //更新到设备数据库
-        let wherestr = {'device_name': device_name};
+        let wherestr = {'devunit_name': devunit_name};
         let updatestr = {
-            'device_name': device_name,
-            'device_link_status': status,
+            'devunit_name': devunit_name,
+            'devunit_link_status': status,
             'update_time':dtime(mytime).format('YYYY-MM-DD HH:mm:ss'),
             'sort_time':mytime.getTime(),
             'logs': [],
@@ -124,6 +203,6 @@ const MqttDeviceIDE4gHnd = new MqttDeviceIDE4gHandle();
 
 
 //监听事件some_event
-MqttSubHandle.addLoopListener('yunWL', MqttDeviceIDE4gHnd.updateDeviceInfo);
-MqttSubHandle.addLoopListener('yunADJC', MqttDeviceIDE4gHnd.updateDeviceInfo);
+MqttSubHandle.addLoopListener('yunWL', MqttDeviceIDE4gHnd.updateDeviceInfoADJC);
+MqttSubHandle.addLoopListener('yunADJC', MqttDeviceIDE4gHnd.updateDeviceInfoADJC);
 MqttSubHandle.addLoopListener('$SYS', MqttDeviceIDE4gHnd.updateDeviceStatus);

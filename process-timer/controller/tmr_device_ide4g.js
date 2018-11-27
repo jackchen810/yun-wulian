@@ -26,16 +26,16 @@ class GatewayIDE4gTimerHandle {
         for (let i = 0; i < queryList.length; i++){
 
             //更新每天的汇总统计
-            let device_name = queryList[i].device_name;
+            let devunit_name = queryList[i].devunit_name;
             let wherestr = {
-                'device_name': device_name,
+                'devunit_name': devunit_name,
                 'update_time': update_time,
             };
 
             let query = await DB.Gateway_Hour_Table.findOne(wherestr).exec();
             if (query == null){
                 let updatestr = {
-                    'device_name': device_name,
+                    'devunit_name': devunit_name,
                     'update_time': update_time,
                     'sort_time': queryList[i].sort_time,
                     'data': queryList[i].data,
@@ -45,12 +45,12 @@ class GatewayIDE4gTimerHandle {
 
             // 2. 限制数量
             //存最近60条记录
-            let wherestr_2 = { 'device_name': device_name};
+            let wherestr_2 = { 'devunit_name': devunit_name};
             let amount = await DB.Gateway_Hour_Table.count(wherestr_2);
             if (amount > keep_record_num){
                 //删除数据， sort_time  单位：ms
                 let old_sort_time = mytime.getTime() - keep_record_num * 3600000;
-                let wheredel = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
+                let wheredel = { 'devunit_name': devunit_name, 'sort_time': {$lt: old_sort_time}};
                 //logger.info('delete record of Gateway_Hour_Table, condition:', wheredel);
                 DB.Gateway_Hour_Table.deleteMany(wheredel).exec();
             }
@@ -74,16 +74,16 @@ class GatewayIDE4gTimerHandle {
         for (let i = 0; i < queryList.length; i++){
 
             //更新每天的汇总统计
-            let device_name = queryList[i].device_name;
+            let devunit_name = queryList[i].devunit_name;
             let wherestr = {
-                'device_name': device_name,
+                'devunit_name': devunit_name,
                 'update_time': update_time,
             };
 
             let query = await DB.Gateway_Day_Table.findOne(wherestr).exec();
             if (query == null){
                 let updatestr = {
-                    'device_name': device_name,
+                    'devunit_name': devunit_name,
                     'update_time': update_time,
                     'sort_time': queryList[i].sort_time,
                     'data': queryList[i].data,
@@ -93,12 +93,12 @@ class GatewayIDE4gTimerHandle {
 
             // 2. 限制数量
             //存最近60条记录
-            let wherestr_2 = { 'device_name': device_name};
+            let wherestr_2 = { 'devunit_name': devunit_name};
             let amount = await DB.Gateway_Day_Table.count(wherestr_2);
             if (amount > keep_record_num){
                 //删除数据， sort_time  单位：ms
                 let old_sort_time = mytime.getTime() - keep_record_num * 86400000;
-                let wheredel = { 'device_name': device_name, 'sort_time': {$lt: old_sort_time}};
+                let wheredel = { 'devunit_name': devunit_name, 'sort_time': {$lt: old_sort_time}};
                 //logger.info('delete record of Gateway_Day_Table, condition:', wheredel);
                 DB.Gateway_Day_Table.deleteMany(wheredel).exec();
             }
