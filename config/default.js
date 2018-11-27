@@ -5,7 +5,7 @@ module.exports = {
 	firmware_dir:'./public/firmware',
 	pkg_dir:'./public/packages',
 	script_dir:'./public/scripts',
-	backend_port:'8000',
+	backend_port:'80',
 	upload_port:'9100',
 	url: 'mongodb://localhost:27017/iotks',
 	amount_every_task: '500',
