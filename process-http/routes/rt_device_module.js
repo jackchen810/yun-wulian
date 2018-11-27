@@ -8,5 +8,6 @@ console.log("enter route of device module");
 
 
 router.all('/run/status',  CtlDeviceModule.module_run_status);
+router.all('/status/stats',  CtlDeviceModule.module_status_stats);
 
 module.exports = router;

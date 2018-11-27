@@ -18,10 +18,8 @@ class DeviceModuleHandle {
 
         //获取表单数据，josn
         let devunit_name = req.body['devunit_name'];
-        let channel_name = req.body['channel_name'];
 
         logger.info('devunit_name:', devunit_name);
-        logger.info('channel_name:', channel_name);
 
         let dataList = [];
         let alarmList = [];
@@ -287,7 +285,59 @@ class DeviceModuleHandle {
         res.send({ret_code: 0, ret_msg: '成功', extra: {dataList, alarmList}});
         logger.info('device module status end');
     }
+    async module_status_stats(req, res, next) {
 
+        logger.info('device module status stats');
+        //logger.info(req.body);
+
+
+        //获取表单数据，josn
+        let project_name = req.body['project_name'];
+        logger.info('project_name:', project_name);
+
+
+        let run_unit_count = 0;
+        let stop_unit_count = 0;
+        let fault_unit_count = 0;
+        let wherestr = {'project_name': project_name};
+        let devList = await DB.DeviceManageTable.find(wherestr).exec();
+        for (let p = 0; p < devList.length; p++) {
+            //console.log('devunit_name:', devList[p]['devunit_name']);
+
+            let wherestr = {'devunit_name': devList[p]['devunit_name']};
+            let queryList = await DB.Gateway_Real_Table.find(wherestr).exec();
+            //logger.info('queryList:', queryList);
+            for (let i = 0; i < queryList.length; i++) {
+
+                let tagList = queryList[i].data;
+                //遍历各个Tag（Tag_H2O_wendu）
+                for (let m = 0; m < tagList.length; m++) {
+                    if (tagList[m]['varName'].indexOf('臭氧发生器模块启动') >=0 ){
+                        //console.log('varName:', tagList[m]['varName']);
+
+                        if (tagList[m]['varValue'] == '1.000'){
+                            run_unit_count++;
+                        }
+                        else{
+                            stop_unit_count++;
+                        }
+                    }
+                    if (tagList[m]['varName'].indexOf('故障信号') >=0 ){
+                        //console.log('varName:', tagList[m]['varName']);
+
+                        if (tagList[m]['varValue'] == '1.000'){
+                            fault_unit_count++;
+                        }
+                    }
+                }
+            }
+        }
+
+        let stats = {'run_unit_count':run_unit_count, 'stop_unit_count':stop_unit_count, 'fault_unit_count':fault_unit_count};
+        logger.info('stats:', stats);
+        res.send({ret_code: 0, ret_msg: '成功', extra: stats});
+        logger.info('device module status end');
+    }
 }
 
 
