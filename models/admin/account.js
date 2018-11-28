@@ -5,15 +5,18 @@ const Schema = mongoose.Schema;
 
 const accountSchema = new Schema({
 	user_account: String,   //用户账号
-    user_detail: String,   //用户名称
+    user_region: String,   //用户名称, 渠道名称
     user_type: Number, //0:管理员, 1:用户
 
 	user_password: String,
     user_password_md5: String,
     user_email: String,
 	user_phone: String,
-    user_city: String,
     user_wechat: String,
+
+    user_prov: String,
+    user_city: String,
+    user_detail: String,
 
 	user_create_time: String,
 	user_last_login_time: String,

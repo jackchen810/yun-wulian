@@ -76,9 +76,11 @@ class Account extends BaseComponent {
                 'login_logs': [],
             };
 
+
+            let mytime = new Date();
             //复制数组，logs记录上下线日志
             updatestr['login_logs'] = query['login_logs'].slice();
-            updatestr['login_logs'].push(dtime().format('YYYY-MM-DD HH:mm:ss'));
+            updatestr['login_logs'].push(dtime(mytime).format('YYYY-MM-DD HH:mm:ss'));
             if (updatestr['login_logs'].length > 10){
                 updatestr['login_logs'].shift();  //删除数组第一个元素
             }
@@ -101,11 +103,12 @@ class Account extends BaseComponent {
 	async register(req, res, next){
 		let user_account = req.body.user_account;
 		let user_password = req.body.user_password;
-		let user_email = req.body.user_email;
+        let user_region = req.body.user_region;
 		let user_phone = req.body.user_phone;
+        let user_city = req.body.user_city;
+        let user_prov = req.body.user_prov;
 		let user_type = 1;   //用户
 		let user_status = 0;
-		let user_city = req.body.user_city;
 
 		try {
 			if(!user_account) {
@@ -115,11 +118,12 @@ class Account extends BaseComponent {
 			}
 		}catch(err){
 			console.log(err.message, err);
-			res.send({ret_code: 1, ret_msg: 'GET_ERROR_PARAM', extra: err.message});
+			res.send({ret_code: 1, ret_msg: '参数错误', extra: err.message});
 			return;
 		}
 
 
+        let mytime = new Date();
         try{
             const admin = await DB.AccountTable.findOne({user_account});
             if(admin) {
@@ -133,13 +137,16 @@ class Account extends BaseComponent {
                 user_account: user_account,
                 user_password: user_password,
                 user_password_md5: this.Md5(user_password),
-                user_email: user_email,
+                user_region: user_region,
                 user_phone: user_phone,
-                user_create_time: dtime().format('YYYY-MM-DD HH:mm'),
-                user_last_login_time: dtime().format('YYYY-MM-DD HH:mm'),
+                user_create_time: dtime(mytime).format('YYYY-MM-DD HH:mm'),
+                user_last_login_time: dtime(mytime).format('YYYY-MM-DD HH:mm'),
                 user_type: user_type,
                 user_status: user_status,
+
                 user_city: user_city,
+                user_prov: user_prov,
+
                 user_device_count: 0,
                 user_online_count: 0,
                 login_logs:[]
