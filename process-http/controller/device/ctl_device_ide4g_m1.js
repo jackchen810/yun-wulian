@@ -10,7 +10,7 @@ class DeviceIde4gHandle {
         //this.tmp_correction_data_hour();
         //this.tmp_correction_data_day();
 
-        this.tmp_modify_plc_NO();
+        //this.tmp_modify_plc_NO();
 
     }
 
