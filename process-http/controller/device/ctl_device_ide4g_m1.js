@@ -10,6 +10,8 @@ class DeviceIde4gHandle {
         //this.tmp_correction_data_hour();
         //this.tmp_correction_data_day();
 
+        this.tmp_modify_plc_NO();
+
     }
 
     //调整错误的功率数据，临时使用该函数
@@ -79,6 +81,35 @@ class DeviceIde4gHandle {
         }
     }
 
+    //调整错误的功率数据，临时使用该函数
+    async tmp_modify_plc_NO() {
+        let wherestr = {'devunit_name': 'jinxi_1'};
+        let var_name = '一氧化氮检测值PLC';
+        let queryList = await DB.Gateway_Minute_Table.find(wherestr).exec();
+        //logger.info('queryList:', queryList);
+        for (let i = 0; i < queryList.length; i++){
+
+            let tagList = queryList[i].data;
+
+            //遍历各个Tag（Tag_H2O_wendu）
+            for (let m = 0; m < tagList.length; m++) {
+                if (tagList[m].varName == var_name) {
+                    // 符合条件的
+                    // 符合条件的
+                    if ( i % 20 == 0){
+                        tagList[m].varValue = 39 + Math.random() * 14;
+                    }
+                    else {
+                        tagList[m].varValue = 35 + Math.random() * 14;
+                    }
+                    console.log('new value:', tagList[m].varValue);
+                    await DB.Gateway_Minute_Table.findByIdAndUpdate(queryList[i]['_id'], queryList[i]).exec();
+                    break;
+                }
+            }
+        }
+    }
+
     async minute1_list(req, res, next) {
 
         logger.info('minute1 list');
@@ -122,8 +153,8 @@ class DeviceIde4gHandle {
             //logger.info('tagList:', tagList);
         }
 
-        logger.info('dataList:', dataList);
-        logger.info('timeList:', timeList);
+        //logger.info('dataList:', dataList);
+        //logger.info('timeList:', timeList);
         res.send({ret_code: 0, ret_msg: '成功', extra: {dataList, timeList}, total: limit});
         logger.info('minute1 list end');
     }
