@@ -24,7 +24,6 @@ class DeviceIde4gHandle {
         var current_page = req.body['current_page'];
         var sort = req.body['sort'];
         var filter = req.body['filter'];
-        var channel_name = req.body['channel_name'];
 
         // 如果没有定义排序规则，添加默认排序
         if(typeof(sort)==="undefined"){
@@ -44,12 +43,12 @@ class DeviceIde4gHandle {
         //参数有效性检查
         if(typeof(page_size)==="undefined" && typeof(current_page)==="undefined"){
             var query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).limit(10);
-            res.send({ret_code: 0, ret_msg: '成功', extra: query.data[channel_name], total: query.data[channel_name].length});
+            res.send({ret_code: 0, ret_msg: '成功', extra: query.data, total: query.data.length});
         }
         else if (page_size > 0 && current_page > 0) {
             var skipnum = (current_page - 1) * page_size;   //跳过数
             var query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).skip(skipnum).limit(page_size);
-            res.send({ret_code: 0, ret_msg: '成功', extra: query.data[channel_name], total: query.data[channel_name].length});
+            res.send({ret_code: 0, ret_msg: '成功', extra: query.data, total: query.data.length});
             //console.log('Gateway_Real_Table:', query.data.C1_D1);
         }
         else{
@@ -74,7 +73,7 @@ class DeviceIde4gHandle {
 
         let query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).exec();
         if (!query) {
-            res.send({ret_code: -1,ret_msg: '失败，参数错误',extra: channel_name});
+            res.send({ret_code: -1,ret_msg: '失败，参数错误',extra: ''});
             return;
         }
 
@@ -131,7 +130,7 @@ class DeviceIde4gHandle {
 
         let query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).exec();
         if (query == null){
-            res.send({ret_code: -1, ret_msg: '成功', extra: []});
+            res.send({ret_code: -1, ret_msg: '设备数据不存在', extra: []});
         }
         else {
             res.send({ret_code: 0, ret_msg: '成功', extra: query});

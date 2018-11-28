@@ -42,7 +42,7 @@ class MqttDeviceWTBL4gHndle {
     // devunit_name
     async updateDeviceInfo (dev_name, josnObj) {
         logger.info('Hello wtbl updateDeviceInfo:', dev_name, JSON.stringify(josnObj));
-
+        //console.log('gwSn:', josnObj['gwSn']);
 
         // 1. 更新到设备数据库，sysinfo库
         //SysinfoTable
@@ -52,7 +52,7 @@ class MqttDeviceWTBL4gHndle {
         let updatestr = {
             'devunit_name': devunit_name,
             'devunit_local': devunit_name,
-            'devunit_sn': josnObj['devList'][0]['gwSn'],
+            'devunit_sn': josnObj['gwSn'],
             'devunit_type': 'wutongbolian',
             'devunit_link_status': 'online',
             'update_time':dtime(mytime).format('YYYY-MM-DD HH:mm:ss'),

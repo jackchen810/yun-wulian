@@ -8,7 +8,7 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 const deviceManageSchema = new mongoose.Schema({
     device_name: {type: String, default: ''},    //设备的名称，例如 津西1#高级氧化设备
 
-    channel_name: {type: String, default: ''},    //通道的数据库字段名称，例如 C1_D1, 爱德设备
+    devunit_no: {type: String, default: ''},    //通道的数据库字段名称，例如 C1_D1, 爱德设备,  设备单元号, 暂时不用
     devunit_name: {type: String, default: ''},    //设备的数据库字段，例如 jinxi_1
 
     project_name: {type: String, default: ''},   //设备的所属项目， 等同于[project.project_name] 可能多个设备对应同一项目

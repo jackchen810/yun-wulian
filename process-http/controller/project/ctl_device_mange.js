@@ -228,7 +228,6 @@ class CtlDeviceManageHandle {
                     let myDocObj = {
                         "device_name" : fields.device_name,
                         "devunit_name" : fields.devunit_name,
-                        "channel_name" : fields.channel_name,
                         "project_name": fields.project_name,
                         "gateway_vendor" : fields.gateway_vendor,
                         "user_account":  req.session.user_account,
