@@ -43,8 +43,16 @@ class GatewayIDE4gTimerHandle {
                 DB.Gateway_Hour_Table.create(updatestr);
             }
 
-            // 2. 限制数量
-            //存最近60条记录
+            // 3. 删除实时数据中最近1小时不更新的数据
+            //删除数据， sort_time  单位：ms
+            let limit_time = mytime.getTime() - 3600000;
+            if (queryList[i].sort_time < limit_time) {
+                //logger.info('delete record of Gateway_Real_Table, limit_time:', limit_time);
+                DB.Gateway_Real_Table.findByIdAndRemove(queryList[i]._id).exec();
+            }
+
+            // 3. 限制数量
+            //存最近60条记录,  记录数可配置：keep_record_num
             let wherestr_2 = { 'devunit_name': devunit_name};
             let amount = await DB.Gateway_Hour_Table.count(wherestr_2);
             if (amount > keep_record_num){
