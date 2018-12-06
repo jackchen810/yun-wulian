@@ -37,9 +37,9 @@ class CtlDeviceManageHandle {
             return;
         }
 
-        if (user_type == 1) {
-            filter['user_account'] = user_account;
-        }
+        //if (user_type == 1) {
+        //    filter['user_account'] = user_account;
+        //}
 
 
         logger.info('user_account:', user_account);
@@ -50,6 +50,8 @@ class CtlDeviceManageHandle {
 
         let queryList = await DB.DeviceManageTable.find(filter).sort(sort).exec();
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
+        //console.log('queryList:', queryList[0]);
+        //logger.info('queryList.length:', queryList.length);
         logger.info('device list end');
     }
 
@@ -86,6 +88,7 @@ class CtlDeviceManageHandle {
         let skipnum = (current_page - 1) * page_size;   //跳过数
         let queryList = await DB.DeviceManageTable.find(filter).sort(sort).skip(skipnum).limit(page_size).exec();
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
+        //console.log('queryList:', queryList);
         logger.info('device page list end');
     }
 
@@ -258,6 +261,30 @@ class CtlDeviceManageHandle {
 
         form.parse(req);
         console.log('upload ok');
+    }
+    async device_update(req, res, next) {
+
+        logger.info('device update');
+        //logger.info(req.body);
+
+        //获取表单数据，josn
+        let list_data = req.body['list_data'];
+
+        //参数有效性检查
+        if (!list_data){
+            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: req.body});
+            return;
+        }
+
+        logger.info('list_data:', list_data);
+
+        for (let i = 0; i < list_data.length; i++){
+            let _id = list_data[i]['_id'];
+            await DB.DeviceManageTable.findByIdAndUpdate(_id, list_data[i]).exec();
+        }
+
+        res.send({ret_code: 0, ret_msg: '成功', extra: ''});
+        logger.info('device update end');
     }
 
 }

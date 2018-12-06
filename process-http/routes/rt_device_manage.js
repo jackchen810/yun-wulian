@@ -13,6 +13,7 @@ router.all('/add',  CtlDeviceManage.device_add);
 router.all('/array',  CtlDeviceManage.device_array);
 
 router.all('/del',  CtlDeviceManage.device_del);
+router.all('/update',  CtlDeviceManage.device_update);
 //router.all('/hide',  CtlDeviceManage.project_hide);
 //router.all('/resume',  CtlDeviceManage.project_resume);
 

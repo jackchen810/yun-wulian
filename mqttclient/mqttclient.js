@@ -64,7 +64,7 @@ MqttClient.on("connect", function(client) {
 });
 
 MqttClient.on("close", function(client) {
-    console.log("emqtt close")
+    //console.log("emqtt close")
 });
 
 MqttClient.on("offline", function(client) {
