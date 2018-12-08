@@ -153,6 +153,30 @@ class DeviceModuleHandle {
                     case '臭氧发生器模块启动40':
                         dataList[39] = tagList[m].varValue;
                         break;
+                    case '臭氧发生器模块启动41':
+                        dataList[40] = tagList[m].varValue;
+                        break;
+                    case '臭氧发生器模块启动42':
+                        dataList[41] = tagList[m].varValue;
+                        break;
+                    case '臭氧发生器模块启动43':
+                        dataList[42] = tagList[m].varValue;
+                        break;
+                    case '臭氧发生器模块启动44':
+                        dataList[43] = tagList[m].varValue;
+                        break;
+                    case '臭氧发生器模块启动45':
+                        dataList[44] = tagList[m].varValue;
+                        break;
+                    case '臭氧发生器模块启动46':
+                        dataList[45] = tagList[m].varValue;
+                        break;
+                    case '臭氧发生器模块启动47':
+                        dataList[46] = tagList[m].varValue;
+                        break;
+                    case '臭氧发生器模块启动48':
+                        dataList[47] = tagList[m].varValue;
+                        break;
                         ///alarm
                     case '故障信号1':
                         alarmList[0] = tagList[m].varValue;
@@ -273,6 +297,30 @@ class DeviceModuleHandle {
                         break;
                     case '故障信号40':
                         alarmList[39] = tagList[m].varValue;
+                        break;
+                    case '故障信号41':
+                        alarmList[40] = tagList[m].varValue;
+                        break;
+                    case '故障信号42':
+                        alarmList[41] = tagList[m].varValue;
+                        break;
+                    case '故障信号43':
+                        alarmList[42] = tagList[m].varValue;
+                        break;
+                    case '故障信号44':
+                        alarmList[43] = tagList[m].varValue;
+                        break;
+                    case '故障信号45':
+                        alarmList[44] = tagList[m].varValue;
+                        break;
+                    case '故障信号46':
+                        alarmList[45] = tagList[m].varValue;
+                        break;
+                    case '故障信号47':
+                        alarmList[46] = tagList[m].varValue;
+                        break;
+                    case '故障信号48':
+                        alarmList[47] = tagList[m].varValue;
                         break;
                 }
                 //next tag
