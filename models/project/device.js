@@ -18,7 +18,8 @@ const deviceManageSchema = new mongoose.Schema({
 
     device_image: {type: String, default: ''},    //设备图片
     device_status: {type: String, default: 'normal'},    //设备状态， normal， hide
-    device_ability: {type: Number, default: 0},    //设备能力，例如 300kg O3/h
+    device_ability: {type: String, default: ''},    //设备能力，例如 300kg O3/h
+    device_power: {type: String, default: ''},    //设备功率，例如 800kw
 
     comment: String,   //设备备注
 
