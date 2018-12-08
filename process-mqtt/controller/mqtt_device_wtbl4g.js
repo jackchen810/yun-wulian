@@ -48,8 +48,9 @@ class MqttDeviceWTBL4gHndle {
         //SysinfoTable
         let devunit_name = dev_name + '_' + josnObj['devList'][0]['devNo'];
         let mytime = new Date();
+
         let wherestr = { 'devunit_name': devunit_name};
-        let updatestr = {
+        var updatestr = {
             'devunit_name': devunit_name,
             'devunit_local': devunit_name,
             'devunit_sn': josnObj['gwSn'],
@@ -60,14 +61,20 @@ class MqttDeviceWTBL4gHndle {
             'logs': [],
             'data': josnObj['devList'][0]['varList'],
         };
-
-        DB.Gateway_Real_Table.findOneAndUpdate(wherestr, updatestr).exec(function (err, doc) {
-            if (doc == null){
-                logger.info('doc is null');
-                DB.Gateway_Real_Table.create(updatestr);
+        let query = await DB.Gateway_Real_Table.findOne(wherestr).exec();
+        if (query == null){
+            logger.info('doc is null');
+            DB.Gateway_Real_Table.create(updatestr);
+        }
+        else {
+            let var_length = josnObj['devList'][0]['varList'].length;
+            console.log('msg array length', var_length);
+            if (var_length < 100) {
+                updatestr['data']  = query['data'].concat(josnObj['devList'][0]['varList']);
             }
-        });
 
+            DB.Gateway_Real_Table.findByIdAndUpdate(query['_id'], updatestr).exec();
+        }
 
 
 
