@@ -11,8 +11,12 @@ const keep_record_num = config.keep_record_num;
 
 class MqttDeviceWTBL4gHndle {
     constructor(){
+        //var s1 = new Set(); // 空Set
+        this.hash_data =  new Map();
+
         this.deviceMessageProcess = this.deviceMessageProcess.bind(this);
         this.updateDeviceInfo = this.updateDeviceInfo.bind(this);
+        //this.hash_data = this.hash_data.bind(this);
 
     }
 
@@ -41,16 +45,40 @@ class MqttDeviceWTBL4gHndle {
     // 监听器 #1 ,  每分钟更新1次
     // devunit_name
     async updateDeviceInfo (dev_name, josnObj) {
-        logger.info('Hello wtbl updateDeviceInfo:', dev_name, JSON.stringify(josnObj));
+        let mytime = new Date();
+        logger.info('Hello wtbl:', dtime(mytime).format('YYYY-MM-DD HH:mm:ss'), dev_name, JSON.stringify(josnObj));
         //console.log('gwSn:', josnObj['gwSn']);
 
         // 1. 更新到设备数据库，sysinfo库
         //SysinfoTable
         let devunit_name = dev_name + '_' + josnObj['devList'][0]['devNo'];
-        let mytime = new Date();
 
+        let map_value_obj = this.hash_data.get(devunit_name);
+        //console.log('map_value_obj:', map_value_obj);
+        if(!map_value_obj){
+            map_value_obj = {
+                'devunit_name': devunit_name,
+                'list_data': new Map(),   //集合
+            };
+        }
+
+        /// set 集合中添加数据
+        //map_value_obj['set_data'].add(josnObj['devList'][0]['varList']);
+        console.log('add list length:', josnObj['devList'][0]['varList'].length);
+        for(let item of josnObj['devList'][0]['varList']) {
+            //console.log('item:', item);
+            map_value_obj['list_data'].set(item.varName, item);
+        }
+
+        console.log('map_value_obj size:', map_value_obj['list_data'].size);
+
+        // 保存到hash表中
+        this.hash_data.set(devunit_name, map_value_obj);
+
+
+        // 1. 更新到设备数据库，Gateway_Real_Table
         let wherestr = { 'devunit_name': devunit_name};
-        var updatestr = {
+        let updatestr = {
             'devunit_name': devunit_name,
             'devunit_local': devunit_name,
             'devunit_sn': josnObj['gwSn'],
@@ -59,27 +87,17 @@ class MqttDeviceWTBL4gHndle {
             'update_time':dtime(mytime).format('YYYY-MM-DD HH:mm:ss'),
             'sort_time':mytime.getTime(),
             'logs': [],
-            'data': josnObj['devList'][0]['varList'],
+            'data': [...map_value_obj['list_data'].values()],   //集合
         };
-        let query = await DB.Gateway_Real_Table.findOne(wherestr).exec();
-        if (query == null){
-            logger.info('doc is null');
-            DB.Gateway_Real_Table.create(updatestr);
-        }
-        else {
-            let var_length = josnObj['devList'][0]['varList'].length;
-            console.log('msg array length', var_length);
-            if (var_length < 100) {
-                updatestr['data']  = query['data'].concat(josnObj['devList'][0]['varList']);
+        DB.Gateway_Real_Table.findOneAndUpdate(wherestr, updatestr).exec(function (err, doc) {
+            if (doc == null){
+                logger.info('doc is null');
+                DB.Gateway_Real_Table.create(updatestr);
             }
-
-            DB.Gateway_Real_Table.findByIdAndUpdate(query['_id'], updatestr).exec();
-        }
-
-
+        });
 
         // 2. 更新到设备历史数据库，Gateway_Minute_Table
-        logger.info('Hello recordDeviceHistoryInfo', dtime(mytime).format('YYYY-MM-DD HH:mm:ss'));
+        logger.info('Hello recordDeviceHistoryInfo');
         DB.Gateway_Minute_Table.create(updatestr);
 
 
@@ -93,6 +111,7 @@ class MqttDeviceWTBL4gHndle {
             DB.Gateway_Minute_Table.deleteMany(wheredel).exec();
         }
 
+        logger.info('Hello wtbl exit');
     }
 
 

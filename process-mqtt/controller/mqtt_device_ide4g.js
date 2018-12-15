@@ -19,7 +19,8 @@ class MqttDeviceIDE4gHandle {
     // 监听器 #1 ,  每分钟更新1次
     // devunit_name
     async updateDeviceInfo (devunit_name, josnObj) {
-        logger.info('Hello idjc updateDeviceInfo:', devunit_name, JSON.stringify(josnObj));
+        let mytime = new Date();
+        logger.info('Hello idjc:', dtime(mytime).format('YYYY-MM-DD HH:mm:ss'), devunit_name, JSON.stringify(josnObj));
 
         // 功率值矫正
         if (josnObj.data.hasOwnProperty('C1_D1') && devunit_name == 'jinxi_1') {                 //判断C1_D1是否存在于obj里面
@@ -49,7 +50,6 @@ class MqttDeviceIDE4gHandle {
 
         // 1. 更新到设备数据库，sysinfo库
         //SysinfoTable
-        let mytime = new Date();
         let wherestr = { 'devunit_name': devunit_name};
         let updatestr = {
             'devunit_name': devunit_name,
@@ -93,7 +93,8 @@ class MqttDeviceIDE4gHandle {
     // 监听器 #1 ,  每分钟更新1次
     // devunit_name
     async updateDeviceInfoADJC (devunit_name, josnObj) {
-        logger.info('Hello idjc updateDeviceInfo:', devunit_name, JSON.stringify(josnObj));
+        let mytime = new Date();
+        logger.info('Hello idjc:', dtime(mytime).format('YYYY-MM-DD HH:mm:ss'), devunit_name, JSON.stringify(josnObj));
 
         // 1.0
         let channel_name = '';
@@ -126,7 +127,6 @@ class MqttDeviceIDE4gHandle {
 
         // 2. 更新到设备数据库，sysinfo库
         //SysinfoTable
-        let mytime = new Date();
         let wherestr = { 'devunit_name': devunit_name};
         let updatestr = {
             'devunit_name': devunit_name,
