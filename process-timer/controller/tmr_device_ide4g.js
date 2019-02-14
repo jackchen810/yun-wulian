@@ -8,14 +8,14 @@ const schedule = require('node-schedule');
 const keep_record_num = config.keep_record_num;
 
 
-class GatewayIDE4gTimerHandle {
+class GatewayTimerHandle {
 	constructor(){
 
 	}
 
 
     // 监听器 #3
-    async ide4gHour1Process () {
+    async hour1BackupProcess () {
         logger.info('hour1 timer out:', dtime().format('YYYY-MM-DD HH:mm:ss'));
 
         let mytime = new Date();
@@ -71,7 +71,7 @@ class GatewayIDE4gTimerHandle {
 
 
     // 监听器 #4
-    async ide4gDay1Process () {
+    async day1BackupProcess () {
         logger.info('hour24 timer out:', dtime().format('YYYY-MM-DD HH:mm:ss'));
 
         let mytime = new Date();
@@ -117,10 +117,10 @@ class GatewayIDE4gTimerHandle {
 
 }
 
-const IDE4gTimerHnd = new GatewayIDE4gTimerHandle();
+const gwTimerHnd = new GatewayTimerHandle();
 
 //场景：每小时采样一次，记录历史数据, 0, 30 分的时候，更新两次，增加可靠性
-schedule.scheduleJob('0 0,30 * * * *', IDE4gTimerHnd.ide4gHour1Process);
+schedule.scheduleJob('0 0,30 * * * *', gwTimerHnd.hour1BackupProcess);
 //场景：超时失败, 每天夜里12:00, 中午12:00进行更新, 更新两次，增加可靠性
-schedule.scheduleJob('0 0 0,12 * * *', IDE4gTimerHnd.ide4gDay1Process);
+schedule.scheduleJob('0 0 0,12 * * *', gwTimerHnd.day1BackupProcess);
 
