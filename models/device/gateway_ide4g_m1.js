@@ -12,7 +12,7 @@ const gatewayDataSchema = new mongoose.Schema({
 
     data: Mixed,   //数据
     sort_time:Number, //排序时间戳，
-}, { capped: { size: 1024000, max: 1440} });
+}, { capped: { size: 81920000, max: 1440} });
 
 
 const Gateway_Minute_Table = mongoose.model('Gateway_Minute_Table', gatewayDataSchema);
