@@ -31,6 +31,8 @@ mqtt_p.on('exit', (err) => {
 
 mqtt_p.on('close', (err) => {
     logger.error('mqtt close:', err);
+    //异常直接退出主进程，外部pm2重启整个进程
+    process.exit(1);
 });
 
 

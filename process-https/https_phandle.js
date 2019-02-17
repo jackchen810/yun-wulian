@@ -1,5 +1,6 @@
 'use strict';
 const fork = require('child_process').fork;
+const logger = require( '../logs/logs.js');
 
 
 //console.log('[main] create mqtt process...');
@@ -14,15 +15,17 @@ https_p.on('message', function () {
 
 
 https_p.on('error', (err) => {
-    console.log('https error:', err);
+    logger.info('https error:', err);
 });
 
 https_p.on('exit', (err) => {
-    console.log('https exit:', err);
+    logger.error('https exit:', err);
 });
 
 https_p.on('close', (err) => {
-    console.log('https close:', err);
+    logger.error('https close:', err);
+    //异常直接退出主进程，外部pm2重启整个进程
+    process.exit(1);
 });
 
 

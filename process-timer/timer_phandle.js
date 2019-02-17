@@ -23,6 +23,8 @@ timer_p.on('exit', (err) => {
 
 timer_p.on('close', (err) => {
     logger.error('timer close:', err);
+    //异常直接退出主进程，外部pm2重启整个进程
+    process.exit(1);
 });
 
 //导出模块

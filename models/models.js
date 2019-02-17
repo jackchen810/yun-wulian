@@ -16,6 +16,7 @@ const InvoiceDayTable= require("../models/stats/invoice_stats_day.js");
 const onlineDayTable= require("./stats/online_stats_day.js");
 const AdminModel= require("../models/admin/admin.js");
 const AccountTable = require('./admin/account.js');
+const historySchema= require("./history_gateway/gateway_minute.js");
 
 
 //mqtt 命令
@@ -35,6 +36,7 @@ function DB() {
     this.onlineDayTable = onlineDayTable;
     this.AdminModel = AdminModel;
     this.AccountTable = AccountTable;
+    this.historySchema = historySchema;
     this.getNowFormatDate = getNowFormatDate;
 
 }

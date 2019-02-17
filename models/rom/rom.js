@@ -19,46 +19,5 @@ const romSchema = new mongoose.Schema({
 
 
 
-/**
- * 分页查询
- * find（）   查询商品，
- * limit(),   限制显示文档个数
- * skip();    跳过文档个数，
- * sort(),    这个是排序规则
- * @param {Object} romDocObj - task object
- * @returns {MqttClient} this - for chaining
- * @api public
- *
- * @example getByPager(uuid, mac, topic, newJsonMsg);
- */
-romSchema.statics.findByPage = function (condition, page_size, current_page, sort){
-    return new Promise(async (resolve, reject) => {
-
-        //console.log("romDocObj:", romDocObj);
-        var skipnum = (current_page - 1) * page_size;   //跳过数
-
-        try{
-            await this.find(condition).skip(skipnum).limit(page_size).sort(sort).exec(function (err, res) {
-                if (err) {
-                    //console.log("Error:" + err);
-                    resolve(err);
-                }
-                else{
-                    //console.log("query:" + res);
-                    resolve(res);
-                }
-            });
-            //console.log('task status 111');
-            //resolve('done');
-        }catch(err){
-            reject({name: 'ERROR_DATA', message: '查找数据失败'});
-            console.error(err);
-        }
-    })
-}
-
-
-
-
 const RomTable = mongoose.model('RomTable', romSchema);
 module.exports = RomTable;

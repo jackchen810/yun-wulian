@@ -62,12 +62,7 @@ class MqttDeviceIDE4gHandle {
             'data': josnObj['data'],
         };
 
-        DB.Gateway_Real_Table.findOneAndUpdate(wherestr, updatestr).exec(function (err, doc) {
-            if (doc == null){
-                logger.info('doc is null');
-                DB.Gateway_Real_Table.create(updatestr);
-            }
-        });
+        await DB.Gateway_Real_Table.findOneAndUpdate(wherestr, updatestr,{upsert: true}).exec();
 
 
 
@@ -76,7 +71,7 @@ class MqttDeviceIDE4gHandle {
         logger.info('Hello recordDeviceHistoryInfo');
         DB.Gateway_Minute_Table.create(updatestr);
 
-
+        /*
         //存最近60条记录
         let amount = await DB.Gateway_Minute_Table.count(wherestr);
         if (amount > keep_record_num){
@@ -86,6 +81,7 @@ class MqttDeviceIDE4gHandle {
             logger.info('delete record of Gateway_Minute_Table, condition:', wheredel);
             DB.Gateway_Minute_Table.deleteMany(wheredel).exec();
         }
+        */
 
     }
 

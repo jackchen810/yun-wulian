@@ -58,23 +58,29 @@ class MqttDeviceWTBL4gHndle {
         if(!map_value_obj){
             map_value_obj = {
                 'devunit_name': devunit_name,
-                'list_data': new Map(),   //集合
+                'list_data': new Map(),   //hash表中
+                'update_time':mytime.getTime(),
             };
         }
 
-        /// set 集合中添加数据
-        //map_value_obj['set_data'].add(josnObj['devList'][0]['varList']);
-        console.log('add list length:', josnObj['devList'][0]['varList'].length);
+        /// 向hash表中添加数据
         for(let item of josnObj['devList'][0]['varList']) {
             //console.log('item:', item);
             map_value_obj['list_data'].set(item.varName, item);
         }
 
-        console.log('map_value_obj size:', map_value_obj['list_data'].size);
+        //console.log('add list length:', josnObj['devList'][0]['varList'].length);
+        //console.log('map_value_obj size:', map_value_obj['list_data'].size);
 
         // 保存到hash表中
         this.hash_data.set(devunit_name, map_value_obj);
 
+        // 防止重复进入，wtbl数据网关上送如果太大会拆分成两个包
+        if (map_value_obj['list_data'].get('update_time') + 30000 > mytime.getTime()){
+            logger.info('Hello wtbl exit, repeat into');
+            return;
+        }
+        map_value_obj['list_data'].set('update_time', mytime.getTime());
 
         // 1. 更新到设备数据库，Gateway_Real_Table
         let wherestr = { 'devunit_name': devunit_name};
@@ -89,18 +95,15 @@ class MqttDeviceWTBL4gHndle {
             'logs': [],
             'data': [...map_value_obj['list_data'].values()],   //集合
         };
-        DB.Gateway_Real_Table.findOneAndUpdate(wherestr, updatestr).exec(function (err, doc) {
-            if (doc == null){
-                logger.info('doc is null');
-                DB.Gateway_Real_Table.create(updatestr);
-            }
-        });
+
+        await DB.Gateway_Real_Table.findOneAndUpdate(wherestr, updatestr,{upsert: true}).exec();
+
 
         // 2. 更新到设备历史数据库，Gateway_Minute_Table
         logger.info('Hello recordDeviceHistoryInfo');
         DB.Gateway_Minute_Table.create(updatestr);
 
-
+        /*
         //存最近60条记录
         let amount = await DB.Gateway_Minute_Table.count(wherestr);
         if (amount > keep_record_num){
@@ -110,6 +113,7 @@ class MqttDeviceWTBL4gHndle {
             logger.info('delete record of Gateway_Minute_Table, condition:', wheredel);
             DB.Gateway_Minute_Table.deleteMany(wheredel).exec();
         }
+        */
 
         logger.info('Hello wtbl exit');
     }

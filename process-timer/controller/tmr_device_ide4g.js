@@ -1,5 +1,6 @@
 'use strict';
 const config = require( "config-lite");
+const mongoose = require('mongoose');
 const DB = require( "../../models/models.js");
 const dtime = require( 'time-formater');
 const logger = require( '../../logs/logs.js');
@@ -14,7 +15,7 @@ class GatewayTimerHandle {
 	}
 
 
-    // 监听器 #3
+    // 监听器 #1
     async hour1BackupProcess () {
         logger.info('hour1 timer out:', dtime().format('YYYY-MM-DD HH:mm:ss'));
 
@@ -37,19 +38,12 @@ class GatewayTimerHandle {
                 let updatestr = {
                     'devunit_name': devunit_name,
                     'update_time': update_time,
-                    'sort_time': queryList[i].sort_time,
+                    'sort_time': mytime.getTime(),
                     'data': queryList[i].data,
                 };
                 DB.Gateway_Hour_Table.create(updatestr);
             }
 
-            // 3. 删除实时数据中最近1小时不更新的数据
-            //删除数据， sort_time  单位：ms
-            let limit_time = mytime.getTime() - 3600000;
-            if (queryList[i].sort_time < limit_time) {
-                //logger.info('delete record of Gateway_Real_Table, limit_time:', limit_time);
-                DB.Gateway_Real_Table.findByIdAndRemove(queryList[i]._id).exec();
-            }
 
             // 3. 限制数量
             //存最近60条记录,  记录数可配置：keep_record_num
@@ -70,7 +64,7 @@ class GatewayTimerHandle {
     }
 
 
-    // 监听器 #4
+    // 监听器 #2
     async day1BackupProcess () {
         logger.info('hour24 timer out:', dtime().format('YYYY-MM-DD HH:mm:ss'));
 
@@ -93,7 +87,7 @@ class GatewayTimerHandle {
                 let updatestr = {
                     'devunit_name': devunit_name,
                     'update_time': update_time,
-                    'sort_time': queryList[i].sort_time,
+                    'sort_time': mytime.getTime(),
                     'data': queryList[i].data,
                 };
                 DB.Gateway_Day_Table.create(updatestr);
@@ -115,6 +109,71 @@ class GatewayTimerHandle {
     }
 
 
+    // 监听器 #3
+    async dataAgeProcess () {
+        logger.info('data age timer out:', dtime().format('YYYY-MM-DD HH:mm:ss'));
+
+        let mytime = new Date();
+
+        // 将实时数据进行老化和去重复
+        let queryList = await DB.Gateway_Real_Table.find();
+        for (let i = 0; i < queryList.length; i++){
+
+            // 1. 删除实时数据中最近1小时不更新的数据
+            //删除数据， sort_time  单位：ms
+            let limit_time = mytime.getTime() - 3600000;
+            if (queryList[i].sort_time < limit_time) {
+                //logger.info('delete record of Gateway_Real_Table, limit_time:', limit_time);
+                DB.Gateway_Real_Table.findByIdAndRemove(queryList[i]._id).exec();
+            }
+
+            // 2. 去重复数据
+            let devunit_name = queryList[i].devunit_name;
+            let wherestr = { 'devunit_name': devunit_name};
+            let count = await DB.Gateway_Real_Table.count(wherestr);
+            if (count > 1){
+                DB.Gateway_Real_Table.findByIdAndRemove(queryList[i]._id).exec();
+            }
+
+        }
+    }
+
+    // 监听器 #4
+    async minute10BackupProcess () {
+        logger.info('minute10 timer out:', dtime().format('YYYY-MM-DD HH:mm:ss'));
+
+        let mytime = new Date();
+        let update_time = dtime(mytime).format('YYYY-MM-DD HH:mm');
+        let prefix = 'y' + mytime.getFullYear();
+
+
+        // 将实时数据存储到历史数据库
+        let queryList = await DB.Gateway_Real_Table.find();
+        for (let i = 0; i < queryList.length; i++){
+
+            //更新每天的汇总统计
+            let devunit_name = queryList[i].devunit_name;
+            // 历史数据表名称： y2018jinxi_2
+            // 支持每年新生成一个collection
+            let minute10Table = mongoose.model(prefix + devunit_name, DB.historySchema);
+            let minute10Model = new minute10Table({
+                'devunit_name': devunit_name,
+                'update_time': update_time,
+                'sort_time': mytime.getTime(),
+                'data': queryList[i].data,
+            });
+
+            minute10Model.save();
+        }
+    }
+    // 监听器 #4
+    async minuteTest () {
+        logger.info('minute10 test:', dtime().format('YYYY-MM-DD HH:mm:ss'));
+        //var db = mongoose.createConnection(URL);
+        //mongoose.createConnection("mongodb://localhost:27017/iotks2018", {useMongoClient:true});
+        //dbHnd.createConnection("iotks202020")
+    }
+
 }
 
 const gwTimerHnd = new GatewayTimerHandle();
@@ -123,4 +182,10 @@ const gwTimerHnd = new GatewayTimerHandle();
 schedule.scheduleJob('0 0,30 * * * *', gwTimerHnd.hour1BackupProcess);
 //场景：超时失败, 每天夜里12:00, 中午12:00进行更新, 更新两次，增加可靠性
 schedule.scheduleJob('0 0 0,12 * * *', gwTimerHnd.day1BackupProcess);
+//场景：每小时，实时数据老化一次， 去重一次
+schedule.scheduleJob('10 1 * * * *', gwTimerHnd.dataAgeProcess);
+//场景：每10分钟执行一次, 存储历史数据，生成devunit_name 命名的数据集合
+schedule.scheduleJob('3 */2 * * * *', gwTimerHnd.minute10BackupProcess);
+//场景：test
+schedule.scheduleJob('3 */2 * * * *', gwTimerHnd.minuteTest);
 
