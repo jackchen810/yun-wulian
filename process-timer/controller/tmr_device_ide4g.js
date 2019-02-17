@@ -185,7 +185,7 @@ schedule.scheduleJob('0 0 0,12 * * *', gwTimerHnd.day1BackupProcess);
 //场景：每小时，实时数据老化一次， 去重一次
 schedule.scheduleJob('10 1 * * * *', gwTimerHnd.dataAgeProcess);
 //场景：每10分钟执行一次, 存储历史数据，生成devunit_name 命名的数据集合
-schedule.scheduleJob('3 */2 * * * *', gwTimerHnd.minute10BackupProcess);
+schedule.scheduleJob('3 */10 * * * *', gwTimerHnd.minute10BackupProcess);
 //场景：test
-schedule.scheduleJob('3 */2 * * * *', gwTimerHnd.minuteTest);
+//schedule.scheduleJob('3 */2 * * * *', gwTimerHnd.minuteTest);
 
