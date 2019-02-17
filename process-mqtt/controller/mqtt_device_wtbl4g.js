@@ -103,7 +103,7 @@ class MqttDeviceWTBL4gHndle {
         logger.info('Hello recordDeviceHistoryInfo');
         DB.Gateway_Minute_Table.create(updatestr);
 
-        /*
+
         //存最近60条记录
         let amount = await DB.Gateway_Minute_Table.count(wherestr);
         if (amount > keep_record_num){
@@ -113,7 +113,7 @@ class MqttDeviceWTBL4gHndle {
             logger.info('delete record of Gateway_Minute_Table, condition:', wheredel);
             DB.Gateway_Minute_Table.deleteMany(wheredel).exec();
         }
-        */
+
 
         logger.info('Hello wtbl exit');
     }
