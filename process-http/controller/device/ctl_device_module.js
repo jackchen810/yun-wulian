@@ -360,6 +360,9 @@ class DeviceModuleHandle {
                 let tagList = queryList[i].data;
                 //遍历各个Tag（Tag_H2O_wendu）
                 for (let m = 0; m < tagList.length; m++) {
+                    if (typeof(tagList[m]['varName']) != "string"){
+                        continue;
+                    }
                     if (tagList[m]['varName'].indexOf('臭氧发生器模块启动') >=0 ){
                         //console.log('varName:', tagList[m]['varName']);
 
@@ -412,6 +415,9 @@ class DeviceModuleHandle {
             let tagList = queryList[i].data;
             //遍历各个Tag（Tag_H2O_wendu）
             for (let m = 0; m < tagList.length; m++) {
+                if (typeof(tagList[m]['varName']) != "string"){
+                    continue;
+                }
                 if (tagList[m]['varName'].indexOf('功率给定值') >=0 ){
                     //console.log('varName:', tagList[m]['varName']);
 
