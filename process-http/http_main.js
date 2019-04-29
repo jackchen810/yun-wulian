@@ -10,6 +10,14 @@ const bodyParser = require('body-parser');
 const web_router = require('./routes/entry_index');
 const session = require('express-session');
 const connectMongo = require('connect-mongo');
+const fs = require("fs");
+
+
+//图片存放位置， 不存在则创建
+fs.exists(config.download_dir, function(exists) {
+    console.log(exists ? "文件下载目录存在" : "文件下载目录不存在", config.download_dir);
+    if (!exists) fs.mkdirSync(config.download_dir);
+});
 
 
 const app = express();

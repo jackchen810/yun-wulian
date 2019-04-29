@@ -7,7 +7,9 @@ const prj_manage_router = require('./rt_project_manage.js');
 const dev_manage_router = require('./rt_device_manage.js');
 const dev_module_router = require('./rt_device_module.js');
 const wechat_router = require('./rt_wechat.js');
-
+const config = require( "config-lite");
+const fs = require("fs");
+const path = require('path');
 
  function http_web_router(app) {
 
@@ -40,6 +42,32 @@ const wechat_router = require('./rt_wechat.js');
 
      //module
      app.use('/api/module', dev_module_router);
+
+
+
+     // Welcome test
+     app.use('/download', function(req, res) {
+         //console.log('req.baseUrl', req.baseUrl);
+         //console.log('req.path', req.path);
+         //console.log('config.download_dir', config.download_dir);
+
+         var file_name = req.path.slice(1);
+         //console.log('file_name', file_name);
+
+         // 实现文件下载
+         var filePath = path.join(config.download_dir,  req.path);
+         res.download(filePath, file_name, function(err){
+             if(err){
+                 //处理错误，可能只有部分内容被传输，所以检查一下res.headerSent
+                 res.send({ret_code: -1, ret_msg: 'FAILED', extra:err});
+             }else{
+                 //减少下载的积分值之类的。
+                 //res.send({ret_code: 0, ret_msg: 'SUCCESS', extra: 'download ok'});
+                 res.status(200);
+             }
+         });
+
+     });
 
 
      // Welcome test

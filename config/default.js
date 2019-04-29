@@ -3,6 +3,7 @@
 module.exports = {
 	image_dir:'./public/image',
 	firmware_dir:'./public/firmware',
+	download_dir:'./public/download',
 	pkg_dir:'./public/packages',
 	script_dir:'./public/scripts',
 	backend_port:'80',
