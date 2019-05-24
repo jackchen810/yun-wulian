@@ -14,6 +14,7 @@ router.all('/array',  CtlDeviceManage.device_array);
 
 router.all('/del',  CtlDeviceManage.device_del);
 router.all('/update',  CtlDeviceManage.device_update);
+router.all('/export/history',  CtlDeviceManage.export_data);
 //router.all('/hide',  CtlDeviceManage.project_hide);
 //router.all('/resume',  CtlDeviceManage.project_resume);
 

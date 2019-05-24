@@ -45,7 +45,7 @@ const path = require('path');
 
 
 
-     // Welcome test
+     // Welcome download
      app.use('/download', function(req, res) {
          //console.log('req.baseUrl', req.baseUrl);
          //console.log('req.path', req.path);

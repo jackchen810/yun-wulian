@@ -1,10 +1,13 @@
 'use strict';
+const mongoose = require('mongoose');
 const dtime = require( 'time-formater');
 const config = require( "config-lite");
 const DB = require( "../../../models/models.js");
 const logger = require( '../../../logs/logs.js');
 const fs = require("fs");
 const path = require('path');
+const xlsx = require('node-xlsx');
+const moment = require('moment');
 //const multiparty = require('multiparty');
 const formidable = require('formidable');
 
@@ -287,6 +290,128 @@ class CtlDeviceManageHandle {
         logger.info('device update end');
     }
 
+    async export_data(req, res,next){
+        logger.info('device export');
+
+        //获取表单数据，josn
+        let data_range = req.body['data_range'];
+        let devunit_name = req.body['devunit_name'];
+        logger.info('data_range:', data_range);
+        logger.info('devunit_name:', devunit_name);
+
+        let mytime = new Date();
+        let prefix = 'y' + mytime.getFullYear();
+        let file_path='download/'+ prefix + devunit_name +'.xlsx';
+        let local_path='./public/'+ file_path;
+
+        //删除旧的文件
+        try {
+            fs.unlinkSync(local_path);
+        }catch(err){
+        }
+
+
+        let minute10Table = mongoose.model(prefix + devunit_name, DB.historySchema);
+
+        //let user = req.body.user_account;
+        let queryList = await minute10Table.find().exec();
+        let sheetLine=[];
+
+        logger.info('queryList.length:', queryList.length);
+        for(let i = 0; i< queryList.length; i++) {
+
+            if (i == 0){
+                let varName=['时间'];
+                let dataList = queryList[i].data;
+                for (let j = 0; j < dataList.length; j++) {
+                    varName.push(dataList[j].varName);
+                }
+
+                //console.log('varName...', varName.toString());
+                sheetLine.push(varName);
+            }
+
+            let varValue=[];
+            //第一列，时间
+            varValue.push(queryList[i].update_time);
+            let dataList = queryList[i].data;
+            for (let j = 0; j < dataList.length; j++) {
+                varValue.push(dataList[j].varValue);
+            }
+
+            //console.log('varValue...', varValue.toString());
+            sheetLine.push(varValue);
+        }
+
+        /*
+        // 写入excel之后是一个三行两列的表格
+        var data2 = [
+            varName,   //第一行，变量名称
+            ['zhang san', '10'],
+            ['li si', '11']
+        ];
+        */
+        console.log('xlsx.build....', sheetLine.length);
+        //console.log('xlsx.build....', sheetLine[0].toString());
+        //console.log('xlsx.build....', sheetLine[1].toString());
+        let fileData = xlsx.build([
+            {
+                name:'sheet1',
+                data: sheetLine
+            }
+        ]);
+
+        console.log('写文件....');
+        //let time = moment().format('YYYYMMDDHHMMSS');
+        //let file_path='/download/'+ time +'.xlsx';
+        //let local_path = './public'+file_path;
+        //fs.writeFileSync(local_path, fileData,{'flag':'w'});
+
+        fs.writeFile(local_path, fileData, (err) => {
+            if(err)
+                console.log('写文件操作失败');
+            else {
+                console.log('写文件操作成功');
+            }
+        });
+
+
+
+        console.log('文件已被保存');
+        res.send({ret_code:0, ret_msg:'SUCCESS',extra: file_path});
+    }
+
+    /*
+    * // Include modules.
+var xlsx = require('node-xlsx');
+var fs = require('fs');
+
+// 写入excel之后是一个一行两列的表格
+var data1 = [
+['name', 'age']
+];
+
+// 写入excel之后是一个三行两列的表格
+var data2 = [
+['name', 'age'],
+['zhang san', '10'],
+['li si', '11']
+];
+
+var buffer = xlsx.build([
+  {
+      name:'sheet1',
+      data:data1
+  }, {
+      name:'sheet2',
+      data:data2
+  }
+  ]);
+
+fs.writeFileSync('book.xlsx', buffer, {'flag':'w'}); // 如果文件存在，覆盖
+
+    *
+    * */
 }
 
 
