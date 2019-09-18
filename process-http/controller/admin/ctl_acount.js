@@ -344,14 +344,27 @@ class Account extends BaseComponent {
 
         //获取表单数据，josn
         let user_account = req.body['user_account'];
-        let wherestr = {'user_account':user_account};
-        let query = await DB.AccountTable.findOne(wherestr).exec();
-        console.log('[website] get result:', query);
-        if (query == null){
-            res.send({ret_code: 0, ret_msg: '成功', extra:[]});
+
+        //超级用户可以获取全部项目列表
+        if(user_account == req.session.user_account && req.session.user_type == 0){
+            let queryList = await DB.ProjectManageTable.find().exec();
+            let prjList = [];
+            for(let i= 0; i< queryList.length; i++){
+                prjList.push(queryList[i]['project_name']);
+            }
+            res.send({ret_code: 0, ret_msg: '成功', extra: prjList});
         }
-        else{
-            res.send({ret_code: 0, ret_msg: '成功', extra:query['user_projects']});
+        //普通用户获取自己拥有的项目列表
+        else {
+            let wherestr = {'user_account': user_account};
+            let query = await DB.AccountTable.findOne(wherestr).exec();
+            console.log('[website] get result:', query);
+            if (query == null) {
+                res.send({ret_code: 0, ret_msg: '成功', extra: []});
+            }
+            else {
+                res.send({ret_code: 0, ret_msg: '成功', extra: query['user_projects']});
+            }
         }
     }
 
