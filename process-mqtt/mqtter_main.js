@@ -18,7 +18,7 @@ mqtt_router(mqttClient);
 
 
 process.on('unhandledRejection', (reason, p) => {
-    logger.info("Unhandled Rejection:", p);
+    logger.info("[mqtt] Unhandled Rejection:", p);
     // application specific logging, throwing an error, or other logic here
 });
 

@@ -339,6 +339,34 @@ class Account extends BaseComponent {
         res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:accountList, total:queryList.length});
         console.log('[website] account array end');
     }
+    async getOwnProject(req, res, next) {
+        console.log('[website] account get own projects');
+
+        //获取表单数据，josn
+        let user_account = req.body['user_account'];
+        let wherestr = {'user_account':user_account};
+        let query = await DB.AccountTable.findOne(wherestr).exec();
+        console.log('[website] get result:', query);
+        if (query == null){
+            res.send({ret_code: 0, ret_msg: '成功', extra:[]});
+        }
+        else{
+            res.send({ret_code: 0, ret_msg: '成功', extra:query['user_projects']});
+        }
+    }
+
+    async updateOwnProject(req, res, next) {
+
+        //获取表单数据，josn
+        let user_projects = req.body['user_projects'];
+        let user_account = req.body['user_account'];
+        console.log('[website] account update own projects', user_projects);
+
+        let wherestr = {'user_account':user_account};
+        let updatestr = {'user_projects': user_projects};
+        await DB.AccountTable.findOneAndUpdate(wherestr, updatestr).exec();
+        res.send({ret_code: 0, ret_msg: '成功', extra: user_projects});
+    }
 
     async addDefaultAccount(user_account, user_password) {
 
@@ -370,7 +398,6 @@ class Account extends BaseComponent {
 
 
     }
-
 
 }
 

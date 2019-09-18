@@ -23,6 +23,8 @@ const accountSchema = new Schema({
 	//user_admin: String,
 	user_status: Number, //0:用户正常,1:用户冻结
 	user_avatar: {type: String, default: 'default.jpg'},
+
+    user_projects: Array,   //用户拥有的项目
     login_logs: Array,   //一些上下线的日志信息，辅助定位问题，记录5条
 });
 

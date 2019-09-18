@@ -11,7 +11,7 @@ require("./controller/tmr_device_ide4g.js");
 
 
 process.on('unhandledRejection', (reason, p) => {
-    logger.info("Unhandled Rejection:", p);
+    logger.info("[timer] Unhandled Rejection:", p);
     // application specific logging, throwing an error, or other logic here
 });
 

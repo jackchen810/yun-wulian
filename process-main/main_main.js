@@ -13,10 +13,10 @@ require('../mongodb/db.js');
 
 
 process.on('unhandledRejection', (reason, p) => {
-    logger.info("Unhandled Rejection:", p);
+    logger.info("[main] Unhandled Rejection:", p);
     // application specific logging, throwing an error, or other logic here
 });
 
 process.on('uncaughtException', (err) => {
-    logger.error("[timer] uncaughtException：", err);
+    logger.error("[main] uncaughtException：", err);
 });

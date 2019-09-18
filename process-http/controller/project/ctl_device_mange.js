@@ -289,6 +289,47 @@ class CtlDeviceManageHandle {
         res.send({ret_code: 0, ret_msg: '成功', extra: ''});
         logger.info('device update end');
     }
+    async create_data(req, res,next){
+        logger.info('device create');
+
+        //获取表单数据，josn
+        let data_num = req.body['data_num'];
+        let devunit_name = req.body['devunit_name'];
+        logger.info('data_num:', data_num);
+        logger.info('devunit_name:', devunit_name);
+
+
+        let mytime = new Date();
+        //删除数据， sort_time  单位：ms
+        let limit_time = mytime.getTime() - 3600000;
+        let prefix = 'yt' + mytime.getFullYear();
+        let update_time = dtime(mytime).format('YYYY-MM-DD HH:mm');
+        let minute10Table = mongoose.model(prefix + devunit_name, DB.historySchema);
+
+
+        // 将实时数据存储到历史数据库
+        let queryList = await DB.Gateway_Minute_Table.find();
+        for (let i = 0; i < queryList.length; i++){
+
+            //更新每天的汇总统计
+            let devunit_name = queryList[i].devunit_name;
+            // 历史数据表名称： y2018jinxi_2
+            // 支持每年新生成一个collection
+            let minute10Table = mongoose.model(prefix + devunit_name, DB.historySchema);
+            let minute10Model = new minute10Table({
+                'devunit_name': devunit_name,
+                'update_time': update_time,
+                'sort_time': mytime.getTime(),
+                'data': queryList[i].data,
+            });
+
+            minute10Model.save();
+        }
+
+
+        console.log('文件已被保存');
+        res.send({ret_code:0, ret_msg:'SUCCESS',extra: file_path});
+    }
 
     async export_data(req, res,next){
         logger.info('device export');
@@ -361,7 +402,7 @@ class CtlDeviceManageHandle {
             }
         ]);
 
-        console.log('写文件....');
+        //console.log('写文件....');
         //let time = moment().format('YYYYMMDDHHMMSS');
         //let file_path='/download/'+ time +'.xlsx';
         //let local_path = './public'+file_path;

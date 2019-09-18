@@ -109,7 +109,7 @@ console.log('Https listening at ' + config.ssl.port);
 
 
 process.on('unhandledRejection', (reason, p) => {
-    logger.info("Unhandled Rejection:", p);
+    logger.info("[https] Unhandled Rejection:", p);
     // application specific logging, throwing an error, or other logic here
 });
 

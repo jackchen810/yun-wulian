@@ -34,8 +34,20 @@ class ProjectManageTable {
             return;
         }
 
+        //普通1级用户， 查找所属的项目
         if (user_type == 1) {
-            filter['user_account'] = user_account;
+            let wherestr = {'user_account': user_account};
+            let query = await DB.AccountTable.findOne(wherestr).exec();
+            console.log('[project] get result:', query);
+            if (query != null){
+                console.log('[project] get Own property', query['user_projects']);
+                filter['project_name'] = { $in: query['user_projects']};
+            }
+            else{
+                res.send({ret_code: 0, ret_msg: '成功', extra: query, total:0});
+                logger.info('project page list end');
+                return;
+            }
         }
 
 
@@ -69,8 +81,20 @@ class ProjectManageTable {
             return;
         }
 
+        //普通1级用户， 查找所属的项目
         if (user_type == 1) {
-            filter['user_account'] = user_account;
+            let wherestr = {'user_account': user_account};
+            let query = await DB.AccountTable.findOne(wherestr).exec();
+            console.log('[project] get result:', query);
+            if (query != null){
+                 console.log('[project] get Own property', query['user_projects']);
+                 filter['project_name'] = { $in: query['user_projects']};
+            }
+            else{
+                res.send({ret_code: 0, ret_msg: '成功', extra: query, total:0});
+                logger.info('project page list end');
+                return;
+            }
         }
 
         logger.info('user_account:', user_account);

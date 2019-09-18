@@ -101,7 +101,7 @@ console.log('[http] Http listening at ' + config.backend_port);
 
 
 process.on('unhandledRejection', (reason, p) => {
-    logger.info("Unhandled Rejection:", p);
+    logger.info("[http] Unhandled Rejection:", p);
     // application specific logging, throwing an error, or other logic here
 });
 
