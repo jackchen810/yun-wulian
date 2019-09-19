@@ -337,6 +337,17 @@ class CtlDeviceManageHandle {
         //获取表单数据，josn
         let data_range = req.body['data_range'];
         let devunit_name = req.body['devunit_name'];
+
+        if(!data_range || data_range == '') {
+            res.send({ret_code: 1,ret_msg: 'data_range 字段为空',extra: ''});
+            return;
+        }
+
+        if(!devunit_name || devunit_name == '') {
+            res.send({ret_code: 1,ret_msg: 'devunit_name 字段为空',extra: ''});
+            return;
+        }
+
         logger.info('data_range:', data_range);
         logger.info('devunit_name:', devunit_name);
 

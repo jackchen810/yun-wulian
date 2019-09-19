@@ -11,6 +11,7 @@ router.all('/login', /*Check.checkAdminStatus,*/ Account.login);
 router.all('/register',/*Check.checkSuperAdmin,*/ Account.register);
 router.all('/logout', Check.checkAdminStatus,Account.logout);
 router.all('/change',/* Check.checkSuperAdmin,*/ Account.changePassword);
+router.all('/delete', Check.checkSuperAdmin, Account.deleteAccount);
 router.all('/revoke',Check.checkSuperAdmin, Account.revoke);
 router.all('/restore',Check.checkSuperAdmin, Account.restore);
 router.all('/list', Check.checkSuperAdmin, Account.account_list);

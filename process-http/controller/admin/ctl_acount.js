@@ -13,6 +13,7 @@ class Account extends BaseComponent {
 		this.login = this.login.bind(this);
 		this.register = this.register.bind(this);
 		this.changePassword = this.changePassword.bind(this);
+        this.deleteAccount = this.deleteAccount.bind(this);
 		this.revoke = this.revoke.bind(this);
 		this.restore = this.restore.bind(this);
 		this.account_list = this.account_list.bind(this);
@@ -22,8 +23,9 @@ class Account extends BaseComponent {
 
 		//本地调试, 设置管理员用户及密码
         //if (process.env.NODE_ENV == 'development') {
-            this.addDefaultAccount('admin', '123456')
-            console.log('add default account')
+        this.addDefaultAccount('admin', '123456');
+        //this.resetPassword('admin', '123456');
+        console.log('add default account')
         //}
 	}
 
@@ -164,9 +166,9 @@ class Account extends BaseComponent {
 	async changePassword(req, res, next){
         console.log('[website] account changePassword');
 	//	let user_account = req.body.user_account;
-		let user_account = req.session.user_account;
+		let user_account = req.body.user_account;
 		let user_password = req.body.user_password;
-		let user_new_password =req.body.user_new_password;
+		let user_new_password = req.body.user_new_password;
 		try{
 			if(!user_account){
 				throw new Error('请登录用户账号');
@@ -175,7 +177,7 @@ class Account extends BaseComponent {
 			}
 		}catch(err){
 			console.log(err.message, err);
-			res.send({ret_code: 1,ret_msg: 'GET_ERROR_PARAM',extra: err.message});
+			res.send({ret_code: 1,ret_msg: '参数错误',extra: err.message});
 			return;
 		}
 		//const password = this.encryption(user_password);
@@ -188,9 +190,9 @@ class Account extends BaseComponent {
                 res.send({ret_code: 1, ret_msg: '用户不存在', extra: ''});
                 return;
             }
-            if(user_password != admin.user_password_md5) {
-				console.log('密码错误');
-				res.send({ret_code: 1,ret_msg: '密码错误',extra: ''});
+            if(user_password != admin.user_password) {
+				console.log('密码错误', user_password);
+				res.send({ret_code: 1, ret_msg: '密码错误',extra: ''});
 				return;
 			}
 
@@ -201,15 +203,34 @@ class Account extends BaseComponent {
 
             await DB.AccountTable.findByIdAndUpdate(admin['_id'], updatestr);
             console.log('修改密码成功');
-            res.send({ret_code: 0,ret_msg: '修改密码成功',extra: ''});
+            res.send({ret_code: 0, ret_msg: '修改密码成功',extra: ''});
 
 		}catch(err){
 			console.log('修改用户密码失败');
-			res.send({ret_code: 1,ret_msg: '修改用户密码失败',extra: ''});
+			res.send({ret_code: 1, ret_msg: '修改用户密码失败',extra: ''});
 			return;
 		}
         console.log('[website] account changePassword end');
 	}
+
+    async deleteAccount(req, res, next){
+        console.log('[website] account delete');
+        //	let user_account = req.body.user_account;
+        //获取表单数据，josn
+        let user_account = req.body['user_account'];
+
+        try{
+            let wherestr = {'user_account': user_account};
+            await DB.AccountTable.findOneAndRemove(wherestr);
+            console.log('删除账户成功');
+            res.send({ret_code: 0,ret_msg: '删除账户成功',extra: ''});
+
+        }catch(err){
+            console.log('删除账户失败');
+            res.send({ret_code: 1,ret_msg: '删除账户失败',extra: ''});
+        }
+        console.log('[website] account delete end');
+    }
 
 	async revoke(req, res, next){
         console.log('[website] account revoke');
@@ -381,6 +402,25 @@ class Account extends BaseComponent {
         res.send({ret_code: 0, ret_msg: '成功', extra: user_projects});
     }
 
+    async resetPassword(account, password){
+        console.log('[website] account resetPassword');
+        //	let user_account = req.body.user_account;
+        let user_account = account;
+        let user_password = password;
+
+        try{
+            let wherestr = {'user_account': user_account};
+            let updatestr = {
+                'user_password': user_password,
+                'user_password_md5': this.Md5(user_password),
+            };
+
+            await DB.AccountTable.findOneAndUpdate(wherestr, updatestr);
+        }catch(err){
+            console.log('修改用户密码失败');
+        }
+        console.log('[website] account resetPassword end');
+    }
     async addDefaultAccount(user_account, user_password) {
 
         //await DB.AccountTable.findOneAndRemove({'user_account': user_account});
