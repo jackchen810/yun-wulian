@@ -91,14 +91,21 @@ class MqttDeviceIDE4gHandle {
         let mytime = new Date();
         logger.info('Hello idjc:', dtime(mytime).format('YYYY-MM-DD HH:mm:ss'), devunit_name, JSON.stringify(josnObj));
 
+
+        //检查是否有data属性
+        if (!josnObj.hasOwnProperty('data')){
+            return;
+        }
+
         // 1.0
         let channel_name = '';
         for(let item in josnObj['data']){
             channel_name = item;
+            //console.log('channel_name:', channel_name);
             break;
         }
 
-        //检查
+        //检查，是否有第一个属性
         if (!josnObj['data'].hasOwnProperty(channel_name)){
             return;
         }
