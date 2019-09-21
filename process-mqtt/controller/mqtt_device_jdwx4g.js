@@ -25,7 +25,9 @@ class MqttDeviceJDWX4gHndle {
     // devunit_name
     async deviceMessageProcess (devunit_name, josnObj) {
 
+        //console.log("receive yunJDWX message");
         if (!josnObj.hasOwnProperty('cmdId')){
+            //console.log("not found comdId");
             return;
         }
 
@@ -51,7 +53,7 @@ class MqttDeviceJDWX4gHndle {
 
         // 1. 更新到设备数据库，sysinfo库
         //SysinfoTable
-        let devunit_name = dev_name + '_' + josnObj['devList'][0]['devNo'];
+        let devunit_name = dev_name + '_' + josnObj['devList'][0]['devId'];
 
         let map_value_obj = this.hash_data.get(devunit_name);
         //console.log('map_value_obj:', map_value_obj);
@@ -77,7 +79,7 @@ class MqttDeviceJDWX4gHndle {
 
         // 防止重复进入，wtbl数据网关上送如果太大会拆分成两个包
         if (map_value_obj['list_data'].get('update_time') + 30000 > mytime.getTime()){
-            logger.info('Hello wtbl exit, repeat into');
+            logger.info('Hello jdwx exit, repeat into');
             return;
         }
         map_value_obj['list_data'].set('update_time', mytime.getTime());
@@ -87,8 +89,8 @@ class MqttDeviceJDWX4gHndle {
         let updatestr = {
             'devunit_name': devunit_name,
             'devunit_local': devunit_name,
-            'devunit_sn': josnObj['gwSn'],
-            'devunit_type': 'wutongbolian',
+            'devunit_sn': josnObj['routermac'],
+            'devunit_type': 'jindawanxiang',
             'devunit_link_status': 'online',
             'update_time':dtime(mytime).format('YYYY-MM-DD HH:mm:ss'),
             'sort_time':mytime.getTime(),
@@ -115,7 +117,7 @@ class MqttDeviceJDWX4gHndle {
         }
 
 
-        logger.info('Hello wtbl exit');
+        logger.info('Hello jdwx exit');
     }
 
 }

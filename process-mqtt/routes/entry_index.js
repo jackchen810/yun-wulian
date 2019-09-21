@@ -17,6 +17,7 @@ const config = require('config-lite');
      client.subscribe('yunWL/+/post/#',{qos:1});
      client.subscribe('yunADJC/+/post/#',{qos:1});
      client.subscribe('yunWTBL/+/post/#',{qos:1});
+     client.subscribe('yunJDWX/+/post/#',{qos:1});
      //client.subscribe('$SYS/#',{qos:1});
      //client.subscribe('yunWL/+/CMD_GET/',{qos:1});
 
