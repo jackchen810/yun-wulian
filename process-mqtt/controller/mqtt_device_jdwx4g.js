@@ -89,7 +89,7 @@ class MqttDeviceJDWX4gHndle {
         let updatestr = {
             'devunit_name': devunit_name,
             'devunit_local': devunit_name,
-            'devunit_sn': josnObj['gwMac'],
+            'devunit_sn': josnObj['gwSn'],
             'devunit_type': 'jindawanxiang',
             'devunit_link_status': 'online',
             'update_time':dtime(mytime).format('YYYY-MM-DD HH:mm:ss'),
