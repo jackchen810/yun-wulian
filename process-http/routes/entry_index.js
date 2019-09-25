@@ -6,6 +6,12 @@ const admin_router = require('./rt_acount.js');
 const prj_manage_router = require('./rt_project_manage.js');
 const dev_manage_router = require('./rt_device_manage.js');
 const dev_module_router = require('./rt_device_module.js');
+const devtype_router = require('../routes/rt_devtype.js');
+const rom_pkg_router = require('../routes/rt_rom_package.js');
+const rom_task_router = require('../routes/rt_rom_task.js');
+const script_router = require('../routes/rt_script_manage.js');
+const apps_pkg_router = require('../routes/rt_apps_package.js');
+const apps_task_router = require('./rt_apps_task.js');
 const wechat_router = require('./rt_wechat.js');
 const config = require( "config-lite");
 const fs = require("fs");
@@ -19,7 +25,7 @@ const path = require('path');
      //wechat 登录相关
      app.use('/api/wechat', wechat_router);
 
-     // right check
+     // right check, 所有都要检查
      app.use('/api', function(req, res, next) {
          if (req.hasOwnProperty("session") && req.session.hasOwnProperty("user_type")){
              //console.log('right check ok ');
@@ -43,7 +49,24 @@ const path = require('path');
      //module
      app.use('/api/module', dev_module_router);
 
+     //设备类型相关
+     app.use('/api/devtype', devtype_router);
 
+     //固件相关
+     app.use('/api/rom', rom_pkg_router);
+
+     //脚本相关
+     app.use('/api/script', script_router);
+
+     //管理功能
+     app.use('/api/apps', apps_pkg_router);
+
+
+     //固件升级任务相关
+     app.use('/api/rom/task', rom_task_router);
+
+     //插件相关
+     app.use('/api/apps/task', apps_task_router);
 
      // Welcome download
      app.use('/download', function(req, res) {

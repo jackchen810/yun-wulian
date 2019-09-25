@@ -53,6 +53,7 @@ class MqttDispatchHandle {
         }
         else {
             var msg_string = message.toString();
+            //console.log('[emqtt] response:', topic, msg_string);
             if (process.env.NODE_ENV == 'local'){
                 console.log('[emqtt] response:', topic, msg_string);
             }

@@ -32,7 +32,7 @@ app.all('*', (req, res, next) => {
 	if (req.method == 'OPTIONS') {
 	  	res.send(200);
 	} else {
-		console.log('method:', req.method, req.path);
+		console.log('[http] method:', req.method, req.path);
 		///** 尼玛，打开下面开关后，文件上传不好使
 		/*   //不能开
         req.on('data', function (data) {

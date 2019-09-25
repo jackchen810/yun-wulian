@@ -1,9 +1,12 @@
 'use strict';
-import mongoose from 'mongoose';
-import mqttClient from '../../mqttclient/mqttclient.js';
-import TaskHandle from "../../mqttclient/publish/mqtt_task.js"
-import dtime from "time-formater";
-import config from 'config-lite';
+
+const mongoose = require( 'mongoose');
+const TaskHandle = require( '../../mqttclient/publish/mqtt_task.js');
+const dtime = require( 'time-formater');
+const config = require( "config-lite");
+//引入事件模块
+const logger = require("../../logs/logs.js");
+
 
 
 
@@ -79,10 +82,83 @@ class CMD_EXE {
     }
 
     //共有方法
-    async networkinfo(taskHnd){
-        
+
+    async shell(taskHnd, cmd){
+
         var cmdJsonObj = {
-            "item":"networkinfo",
+            "item":"shell",
+            "id": taskHnd.uuid,
+            "cmd":cmd,
+        };
+
+        taskHnd.topic_cmd = '/YunAC/CMD_EXE/';
+        TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
+        return taskHnd.uuid;
+    }
+
+    async shell64(taskHnd, cmd){
+
+        var cmdJsonObj = {
+            "item":"shell64",
+            "id": taskHnd.uuid,
+            "cmd":cmd,
+        };
+
+        taskHnd.topic_cmd = '/YunAC/CMD_EXE/';
+        TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
+        return taskHnd.uuid;
+    }
+
+    async script(taskHnd, port, url_route, md5){
+
+        var cmdJsonObj = {
+            "item":"remote_cmd",
+            "id": taskHnd.uuid,
+            "port": port,
+            "url_route": url_route,
+            "md5":md5,
+        };
+
+        taskHnd.topic_cmd = '/YunAC/CMD_EXE/';
+        TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
+        return taskHnd.uuid;
+    }
+
+    async apps(taskHnd, logo, content){
+
+        var cmdJsonObj = {
+            "item":"apps",
+            "id": taskHnd.uuid,
+            "log_opt":"1",
+            "logo":logo,
+            "content":content,
+        };
+
+        taskHnd.topic_cmd = '/YunAC/CMD_EXE/';
+        TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
+        return taskHnd.uuid;
+    }
+
+    async firmware(taskHnd, firmware_url, firmware_md5, reflash, dest_version){
+
+        var cmdJsonObj = {
+            "item":"firmware",
+            "id": taskHnd.uuid,
+            "sfile":firmware_url,
+            "md5":firmware_md5,
+            "reflash":reflash,
+            "dest_version":dest_version,
+        };
+
+        taskHnd.topic_cmd = '/YunAC/CMD_EXE/';
+        await TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
+        return taskHnd.uuid;
+    }
+
+    async reboot(taskHnd){
+
+        var cmdJsonObj = {
+            "item":"reboot",
             "id": taskHnd.uuid,
         };
 
@@ -91,8 +167,35 @@ class CMD_EXE {
         return taskHnd.uuid;
     }
 
+    async network(taskHnd, type){
+
+        var cmdJsonObj = {
+            "item":"network",
+            "id": taskHnd.uuid,
+            "type":type,
+        };
+
+        taskHnd.topic_cmd = '/YunAC/CMD_EXE/';
+        TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
+        return taskHnd.uuid;
+    }
+
+    async passwd(taskHnd, oldpasswd, newpasswd){
+
+        var cmdJsonObj = {
+            "item":"passwd",
+            "id": taskHnd.uuid,
+            "oldpasswd":oldpasswd,
+            "newpasswd":newpasswd,
+        };
+
+        taskHnd.topic_cmd = '/YunAC/CMD_EXE/';
+        TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
+        return taskHnd.uuid;
+    }
+
     async superpasswd(taskHnd, newpasswd){
-        
+
         var cmdJsonObj = {
             "item":"superpasswd",
             "id": taskHnd.uuid,

@@ -55,34 +55,15 @@ class MqttDeviceJDWX4gHndle {
         //SysinfoTable
         let devunit_name = dev_name + '_' + josnObj['devList'][0]['devId'];
 
-        let map_value_obj = this.hash_data.get(devunit_name);
-        //console.log('map_value_obj:', map_value_obj);
-        if(!map_value_obj){
-            map_value_obj = {
-                'devunit_name': devunit_name,
-                'list_data': new Map(),   //hash表中
-                'update_time':mytime.getTime(),
-            };
-        }
-
         /// 向hash表中添加数据
+        var list_data = new Map();   //hash表中
         for(let item of josnObj['devList'][0]['varList']) {
             //console.log('item:', item);
-            map_value_obj['list_data'].set(item.varName, item);
+            list_data.set(item.varName, item);
         }
 
         //console.log('add list length:', josnObj['devList'][0]['varList'].length);
         //console.log('map_value_obj size:', map_value_obj['list_data'].size);
-
-        // 保存到hash表中
-        this.hash_data.set(devunit_name, map_value_obj);
-
-        // 防止重复进入，wtbl数据网关上送如果太大会拆分成两个包
-        if (map_value_obj['list_data'].get('update_time') + 30000 > mytime.getTime()){
-            logger.info('Hello jdwx exit, repeat into');
-            return;
-        }
-        map_value_obj['list_data'].set('update_time', mytime.getTime());
 
         // 1. 更新到设备数据库，Gateway_Real_Table
         let wherestr = { 'devunit_name': devunit_name};
@@ -95,7 +76,7 @@ class MqttDeviceJDWX4gHndle {
             'update_time':dtime(mytime).format('YYYY-MM-DD HH:mm:ss'),
             'sort_time':mytime.getTime(),
             'logs': [],
-            'data': [...map_value_obj['list_data'].values()],   //集合
+            'data': [...list_data.values()],   //集合
         };
 
         await DB.Gateway_Real_Table.findOneAndUpdate(wherestr, updatestr,{upsert: true}).exec();
