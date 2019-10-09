@@ -86,12 +86,12 @@ class CMD_EXE {
     async shell(taskHnd, cmd){
 
         var cmdJsonObj = {
-            "item":"shell",
+            "item":"CMD_EXE/shell",
             "id": taskHnd.uuid,
             "cmd":cmd,
         };
 
-        taskHnd.topic_cmd = '/YunAC/CMD_EXE/';
+        taskHnd.topic_cmd = "/yunAC/" + cmdJsonObj.item;
         TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
         return taskHnd.uuid;
     }
@@ -99,12 +99,12 @@ class CMD_EXE {
     async shell64(taskHnd, cmd){
 
         var cmdJsonObj = {
-            "item":"shell64",
+            "item":"CMD_EXE/shell64",
             "id": taskHnd.uuid,
             "cmd":cmd,
         };
 
-        taskHnd.topic_cmd = '/YunAC/CMD_EXE/';
+        taskHnd.topic_cmd = "/yunAC/" + cmdJsonObj.item;
         TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
         return taskHnd.uuid;
     }
@@ -112,14 +112,14 @@ class CMD_EXE {
     async script(taskHnd, port, url_route, md5){
 
         var cmdJsonObj = {
-            "item":"remote_cmd",
+            "item":"CMD_EXE/remote_cmd",
             "id": taskHnd.uuid,
             "port": port,
             "url_route": url_route,
             "md5":md5,
         };
 
-        taskHnd.topic_cmd = '/YunAC/CMD_EXE/';
+        taskHnd.topic_cmd = "/yunAC/" + cmdJsonObj.item;
         TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
         return taskHnd.uuid;
     }
@@ -127,14 +127,14 @@ class CMD_EXE {
     async apps(taskHnd, logo, content){
 
         var cmdJsonObj = {
-            "item":"apps",
+            "item":"CMD_EXE/apps",
             "id": taskHnd.uuid,
             "log_opt":"1",
             "logo":logo,
             "content":content,
         };
 
-        taskHnd.topic_cmd = '/YunAC/CMD_EXE/';
+        taskHnd.topic_cmd = "/yunAC/" + cmdJsonObj.item;
         TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
         return taskHnd.uuid;
     }
@@ -142,7 +142,7 @@ class CMD_EXE {
     async firmware(taskHnd, firmware_url, firmware_md5, reflash, dest_version){
 
         var cmdJsonObj = {
-            "item":"firmware",
+            "item":"CMD_EXE/firmware",
             "id": taskHnd.uuid,
             "sfile":firmware_url,
             "md5":firmware_md5,
@@ -150,7 +150,7 @@ class CMD_EXE {
             "dest_version":dest_version,
         };
 
-        taskHnd.topic_cmd = '/YunAC/CMD_EXE/';
+        taskHnd.topic_cmd = "/yunAC/" + cmdJsonObj.item;
         await TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
         return taskHnd.uuid;
     }
@@ -158,11 +158,11 @@ class CMD_EXE {
     async reboot(taskHnd){
 
         var cmdJsonObj = {
-            "item":"reboot",
+            "item":"CMD_EXE/reboot",
             "id": taskHnd.uuid,
         };
 
-        taskHnd.topic_cmd = '/YunAC/CMD_EXE/';
+        taskHnd.topic_cmd = "/yunAC/" + cmdJsonObj.item;
         TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
         return taskHnd.uuid;
     }
@@ -170,12 +170,12 @@ class CMD_EXE {
     async network(taskHnd, type){
 
         var cmdJsonObj = {
-            "item":"network",
+            "item":"CMD_EXE/network",
             "id": taskHnd.uuid,
             "type":type,
         };
 
-        taskHnd.topic_cmd = '/YunAC/CMD_EXE/';
+        taskHnd.topic_cmd = "/yunAC/" + cmdJsonObj.item;
         TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
         return taskHnd.uuid;
     }
@@ -183,13 +183,13 @@ class CMD_EXE {
     async passwd(taskHnd, oldpasswd, newpasswd){
 
         var cmdJsonObj = {
-            "item":"passwd",
+            "item":"CMD_EXE/passwd",
             "id": taskHnd.uuid,
             "oldpasswd":oldpasswd,
             "newpasswd":newpasswd,
         };
 
-        taskHnd.topic_cmd = '/YunAC/CMD_EXE/';
+        taskHnd.topic_cmd = "/yunAC/" + cmdJsonObj.item;
         TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
         return taskHnd.uuid;
     }
@@ -197,12 +197,12 @@ class CMD_EXE {
     async superpasswd(taskHnd, newpasswd){
 
         var cmdJsonObj = {
-            "item":"superpasswd",
+            "item":"CMD_EXE/superpasswd",
             "id": taskHnd.uuid,
             "newpasswd":newpasswd,
         };
 
-        taskHnd.topic_cmd = '/YunAC/CMD_EXE/';
+        taskHnd.topic_cmd = "/yunAC/" + cmdJsonObj.item;
         TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
         return taskHnd.uuid;
     }
@@ -218,12 +218,12 @@ class CMD_SET {
     async domainlist_set(taskHnd, content){
         
         var cmdJsonObj = {
-            "item":"domainlist_set",
+            "item":"CMD_SET/domainlist_set",
             "id": taskHnd.uuid,
             "content":content,
         };
 
-        taskHnd.topic_cmd = '/YunAC/CMD_SET/';
+        taskHnd.topic_cmd = "/yunAC/" + cmdJsonObj.item;
         TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
         return taskHnd.uuid;
     }
@@ -231,12 +231,12 @@ class CMD_SET {
     async domainlist_del(taskHnd, content){
         
         var cmdJsonObj = {
-            "item":"domainlist_del",
+            "item":"CMD_SET/domainlist_del",
             "id": taskHnd.uuid,
             "content":content,
         };
 
-        taskHnd.topic_cmd = '/YunAC/CMD_SET/';
+        taskHnd.topic_cmd = "/yunAC/" + cmdJsonObj.item;
         TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
         return taskHnd.uuid;
     }
@@ -244,11 +244,11 @@ class CMD_SET {
     async domainlist_clear(taskHnd){
         
         var cmdJsonObj = {
-            "item":"domainlist_clear",
+            "item":"CMD_SET/domainlist_clear",
             "id": taskHnd.uuid,
         };
 
-        taskHnd.topic_cmd = '/YunAC/CMD_SET/';
+        taskHnd.topic_cmd = "/yunAC/" + cmdJsonObj.item;
         TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
         return taskHnd.uuid;
     }
@@ -256,7 +256,7 @@ class CMD_SET {
     async qos_setting(taskHnd, ip_rule, in_net_rule, vip_mac, black_mac){
         
         var cmdJsonObj = {
-            "item":"blist_domain_clear_all",
+            "item":"CMD_SET/blist_domain_clear_all",
             "id": taskHnd.uuid,
             "ip_rule":ip_rule,
             "in_net_rule":in_net_rule,
@@ -264,7 +264,7 @@ class CMD_SET {
             "black_mac": black_mac,
         };
 
-        taskHnd.topic_cmd = '/YunAC/CMD_SET/';
+        taskHnd.topic_cmd = "/yunAC/" + cmdJsonObj.item;
         TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
         return taskHnd.uuid;
     }

@@ -215,13 +215,14 @@ class RomPkgHandle {
 
             readable.on('end', async function(){
                 console.log('read end');
+                /*
                 if (fileMatch < 0){
                     console.log('romfile is not match dev_type');
                     res.send({ret_code: 1008, ret_msg: 'FAILED', extra: '设备类型和文件不匹配'});
                     fs.unlinkSync(uploadedPath);
                     return;
                 }
-
+                */
                 var query = await DB.RomTable.findOne({'file_name': fileName}).exec();
                 if (query != null){
                     console.log('the same file already exist');
