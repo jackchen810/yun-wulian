@@ -1,10 +1,14 @@
 'use strict';
 const logger = require( '../logs/logs.js');
+const config = require('config-lite');
+
 logger.info('[http] create http process..., pid =', process.pid);
+///记录pid， pm2重启前杀死所有进程
+config.process.http_pid = process.pid;
+logger.info('[http] config process..., pid =', config.process.http_pid);
 
 require('../mongodb/db.js');
 const express = require('express');
-const config = require('config-lite');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const web_router = require('./routes/entry_index');
@@ -12,8 +16,6 @@ const session = require('express-session');
 const connectMongo = require('connect-mongo');
 const fs = require("fs");
 
-///记录pid， pm2重启前杀死所有进程
-config.process.http_pid = process.pid;
 
 
 //图片存放位置， 不存在则创建

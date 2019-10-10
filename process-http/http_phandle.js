@@ -2,7 +2,7 @@
 const fork = require('child_process').fork;
 const logger = require( '../logs/logs.js');
 const config = require('config-lite');
-
+const mqtt_hnd = require('../process-mqtt/mqtter_phandle.js');
 //console.log('[main] create http process...');
 
 //创建一个工作进程
@@ -47,6 +47,11 @@ http_p.on('close', (err) => {
         process.kill(config.process.timer_pid);
     }
 
+    //<boolean> 当 subprocess.kill() 已成功发送信号给子进程后会被设置为 true。
+    logger.error('mqtt_hnd.killed:', mqtt_hnd.killed);
+    // 发送 SIGHUP 到进程
+    mqtt_hnd.kill();
+    logger.error('mqtt_hnd.killed:', mqtt_hnd.killed);
     process.exit(0);
 });
 
