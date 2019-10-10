@@ -26,10 +26,26 @@ http_p.on('close', (err) => {
     logger.error('http close:', err);
     //异常直接退出主进程，外部pm2重启整个进程
     //这里要杀死其它子进程
-    if(config.process.http_pid > 0)    process.kill(config.process.http_pid);
-    if(config.process.https_pid > 0)    process.kill(config.process.https_pid);
-    if(config.process.mqtter_pid > 0)    process.kill(config.process.mqtter_pid);
-    if(config.process.timer_pid > 0)    process.kill(config.process.timer_pid);
+    if(config.process.http_pid > 0)
+    {
+        logger.error('ready kill http pid:', config.process.http_pid );
+        process.kill(config.process.http_pid);
+    }
+    if(config.process.https_pid > 0)
+    {
+        logger.error('ready kill https pid:', config.process.https_pid );
+        process.kill(config.process.https_pid);
+    }
+    if(config.process.mqtter_pid > 0)
+    {
+        logger.error('ready kill mqtter pid:', config.process.mqtter_pid );
+        process.kill(config.process.mqtter_pid);
+    }
+    if(config.process.timer_pid > 0)
+    {
+        logger.error('ready kill timer pid:', config.process.timer_pid );
+        process.kill(config.process.timer_pid);
+    }
 
     process.exit(0);
 });
