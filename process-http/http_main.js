@@ -19,6 +19,12 @@ fs.exists(config.download_dir, function(exists) {
     if (!exists) fs.mkdirSync(config.download_dir);
 });
 
+fs.exists(config.firmware_dir, function(exists) {
+    console.log(exists ? "固件目录存在" : "固件目录不存在", config.firmware_dir);
+    if (!exists) fs.mkdirSync(config.firmware_dir);
+});
+
+
 
 const app = express();
 
