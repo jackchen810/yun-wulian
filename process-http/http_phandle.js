@@ -1,7 +1,7 @@
 'use strict';
 const fork = require('child_process').fork;
 const logger = require( '../logs/logs.js');
-//const config = require('config-lite');
+const config = require('config-lite');
 
 //console.log('[main] create http process...');
 
@@ -26,8 +26,12 @@ http_p.on('close', (err) => {
     logger.error('http close:', err);
     //异常直接退出主进程，外部pm2重启整个进程
     //这里要杀死其它子进程
-    process.exit(1);
-    //process.kill();
+    if(config.process.http_pid > 0)    process.kill(config.process.http_pid);
+    if(config.process.https_pid > 0)    process.kill(config.process.https_pid);
+    if(config.process.mqtter_pid > 0)    process.kill(config.process.mqtter_pid);
+    if(config.process.timer_pid > 0)    process.kill(config.process.timer_pid);
+
+    process.exit(0);
 });
 
 

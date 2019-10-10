@@ -12,6 +12,9 @@ const session = require('express-session');
 const connectMongo = require('connect-mongo');
 const fs = require("fs");
 
+///记录pid， pm2重启前杀死所有进程
+config.process.http_pid = process.pid;
+
 
 //图片存放位置， 不存在则创建
 fs.exists(config.download_dir, function(exists) {
