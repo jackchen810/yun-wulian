@@ -183,7 +183,7 @@ class RomPkgHandle {
 
         form.on('file', function (field, file) {
             fileName = file.name;
-            uploadedPath = file.path
+            uploadedPath = file.path;
             console.log('upload file: ', fileName, uploadedPath);
         });
 
@@ -191,7 +191,7 @@ class RomPkgHandle {
             console.log('begin upload...');
         });
 
-        form.on('end', function () {
+        form.on('end', async function () {
             console.log('upload end: ');
             //console.log(fields);
 
@@ -200,11 +200,56 @@ class RomPkgHandle {
                 || typeof(fields.ver_type) === "undefined" || fields.ver_type == ""
                 || typeof(fields.rom_version) === "undefined" || fields.rom_version == ""
                 || typeof(fields.md5_value) === "undefined" || fields.md5_value == "" ){
-                res.send({ret_code: 1002, ret_msg: 'FAILED', extra: '用户输入参数无效'});
+                res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: ''});
                 fs.unlinkSync(uploadedPath);
                 return;
             }
 
+            var query = await DB.RomTable.findOne({'dev_type': fields.dev_type, 'rom_version': fields.rom_version}).exec();
+            if (query != null){
+                console.log('the same version already exist');
+                res.send({ret_code: 1009, ret_msg: '同类型设备版本号已存在', extra: ''});
+                fs.unlinkSync(uploadedPath);
+                return;
+            }
+
+            var query = await DB.RomTable.findOne({'file_name': fileName}).exec();
+            if (query != null){
+                console.log('the same file already exist');
+                res.send({ret_code: 1008, ret_msg: '同名文件已存在', extra: ''});
+                fs.unlinkSync(uploadedPath);
+                return;
+            }
+
+            console.log('fs.rename');
+            //重命名为真实文件名
+            var dstPath = path.join(config.firmware_dir, fileName);
+            fs.rename(uploadedPath, dstPath, function(err) {
+                if(err){
+                    res.send({ret_code: -1, ret_msg: 'FAILED', extra: err});
+                } else {
+                    res.send({ret_code: 0, ret_msg: 'SUCCESS', extra: 'upload ok'});
+
+                    var mytime =  new Date();
+                    //写入数据库
+                    var romDocObj = {
+                        "file_name": fileName,
+                        "rom_version" : fields.rom_version,
+                        "dev_type": fields.dev_type,
+                        "ver_type": fields.ver_type,
+                        "md5_value": fields.md5_value,
+                        "comment": fields.comment,
+                        "rom_status" : 'normal',  //上架
+                        "create_date": dtime(mytime).format('YYYY-MM-DD HH:mm:ss'),
+                        'sort_time':mytime.getTime(),
+                    };
+
+                    //console.log('romDocObj fields: ', romDocObj);
+                    DB.RomTable.create(romDocObj);
+                }
+            });
+
+            /*
             //文件和设备类型检查，读取文件前64字节
             var readable  = fs.createReadStream(uploadedPath, { start: 0, end: 80 });
             readable.on('data', function(chunk){
@@ -223,47 +268,13 @@ class RomPkgHandle {
                     return;
                 }
                 */
-                var query = await DB.RomTable.findOne({'file_name': fileName}).exec();
-                if (query != null){
-                    console.log('the same file already exist');
-                    res.send({ret_code: 1008, ret_msg: 'FAILED', extra: '同名文件已存在'});
-                    fs.unlinkSync(uploadedPath);
-                    return;
-                }
 
-                console.log('fs.rename');
-                //重命名为真实文件名
-                var dstPath = path.join(config.firmware_dir, fileName);
-                fs.rename(uploadedPath, dstPath, function(err) {
-                    if(err){
-                        res.send({ret_code: -1, ret_msg: 'FAILED', extra: err});
-                    } else {
-                        res.send({ret_code: 0, ret_msg: 'SUCCESS', extra: 'upload ok'});
-
-                        var mytime =  new Date();
-                        //写入数据库
-                        var romDocObj = {
-                            "file_name": fileName,
-                            "rom_version" : fields.rom_version,
-                            "dev_type": fields.dev_type,
-                            "ver_type": fields.ver_type,
-                            "md5_value": fields.md5_value,
-                            "comment": fields.comment,
-                            "rom_status" : 'normal',  //上架
-                            "create_date": dtime(mytime).format('YYYY-MM-DD HH:mm:ss'),
-                            'sort_time':mytime.getTime(),
-                        };
-
-                        //console.log('romDocObj fields: ', romDocObj);
-                        DB.RomTable.create(romDocObj);
-                    }
-                });
-            });
+            //});
 
         });
 
         form.on('error', function(err) {
-            res.send({ret_code: -1, ret_msg: 'FAILED', extra:"上传出错"});
+            res.send({ret_code: -1, ret_msg: '上传出错', extra:""});
         });
 
         form.parse(req);
@@ -305,7 +316,7 @@ class RomPkgHandle {
             res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:query});
         }
         else{
-            res.send({ret_code: 1002, ret_msg: 'FAILED', extra:'用户输入参数无效'});
+            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra:''});
         }
         //console.log('rom list end');
 	}
@@ -320,7 +331,7 @@ class RomPkgHandle {
 
         //参数有效性检查
         if(typeof(id)==="undefined" || typeof(file_name)==="undefined" ){
-            res.send({ret_code: 1002, ret_msg: 'FAILED', extra:'用户输入参数无效'});
+            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra:''});
             return;
         }
 
@@ -353,7 +364,7 @@ class RomPkgHandle {
 
         //参数有效性检查
         if(typeof(id)==="undefined"){
-            res.send({ret_code: 1002, ret_msg: 'FAILED', extra:'用户输入参数无效'});
+            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra:''});
             return;
         }
 
@@ -375,7 +386,7 @@ class RomPkgHandle {
 
         //参数有效性检查
         if(typeof(id)==="undefined" ){
-            res.send({ret_code: 1002, ret_msg: 'FAILED', extra:'用户输入参数无效'});
+            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra:''});
             return;
         }
 
