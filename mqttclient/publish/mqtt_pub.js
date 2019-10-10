@@ -139,7 +139,7 @@ class CMD_EXE {
         return taskHnd.uuid;
     }
 
-    async firmware(taskHnd, firmware_url, firmware_md5, reflash, dest_version){
+    async firmware(taskHnd, firmware_url, firmware_md5, reflash, dev_type, dest_version){
 
         var cmdJsonObj = {
             "item":"CMD_EXE/firmware",
@@ -147,6 +147,7 @@ class CMD_EXE {
             "sfile":firmware_url,
             "md5":firmware_md5,
             "reflash":reflash,
+            "dev_type":dev_type,
             "dest_version":dest_version,
         };
 

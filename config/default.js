@@ -12,12 +12,6 @@ module.exports = {
 	amount_every_task: '500',
 	interval_every_task: '600000',  //单位：ms
 	keep_record_num: '120',  //记录的数据数量
-    process:{
-        http_pid: -1,
-        https_pid:-1,
-        mqtter_pid:-1,
-        timer_pid:-1,
-    },
 	ssl:{
 		port: 443,
 		key:'../ssl/1541291635469.key',

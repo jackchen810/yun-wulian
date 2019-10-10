@@ -489,6 +489,7 @@ class RomUpgradeHandle {
 
         //路由器md5的格式是这样的，必须加2个空格 + 文件名
         var firmware_md5 = req.body['firmware_md5'] + "  " + firmware_file;
+        var dev_type = req.body['dev_type'];
         var dest_version = req.body['dest_version'];
         var reflash = req.body['reflash'];
 
@@ -509,7 +510,7 @@ class RomUpgradeHandle {
         await this.sysupgrade_before_cover_old_task(taskHandle);
 
         //执行固件升级命令
-        var taskid = await MqttPubHandle.CMD_EXE.firmware(taskHandle, firmware_url, firmware_md5, reflash, dest_version);
+        var taskid = await MqttPubHandle.CMD_EXE.firmware(taskHandle, firmware_url, firmware_md5, reflash, dev_type, dest_version);
         //res.send({ret_code: 0, ret_msg: 'SUCCESS', extra: taskid});
 
         //获取additions, 失败返回
