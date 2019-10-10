@@ -1,13 +1,10 @@
 'use strict';
 const logger = require( '../logs/logs.js');
-const config = require('config-lite');
-
 logger.info('[http] create http process..., pid =', process.pid);
-///记录pid， pm2重启前杀死所有进程
-config.process.http_pid = process.pid;
-logger.info('[http] config process..., pid =', config.process.http_pid);
+
 
 require('../mongodb/db.js');
+const config = require('config-lite');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
