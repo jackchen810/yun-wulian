@@ -1,0 +1,4 @@
+ps aux | grep mqtter_main | cut -c 10-15 | xargs kill -9
+ps aux | grep timer_main | cut -c 10-15 | xargs kill -9
+
+ps aux | grep /usr/local/node/10.8.0/bin/node | cut -c 10-15 | xargs kill -9

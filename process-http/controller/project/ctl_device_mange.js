@@ -173,7 +173,61 @@ class CtlDeviceManageHandle {
      * [options],可选参数，可指定flag 默认为‘r’，encoding 默认为null，在读取的时候，需要手动指定
      * callback 读取文件后的回调函数，参数默认第一个err,第二个data 数据
      */
-    async device_add(req, res){
+    async device_add(req, res, next){
+        logger.info('device add');
+        //console.log(req);
+
+        //获取表单数据，josn
+        var device_name = req.body['device_name'];
+        var devunit_name = req.body['devunit_name'];
+        var project_name = req.body['project_name'];
+        var gateway_vendor = req.body['gateway_vendor'];
+        var comment = req.body['comment'];
+
+        //console.log(fields);
+        logger.info('device_name:', device_name);
+        logger.info('devunit_name:', devunit_name);
+        logger.info('project_name:', project_name);
+        logger.info('gateway_vendor:', gateway_vendor);
+
+
+        //参数有效性检查
+        if (!device_name){
+            res.send({ret_code: 1002, ret_msg: 'FAILED', extra: '用户输入参数无效'});
+            return;
+        }
+
+        var query = await DB.DeviceManageTable.findOne({'device_name': device_name}).exec() ;
+        if (query != null){
+            console.log('the same file already exist');
+            res.send({ret_code: 1008, ret_msg: '项目名重复', extra: device_name});
+            return;
+        }
+
+        let mytime =  new Date();
+        //写入数据库
+        let myDocObj = {
+            "device_name" : device_name,
+            "devunit_name" : devunit_name,
+            "project_name": project_name,
+            "gateway_vendor" : gateway_vendor,
+            "user_account":  req.session.user_account,
+
+            "device_image": 'reverse',
+            "device_status" : 'normal',  //上架
+
+            "comment" : comment,
+
+            "update_time": dtime(mytime).format('YYYY-MM-DD HH:mm:ss'),
+            'sort_time':mytime.getTime(),
+        };
+
+        //console.log('romDocObj fields: ', romDocObj);
+        DB.DeviceManageTable.create(myDocObj);
+        res.send({ret_code: 0, ret_msg: '添加成功', extra: myDocObj});
+        console.log('device add ok');
+    }
+    async device_add_bak(req, res){
 
         console.log('device add');
         //console.log(req);
