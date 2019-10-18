@@ -6,13 +6,14 @@ const admin_router = require('./rt_acount.js');
 const prj_manage_router = require('./rt_project_manage.js');
 const dev_manage_router = require('./rt_device_manage.js');
 const dev_module_router = require('./rt_device_module.js');
-const devtype_router = require('../routes/rt_devtype.js');
-const rom_pkg_router = require('../routes/rt_rom_package.js');
-const rom_task_router = require('../routes/rt_rom_task.js');
-const script_router = require('../routes/rt_script_manage.js');
-const apps_pkg_router = require('../routes/rt_apps_package.js');
+const devtype_router = require('./rt_device_type.js');
+const rom_pkg_router = require('./rt_rom_package.js');
+const rom_task_router = require('./rt_rom_task.js');
+const script_router = require('./rt_script_manage.js');
+const apps_pkg_router = require('./rt_apps_package.js');
 const apps_task_router = require('./rt_apps_task.js');
 const wechat_router = require('./rt_wechat.js');
+const cmd_proc_router = require('./rt_cmd_process.js');
 const config = require( "config-lite");
 const fs = require("fs");
 const path = require('path');
@@ -58,15 +59,25 @@ const path = require('path');
      //脚本相关
      app.use('/api/script', script_router);
 
-     //管理功能
+     //插件功能
      app.use('/api/apps', apps_pkg_router);
 
 
      //固件升级任务相关
      app.use('/api/rom/task', rom_task_router);
 
-     //插件相关
+     //插件级任务相关
      app.use('/api/apps/task', apps_task_router);
+
+
+
+
+
+     //插件级任务相关
+     app.use('/api/cmd', cmd_proc_router);
+
+
+
 
      // Welcome download
      app.use('/download', function(req, res) {

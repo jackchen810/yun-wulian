@@ -154,12 +154,13 @@ class ScriptHandle {
 				return;
 			}
 
+            var mytime =  new Date();
 			try{
 				const newScript = {
 					script_name: script_name,
 					script_developer: script_developer,
 					script_info: script_info,
-					script_create_time: dtime().format('YYYY-MM-DD HH:mm'),
+					script_create_time: dtime(mytime).format('YYYY-MM-DD HH:mm:ss'),
 					script_status: 0,
 					script_md5: script_md5,
 				};
@@ -320,41 +321,42 @@ class ScriptHandle {
 		}
     }
     async list(req, res, next) {
-	var page_size = req.body.page_size;
-	var current_page = req.body.current_page;
-	try {
-		if(typeof(page_size) === 'undefined' && typeof(current_page) === 'undefined'){
-			var allScript = await DB.ScriptTable.find({},'-_id').sort({id: -1});
-			res.send({
-				ret_code: 0,
-				ret_msg:'SUCCESS',
-				extra: allScript
-			});
-			return;
-		}else if(page_size > 0 && current_page > 0){
-			var allScript = await DB.ScriptTable.find({},'-_id')
-						.sort({id: -1})
-						.skip(Number((current_page - 1)*page_size))
-						.limit(Number(page_size));
-			res.send({
-				ret_code: 0,
-				ret_msg:'SUCCESS',
-				extra: allScript
-			});
-			return;
-		}else {
-			res.send({ret_code: 1, ret_msg: 'PARAM_ERROR', extra: '参数错误'});
-			return;
-		}
-	}catch(err){
-		logger.info('获取脚本列表失败', err);
-		res.send({
-			ret_code: 1,
-			ret_msg: 'ERROR_GET_SCRIPT_LIST',
-			extra:'获取脚本列表失败'
-		});
-		return;
-	}
+        console.log('script list');
+        //console.log(req.body);
+
+        //获取表单数据，josn
+        var page_size = req.body['page_size'];
+        var current_page = req.body['current_page'];
+        var sort = req.body['sort'];
+        var filter = req.body['filter'];
+
+        // 如果没有定义排序规则，添加默认排序
+        if(typeof(sort)==="undefined"){
+            console.log('sort undefined');
+            sort = {"sort_time":-1};
+        }
+
+        // 如果没有定义排序规则，添加默认排序
+        if(typeof(filter)==="undefined"){
+            console.log('filter undefined');
+            filter = {};
+        }
+
+        //参数有效性检查
+        if(typeof(page_size)==="undefined" && typeof(current_page)==="undefined"){
+            var query = await DB.ScriptTable.find(filter).sort(sort);
+            res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:query});
+        }
+        else if (page_size > 0 && current_page > 0) {
+            //var ret = await DB.RomTable.findByPage(filter, page_size, current_page, sort);
+            var skipnum = (current_page - 1) * page_size;   //跳过数
+            var query = await DB.ScriptTable.find(filter).sort(sort).skip(skipnum).limit(page_size);
+            res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:query});
+        }
+        else{
+            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra:''});
+        }
+        //console.log('rom list end');
     }
 }
 

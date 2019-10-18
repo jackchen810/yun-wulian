@@ -5,7 +5,7 @@ logger.info('[timer] create timer process..., pid =', process.pid);
 
 
 require('../mongodb/db.js');
-require("./controller/tmr_device_ide4g.js");
+require("./controller/tmr_rom_upgrade.js");
 
 
 

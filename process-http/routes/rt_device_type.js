@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const DevtypeHandle = require('../controller/devtype/ctl_devtype.js');
+const DevtypeHandle = require('../controller/devtype/ctl_device_type.js');
 const Check = require( '../../middlewares/check');
 const router = express.Router();
 

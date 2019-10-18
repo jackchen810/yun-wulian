@@ -112,7 +112,7 @@ class RomUpgradeHandle {
                 "fail_count" : fail_count,
                 "success_count" : success_count,
                 "running_count" : running_count,
-            }
+            };
 
             resultList.push(item);
         }
@@ -206,7 +206,7 @@ class RomUpgradeHandle {
                 "fail_count" : fail_count,
                 "success_count" : success_count,
                 "running_count" : running_count,
-            }
+            };
 
             resultList.push(item);
         }
@@ -541,7 +541,7 @@ class RomUpgradeHandle {
             await setTimeout(function(){
                 MqttPubHandle.CMD_GET.sysinfo(taskHand);
             }, 300000);
-        }
+        };
         //监听下发任务的结果
         await MqttSubHandle.addOnceListener(taskHandle['uuid'], listener, 1000);
 

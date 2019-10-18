@@ -75,6 +75,31 @@ class CMD_SYNC {
         return taskHnd.uuid;
     }
 }
+
+
+/******************************************************/
+class CMD_SHELL {
+    constructor() {
+
+    }
+
+    //共有方法
+    async linux(taskHnd, cmd){
+
+        var cmdJsonObj = {
+            "item":"CMD_SHELL/linux",
+            "id": taskHnd.uuid,
+            "cmd":cmd,
+        };
+
+        taskHnd.topic_cmd = "/yunAC/" + cmdJsonObj.item;
+        TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
+        return taskHnd.uuid;
+    }
+}
+
+
+
 /******************************************************/
 class CMD_EXE {
     constructor() {
@@ -82,33 +107,6 @@ class CMD_EXE {
     }
 
     //共有方法
-
-    async shell(taskHnd, cmd){
-
-        var cmdJsonObj = {
-            "item":"CMD_EXE/shell",
-            "id": taskHnd.uuid,
-            "cmd":cmd,
-        };
-
-        taskHnd.topic_cmd = "/yunAC/" + cmdJsonObj.item;
-        TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
-        return taskHnd.uuid;
-    }
-
-    async shell64(taskHnd, cmd){
-
-        var cmdJsonObj = {
-            "item":"CMD_EXE/shell64",
-            "id": taskHnd.uuid,
-            "cmd":cmd,
-        };
-
-        taskHnd.topic_cmd = "/yunAC/" + cmdJsonObj.item;
-        TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
-        return taskHnd.uuid;
-    }
-
     async script(taskHnd, port, url_route, md5){
 
         var cmdJsonObj = {
@@ -129,9 +127,9 @@ class CMD_EXE {
         var cmdJsonObj = {
             "item":"CMD_EXE/apps",
             "id": taskHnd.uuid,
-            "log_opt":"1",
-            "logo":logo,
-            "content":content,
+            "sfile":firmware_url,
+            "dev_type":dev_type,
+            "version":dest_version,
         };
 
         taskHnd.topic_cmd = "/yunAC/" + cmdJsonObj.item;
@@ -274,6 +272,7 @@ class CMD_SET {
 //mqtt 命令
 function MqttPubHandle() {
     this.BATCH_CMD_GET = this.CMD_GET = new CMD_GET();
+    this.BATCH_CMD_SHELL = this.CMD_SHELL = new CMD_SHELL();
     this.BATCH_CMD_SYNC = this.CMD_SYNC = new CMD_SYNC();
     this.BATCH_CMD_EXE = this.CMD_EXE = new CMD_EXE();
     this.BATCH_CMD_SET = this.CMD_SET = new CMD_SET();

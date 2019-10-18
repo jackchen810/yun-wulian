@@ -8,11 +8,15 @@ const config = require('config-lite');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const web_router = require('./routes/entry_index');
+const web_router = require('./routes/http_route_entry');
 const session = require('express-session');
 const connectMongo = require('connect-mongo');
 const fs = require("fs");
+const mqttClient = require('../mqttclient/mqttclient.js');
+const mqtt_router = require('./routes/mqtt_route_entry.js');
 
+//注册mqtt分发
+mqtt_router(mqttClient);
 
 
 //图片存放位置， 不存在则创建

@@ -1,7 +1,7 @@
 'use strict';
 
 
-const http_router = require('../../process-http/routes/entry_index.js');
+const http_router = require('../../process-http/routes/http_route_entry.js');
 const gateway_router = require("../../process-http/routes/rt_gateway_ide4g.js");
 const admin_router = require('../../process-http/routes/rt_acount.js');
 const project_router = require('../../process-http/routes/rt_project_manage.js');

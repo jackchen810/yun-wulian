@@ -5,7 +5,7 @@ logger.info('[mqtt] create mqtt process..., pid =', process.pid);
 
 
 const mqttClient = require('../mqttclient/mqttclient.js');
-const mqtt_router = require('./routes/entry_index.js');
+const mqtt_router = require('./routes/mqtt_route_entry.js');
 const config = require('config-lite');
 
 
