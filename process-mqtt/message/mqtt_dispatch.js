@@ -16,6 +16,8 @@ class MqttDispatchHandle {
     }
 
     //消息处理
+    //mqtt emit的消息只能本进程处理
+    //如果需要接收网关的应答事件，在http进程里订阅了该消息
     async onMessage(topic, message) {
 
         //var msg_string = message.toString();
@@ -51,7 +53,8 @@ class MqttDispatchHandle {
             }
             this.onMessage_yunVendor(topic_array, topic, msg_string);
         }
-        // yunAC 的命令都是系统及的维护命令
+        // yunAC 的命令都是系统及的维护命令, jdwx设备使用该种方式
+        //jdwx网关设备的回应是yunAC，数据上报topic yunJDWX
         else if (topic_array[0] == 'yunAC') {
             var msg_string = message.toString();
             //console.log('[emqtt][yunAC] response:', message[89], message[90], message[91],message[92], message[93], message[94], message[95]);
@@ -60,8 +63,26 @@ class MqttDispatchHandle {
             //console.log('[emqtt][yunAC] response2:', topic, msg_string);
             this.onMessage_yunAC(topic_array, topic, msg_string);
         }
+        else if (topic_array[0] == 'yunWTBL') {
+            //  yunWTBL设备
+            var msg_string = message.toString();
+            //console.log('[emqtt][yunWTBL] response:', topic, msg_string);
+            if (process.env.NODE_ENV == 'local'){
+                console.log('[emqtt][yunWTBL] response:', topic, msg_string);
+            }
+            this.onMessage_yunWTBL(topic_array, topic, msg_string);
+        }
+        else if (topic_array[0] == 'yunJDWX') {
+            //  yyunJDWXL设备
+            var msg_string = message.toString();
+            //console.log('[emqtt][yunJDWX] response:', topic, msg_string);
+            if (process.env.NODE_ENV == 'local'){
+                console.log('[emqtt][yunJDWX] response:', topic, msg_string);
+            }
+            this.onMessage_yunVendor(topic_array, topic, msg_string);
+        }
         else {
-            //  yunWTBL    yunJDWX  设备
+            //  else  设备
             var msg_string = message.toString();
             //console.log('[emqtt][else] response:', topic, msg_string);
             if (process.env.NODE_ENV == 'local'){
@@ -106,7 +127,7 @@ class MqttDispatchHandle {
 
         //解析mac地址
         var router_mac = topic_array[1];
-        var task_id = josnObj['id'];
+        var task_id = josnObj['id'];   //uuid
 
         //1. 发送event:task_id 事件， 任务更新使用
         emitter.emit(task_id, router_mac, josnObj);
@@ -137,6 +158,42 @@ class MqttDispatchHandle {
         emitter.emit(command, source, josnObj);
     }
 
+
+    //yunWTBL 的topic的处理
+    async onMessage_yunWTBL(topic_array, topic, message) {
+
+        try {
+            var josnObj = JSON.parse(message); //由JSON字符串转换为JSON对象
+        }
+        catch (err) {
+            console.log('出错啦:' + err.message);
+            return;
+        }
+
+        //console.log('parse response msg:', josnObj.id, josnObj.item);
+
+        //解析mac地址
+        //topic example：yunWTBL/设备名称/post/plc
+        var source = topic_array[1];
+        var command = topic_array[0];
+        var cmdId = josnObj['cmdId'];
+
+
+
+        //cmdId = 103  :   数据上报
+
+        //cmdId = 87  :   写变量
+        //cmdId = 88  :   写变量返回
+
+        //cmdId = 89  :   读取配置信息
+        //cmdId = 90  :   读取配置信息返回
+        //
+        //mqtt emit的消息只能本进程处理
+        //如果restful接口需要接收网关的应答事件，在http进程里订阅了该消息
+        //mqtt_route_entry.js文件
+        emitter.emit(command, source, josnObj);
+        console.log('[WTBL] response msg:', cmdId, source, message);
+    }
 
 }
 

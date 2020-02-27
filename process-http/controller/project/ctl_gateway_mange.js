@@ -12,7 +12,7 @@ const moment = require('moment');
 const formidable = require('formidable');
 
 
-class CtlDeviceManageHandle {
+class CtlGatewayManageHandle {
     constructor(){
         //logger.info('init 111');
         //this.tmp_correction_data_hour();
@@ -51,7 +51,7 @@ class CtlDeviceManageHandle {
         logger.info('sort:', sort);
 
 
-        let queryList = await DB.DeviceManageTable.find(filter).sort(sort).exec();
+        let queryList = await DB.DevunitManageTable.find(filter).sort(sort).exec();
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
         //console.log('queryList:', queryList[0]);
         //logger.info('queryList.length:', queryList.length);
@@ -89,7 +89,7 @@ class CtlDeviceManageHandle {
 
 
         let skipnum = (current_page - 1) * page_size;   //跳过数
-        let queryList = await DB.DeviceManageTable.find(filter).sort(sort).skip(skipnum).limit(page_size).exec();
+        let queryList = await DB.DevunitManageTable.find(filter).sort(sort).skip(skipnum).limit(page_size).exec();
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
         //console.log('queryList:', queryList);
         logger.info('device page list end');
@@ -101,7 +101,7 @@ class CtlDeviceManageHandle {
         console.log('device array');
         //console.log(req.body);
 
-        let queryList = await DB.DeviceManageTable.find();
+        let queryList = await DB.DevunitManageTable.find();
         let deviceList = [];
         for (let i = 0; i < queryList.length; i++){
             deviceList.push(queryList[i]['device_name']);
@@ -116,7 +116,7 @@ class CtlDeviceManageHandle {
         console.log('device cn array');
         //console.log(req.body);
 
-        let queryList = await DB.DeviceManageTable.find();
+        let queryList = await DB.DevunitManageTable.find();
         let deviceCnList = [];
         for (let i = 0; i < queryList.length; i++){
             deviceCnList.push(queryList[i]['device_name']);
@@ -142,7 +142,7 @@ class CtlDeviceManageHandle {
 
         logger.info('_id:', _id);
 
-        let query = await DB.DeviceManageTable.findByIdAndRemove(_id).exec();
+        let query = await DB.DevunitManageTable.findByIdAndRemove(_id).exec();
 
         //删除文件
         try {
@@ -197,7 +197,7 @@ class CtlDeviceManageHandle {
             return;
         }
 
-        var query = await DB.DeviceManageTable.findOne({'device_name': device_name}).exec() ;
+        var query = await DB.DevunitManageTable.findOne({'device_name': device_name}).exec() ;
         if (query != null){
             console.log('the same file already exist');
             res.send({ret_code: 1008, ret_msg: '项目名重复', extra: device_name});
@@ -223,7 +223,7 @@ class CtlDeviceManageHandle {
         };
 
         //console.log('romDocObj fields: ', romDocObj);
-        DB.DeviceManageTable.create(myDocObj);
+        DB.DevunitManageTable.create(myDocObj);
         res.send({ret_code: 0, ret_msg: '添加成功', extra: myDocObj});
         console.log('device add ok');
     }
@@ -275,7 +275,7 @@ class CtlDeviceManageHandle {
                 return;
             }
 
-            DB.DeviceManageTable.findOne({'device_name': fields.device_name}).exec(function (err, doc) {
+            DB.DevunitManageTable.findOne({'device_name': fields.device_name}).exec(function (err, doc) {
                 if (doc != null){
                     console.log('the same file already exist');
                     fs.unlinkSync(uploadedPath);
@@ -302,7 +302,7 @@ class CtlDeviceManageHandle {
                     };
 
                     //console.log('romDocObj fields: ', romDocObj);
-                    DB.DeviceManageTable.create(myDocObj);
+                    DB.DevunitManageTable.create(myDocObj);
                     res.send({ret_code: 0, ret_msg: '上传成功', extra: myDocObj});
                     return;
                 }
@@ -337,7 +337,7 @@ class CtlDeviceManageHandle {
 
         for (let i = 0; i < list_data.length; i++){
             let _id = list_data[i]['_id'];
-            await DB.DeviceManageTable.findByIdAndUpdate(_id, list_data[i]).exec();
+            await DB.DevunitManageTable.findByIdAndUpdate(_id, list_data[i]).exec();
         }
 
         res.send({ret_code: 0, ret_msg: '成功', extra: ''});
@@ -521,5 +521,5 @@ fs.writeFileSync('book.xlsx', buffer, {'flag':'w'}); // 如果文件存在，覆
 }
 
 
-module.exports = new CtlDeviceManageHandle();
+module.exports = new CtlGatewayManageHandle();
 

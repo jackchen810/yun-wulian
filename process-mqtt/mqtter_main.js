@@ -10,9 +10,9 @@ const config = require('config-lite');
 
 
 require('../mongodb/db.js');
-require("./controller/mqtt_device_ide4g.js");
-require("./controller/mqtt_device_wtbl4g.js");
-require("./controller/mqtt_device_jdwx4g.js");
+require("./controller/mqtt_gateway_ide4g.js");
+require("./controller/mqtt_gateway_wtbl4g.js");
+require("./controller/mqtt_gateway_jdwx4g.js");
 
 
 

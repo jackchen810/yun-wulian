@@ -22,4 +22,7 @@ router.all('/exec/remote/ssh', CmdProcHandle.exec_remote_ssh);
 router.all('/exec/remote/reboot', CmdProcHandle.exec_remote_reboot);
 
 
+//执行远程set命令
+router.all('/exec/remote/set', CmdProcHandle.exec_remote_set);
+
 module.exports = router;

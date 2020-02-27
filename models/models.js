@@ -6,7 +6,7 @@ const RomUpgradeTable= require("../models/rom/rom_upgrade.js");
 const TaskTable= require("../models/task/task.js");
 const SysinfoTable= require("../models/sysinfo/sysinfo.js");
 const ProjectManageTable= require("../models/project/project.js");
-const DeviceManageTable= require("../models/project/device.js");
+const DevunitManageTable= require("../models/project/device.js");
 const DevtypeManageTable= require("../models/devtype/devtype.js");
 const ScriptManageTable= require("../models/script/script.js");
 const AppsPkgManageTable= require("../models/apps/apps.js");
@@ -29,7 +29,7 @@ function DB() {
     this.TaskTable = TaskTable;
     this.SysinfoTable = SysinfoTable;
     this.ProjectManageTable = ProjectManageTable;
-    this.DeviceManageTable = DeviceManageTable;
+    this.DevunitManageTable = DevunitManageTable;
     this.DevtypeTable = DevtypeManageTable;
     this.ScriptTable = ScriptManageTable;
     this.AppsPkgTable = AppsPkgManageTable;

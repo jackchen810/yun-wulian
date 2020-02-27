@@ -348,7 +348,7 @@ class DeviceModuleHandle {
         let stop_unit_count = 0;
         let fault_unit_count = 0;
         let wherestr = {'project_name': project_name};
-        let devList = await DB.DeviceManageTable.find(wherestr).exec();
+        let devList = await DB.DevunitManageTable.find(wherestr).exec();
         for (let p = 0; p < devList.length; p++) {
             //console.log('devunit_name:', devList[p]['devunit_name']);
 

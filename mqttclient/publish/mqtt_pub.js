@@ -269,6 +269,36 @@ class CMD_SET {
     }
 }
 
+/******************************************************/
+//物通博联设备支出的set方法， 私有方法
+// 具体说明书参考《厦门物通博联•MQTT物联网网关服务端开发手册V2.6》
+// 可在官网下载去下载
+/*
+*  下行主题：/$GatewaySn/down
+*  例如网网关：WG282LL0720021200176  的主题：/$WG282LL0720021200176/down
+*
+* */
+class WTBL_CMD_SET {
+    constructor() {
+
+    }
+
+    //共有方法
+    async set_var_value(taskHnd, gw_sn, dev_id, var_id, value){
+
+        var cmdJsonObj = {
+            "cmdId":87,
+            "devId": parseInt(dev_id),
+            "varId":parseInt(var_id),
+            "writeValue":value,
+        };
+
+        taskHnd.topic_cmd = "/down";
+        TaskHandle.createTaskAndPublish(taskHnd ,cmdJsonObj);
+        return taskHnd.uuid;
+    }
+}
+
 //mqtt 命令
 function MqttPubHandle() {
     this.BATCH_CMD_GET = this.CMD_GET = new CMD_GET();
@@ -276,6 +306,7 @@ function MqttPubHandle() {
     this.BATCH_CMD_SYNC = this.CMD_SYNC = new CMD_SYNC();
     this.BATCH_CMD_EXE = this.CMD_EXE = new CMD_EXE();
     this.BATCH_CMD_SET = this.CMD_SET = new CMD_SET();
+    this.WTBL_CMD_SET = new WTBL_CMD_SET();
 
 }
 

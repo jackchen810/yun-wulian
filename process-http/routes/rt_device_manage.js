@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const CtlDeviceManage = require('../controller/project/ctl_device_mange.js');
+const CtlDeviceManage = require('../controller/project/ctl_devunit_mange.js');
 const router = express.Router();
 
 console.log("enter route of device");

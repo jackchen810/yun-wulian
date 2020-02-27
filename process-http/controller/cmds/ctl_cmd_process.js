@@ -102,6 +102,54 @@ class CmdProcHandle {
 
     }
 
+    async exec_remote_set(req, res, next) {
+        console.log('cmd exec_remote_set');
+
+
+        //获取表单数据，josn
+        var gw_sn = req.body['gw_sn'];
+        var devunit_name = req.body['devunit_name'];
+        var dev_id = req.body['dev_id'];
+        var var_id = req.body['var_id'];
+        var value = req.body['value'];
+
+
+        //logger.info(req.hostname , req.url, req.protocol, req.ip);
+        logger.info('gw_sn:', gw_sn);
+        logger.info('dev_id:', dev_id, devunit_name);
+        logger.info('var_id:', var_id, value);
+
+
+        //支持批量任务下发
+        var taskHandle = await MqttPubHandle.createTaskHandle(req.session.user_account, 'NA', '/'+ gw_sn);
+        //执行固件升级命令
+        var taskid = await MqttPubHandle.WTBL_CMD_SET.set_var_value(taskHandle, gw_sn, dev_id, var_id, value);
+        //res.send({ret_code: 0, ret_msg: 'SUCCESS', extra: taskid});
+
+
+        // 监听器, 更新任务结果，在updateResponse 中
+        // 正常升级过程中没有回应消息，需要起定时器进行查询升级结果
+        var listener = async function (gw_sn, josnObj) {
+            logger.info('Hello listener:', josnObj);
+            //timeout, 命令下发后，router进行升级，不回应该消息，timeout认为success
+            if (gw_sn == -1 || josnObj == "timeout") {
+                res.send({ret_code: -1, ret_msg: '执行超时', extra: taskid});
+            }
+            //成功的状态为0
+            else if (josnObj['cmdId'] == 88 && josnObj['msg'] == 'success') {
+                res.send({ret_code: 0, ret_msg: '成功', extra: josnObj});
+            }
+            else{
+                res.send({ret_code: -1, ret_msg: '失败', extra: josnObj});
+                return;
+            }
+
+        };
+        //监听下发任务的结果, 超时5000ms
+        //监听下发任务的结果
+
+        await MqttSubHandle.addOnceListener(gw_sn, listener, 10000);
+    }
 
 
 }

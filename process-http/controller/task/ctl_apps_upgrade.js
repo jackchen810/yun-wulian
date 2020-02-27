@@ -257,7 +257,7 @@ class ManageHnd {
                 var script_task = await TaskTable.find({'cmd_item':'remote_cmd', 'uuid':uuid},
                     {request_msg:0,response_msg:0,topic:0}).lean().sort({"request_timestamp":-1}).limit(10);
                 for(var i=0; i < script_task.length; i++){
-                    var device = await DB.DeviceManageTable.findOne({'mac': script_task[i].mac});
+                    var device = await DB.DevunitManageTable.findOne({'mac': script_task[i].mac});
                     if(device){
                         script_task[i].device_status = device.status;
                     }
@@ -270,7 +270,7 @@ class ManageHnd {
                     .sort({"request_timestamp":-1})
                     .skip(Number((current_page - 1)*page_size)).limit(Number(page_size));
                 for(var i=0; i < script_task.length; i++){
-                    var device = await DB.DeviceManageTable.findOne({'mac': script_task[i].mac});
+                    var device = await DB.DevunitManageTable.findOne({'mac': script_task[i].mac});
                     if(device){
                         script_task[i].device_status = device.status;
                     }
@@ -447,7 +447,7 @@ class ManageHnd {
                 var apps_task = await TaskTable.find({'cmd_item':'apps', 'uuid':uuid},{request_msg:0,response_msg:0,topic:0}).lean()
                     .sort({"request_timestamp":-1}).limit(10);
                 for(var i=0; i < apps_task.length; i++){
-                    var device = await DB.DeviceManageTable.findOne({'mac': apps_task[i].mac});
+                    var device = await DB.DevunitManageTable.findOne({'mac': apps_task[i].mac});
                     if(device){
                         apps_task[i].device_status = device.status;
                     }
@@ -459,7 +459,7 @@ class ManageHnd {
                     .sort({"request_timestamp":-1})
                     .skip(Number((current_page - 1)*page_size)).limit(Number(page_size));
                 for(var i=0; i < apps_task.length; i++){
-                    var device = await DB.DeviceManageTable.findOne({'mac': apps_task[i].mac});
+                    var device = await DB.DevunitManageTable.findOne({'mac': apps_task[i].mac});
                     if(device){
                         apps_task[i].device_status = device.status;
                     }
