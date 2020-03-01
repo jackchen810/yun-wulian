@@ -17,6 +17,7 @@ const deviceUnitManageSchema = new mongoose.Schema({
     user_account: {type: String, default: ''},   //用户账号
 
     gateway_vendor: {type: String, default: ''},   //网关厂商
+    gateway_sn: {type: String, default: ''},   //网关标识，可以是MAC地址，物通博联：网关序列号
 
     device_image: {type: String, default: ''},    //设备图片
     device_status: {type: String, default: 'normal'},    //设备状态， normal， hide

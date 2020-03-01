@@ -182,6 +182,7 @@ class CtlDevUnitManageHandle {
         var devunit_name = req.body['devunit_name'];
         var project_name = req.body['project_name'];
         var gateway_vendor = req.body['gateway_vendor'];
+        var gateway_sn = req.body['gateway_sn'];
         var comment = req.body['comment'];
 
         //console.log(fields);
@@ -189,6 +190,7 @@ class CtlDevUnitManageHandle {
         logger.info('devunit_name:', devunit_name);
         logger.info('project_name:', project_name);
         logger.info('gateway_vendor:', gateway_vendor);
+        logger.info('gateway_sn:', gateway_sn);
 
 
         //参数有效性检查
@@ -211,6 +213,7 @@ class CtlDevUnitManageHandle {
             "devunit_name" : devunit_name,
             "project_name": project_name,
             "gateway_vendor" : gateway_vendor,
+            "gateway_sn" : gateway_sn,
             "user_account":  req.session.user_account,
 
             "device_image": 'reverse',
