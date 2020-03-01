@@ -36,13 +36,17 @@ const app = express();
 
 app.all('*', (req, res, next) => {
 	res.header("Access-Control-Allow-Origin", req.headers.origin || '*');
-	res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+	////这里“Access-Token”是我要传到后台的内容key
+	res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, XX-Device-Type, XX-Token");
 	res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
   	res.header("Access-Control-Allow-Credentials", true); //可以带cookies
+    res.header("Access-Control-Expose-Headers", "*");
     //res.setHeader("Set-Cookie", ["type=ninja", "language=javascript"]);
 	res.header("X-Powered-By", '3.2.1');
 	if (req.method == 'OPTIONS') {
-	  	res.send(200);
+        //console.log('[http] OPTIONS, req.path::', req.path);
+        res.end('welcome to options');
+	  	//res.send(200);
 	} else {
 		console.log('[http] method:', req.method, req.path);
 		///** 尼玛，打开下面开关后，文件上传不好使
