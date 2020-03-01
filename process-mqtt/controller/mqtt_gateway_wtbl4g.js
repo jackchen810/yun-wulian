@@ -72,6 +72,9 @@ class MqttDeviceWTBL4gHndle {
 
         //console.log('add list length:', josnObj['devList'][0]['varList'].length);
         //console.log('map_value_obj size:', map_value_obj['list_data'].size);
+        //console.log('map_value_obj set[]:', [...map_value_obj['list_data'].values()]);
+
+
 
         // 保存到hash表中
         this.hash_data.set(devunit_name, map_value_obj);
@@ -98,6 +101,7 @@ class MqttDeviceWTBL4gHndle {
             'data': [...map_value_obj['list_data'].values()],   //集合
         };
 
+        //console.log('Gateway_Real_Table data:', updatestr['data']);
         await DB.Gateway_Real_Table.findOneAndUpdate(wherestr, updatestr,{upsert: true}).exec();
 
 

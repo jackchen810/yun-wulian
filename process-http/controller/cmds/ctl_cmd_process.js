@@ -111,19 +111,20 @@ class CmdProcHandle {
         var devunit_name = req.body['devunit_name'];
         var dev_id = req.body['dev_id'];
         var var_id = req.body['var_id'];
-        var value = req.body['value'];
+        var var_name = req.body['var_name'];
+        var var_value = req.body['var_value'];
 
 
         //logger.info(req.hostname , req.url, req.protocol, req.ip);
         logger.info('gw_sn:', gw_sn);
         logger.info('dev_id:', dev_id, devunit_name);
-        logger.info('var_id:', var_id, value);
+        logger.info('var_id:', var_id, var_name, var_value);
 
 
         //支持批量任务下发
         var taskHandle = await MqttPubHandle.createTaskHandle(req.session.user_account, 'NA', '/'+ gw_sn);
         //执行固件升级命令
-        var taskid = await MqttPubHandle.WTBL_CMD_SET.set_var_value(taskHandle, gw_sn, dev_id, var_id, value);
+        var taskid = await MqttPubHandle.WTBL_CMD_SET.set_var_value(taskHandle, gw_sn, dev_id, var_id, var_value);
         //res.send({ret_code: 0, ret_msg: 'SUCCESS', extra: taskid});
 
 
@@ -138,6 +139,29 @@ class CmdProcHandle {
             //成功的状态为0
             else if (josnObj['cmdId'] == 88 && josnObj['msg'] == 'success') {
                 res.send({ret_code: 0, ret_msg: '成功', extra: josnObj});
+                //更新数据库中的数值
+
+
+                // 1. 更新到设备数据库，Gateway_Real_Table
+                //更新到设备数据库
+                let wherestr = {'devunit_name': devunit_name};
+                let updatestr = {};
+                let query = await DB.Gateway_Real_Table.findOne(wherestr).exec();
+                if (query != null){
+                    //复制数组，logs记录上下线日志
+                    updatestr['data'] = query['data'];
+                    for (var m = 0; m < updatestr['data'].length; m++){
+                        if (updatestr['data'][m]['varName'] == var_name){
+                            updatestr['data'][m]['varValue'] = var_value;
+                        }
+                    }
+                    logger.info('update real table ok:', var_name, var_value);
+                    await DB.Gateway_Real_Table.findByIdAndUpdate(query['_id'], updatestr).exec();
+                }
+                else{
+                    logger.info('update real table fail,', var_name, var_value, query);
+                }
+
             }
             else{
                 res.send({ret_code: -1, ret_msg: '失败', extra: josnObj});
