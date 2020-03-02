@@ -16,7 +16,7 @@ router.all('/revoke',Check.checkSuperAdmin, Account.revoke);
 router.all('/restore',Check.checkSuperAdmin, Account.restore);
 router.all('/list', Check.checkSuperAdmin, Account.account_list);
 router.all('/array', Check.checkSuperAdmin, Account.account_array);
-router.all('/get/own/project', Check.checkSuperAdmin, Account.getOwnProject);
+router.all('/get/own/project', /*Check.checkSuperAdmin,*/ Account.getOwnProject);
 router.all('/update/own/project', Check.checkSuperAdmin, Account.updateOwnProject);
 //router.all('/count', Account.getAdminCount);
 //router.all('/update/avatar/:admin_id', Account.updateAvatar);
