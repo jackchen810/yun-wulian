@@ -66,7 +66,7 @@ class MqttDispatchHandle {
         else if (topic_array[0] == 'yunWTBL') {
             //  yunWTBL设备
             var msg_string = message.toString();
-            //console.log('[emqtt][yunWTBL] response:', topic, msg_string);
+            console.log('[emqtt][yunWTBL] response:', topic, msg_string);
             if (process.env.NODE_ENV == 'local'){
                 console.log('[emqtt][yunWTBL] response:', topic, msg_string);
             }
@@ -192,7 +192,7 @@ class MqttDispatchHandle {
         //如果restful接口需要接收网关的应答事件，在http进程里订阅了该消息
         //mqtt_route_entry.js文件
         emitter.emit(command, source, josnObj);
-        console.log('[WTBL] response msg:', cmdId, source, message);
+        console.log('[emqtt][WTBL] response msg:', cmdId, source, message);
     }
 
 }

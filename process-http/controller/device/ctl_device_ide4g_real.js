@@ -69,6 +69,7 @@ class DeviceIde4gHandle {
 
         logger.info('filter:', filter);
         logger.info('sort:', sort);
+        console.log('filter:', filter);
 
 
         let query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).exec();
