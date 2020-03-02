@@ -22,6 +22,8 @@ const device_router = require('../../process-http/routes/rt_device_manage.js');
      //device
      app.use('/api/device', device_router);
 
+     //wechat 登录相关
+     app.use('/api/wechat', wechat_router);
 
 
      // Welcome

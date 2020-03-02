@@ -28,14 +28,18 @@ const path = require('path');
 
      // right check, 所有都要检查
      app.use('/api', function(req, res, next) {
-         if (req.hasOwnProperty("session") && req.session.hasOwnProperty("user_type")){
-             //console.log('right check ok ');
-             next();
-         }
-         else{
+         if (!req.hasOwnProperty("session")){
              console.log('right check fail', req.cookies);
-             res.send({ret_code: 2001, ret_msg: '用户无权限', extra: req.cookies});
+             res.send({ret_code: 2002, ret_msg: '用户无权限', extra: req});
+             return;
          }
+         if (! req.session.hasOwnProperty("user_type")){
+             console.log('right check fail', req.cookies);
+             res.send({ret_code: 2001, ret_msg: '用户无权限', extra: req.session});
+             return;
+         }
+         //console.log('right check ok ');
+         next()
      });
 
      //stats
