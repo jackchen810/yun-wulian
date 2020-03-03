@@ -8,7 +8,7 @@ const logger = require( '../logs/logs.js');
 
 
 //创建一个工作进程
-const timer_p = fork('./process-timer/timer_main.js');
+const timer_p = fork('./process-timer/timer_main.js', ['timer_main']);
 timer_p.on('message', function () {
     console.log('[main] recv timer message, pid =', process.pid);
 });

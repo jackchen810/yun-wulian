@@ -7,7 +7,13 @@
   "license": "GPL",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development supervisor --max_old_space_size=8000 --harmony index.js",
+    "dev": "cross-env NODE_ENV=development LOG=all supervisor --max_old_space_size=8000 --harmony index.js",
+
+    "https": "cross-env NODE_ENV=development LOG=https_main supervisor --max_old_space_size=8000 --harmony index.js",
+    "mqtt": "cross-env NODE_ENV=development LOG=mqtter_main supervisor --max_old_space_size=8000 --harmony index.js",
+    "http": "cross-env NODE_ENV=development LOG=http_main supervisor --max_old_space_size=8000 --harmony index.js",
+    "timer": "cross-env NODE_ENV=development LOG=timer_main supervisor --max_old_space_size=8000 --harmony index.js",
+
     "local": "cross-env NODE_ENV=production supervisor  --max_old_space_size=8000  --harmony index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cross-env NODE_ENV=production pm2 start index.js --node-args='--max_old_space_size=8000 --harmony' --name 'yun-wulian'",

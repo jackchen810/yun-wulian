@@ -10,7 +10,7 @@ const logger = require( '../logs/logs.js');
 
 
 //创建一个工作进程
-const mqtt_p = fork('./process-mqtt/mqtter_main.js');
+const mqtt_p = fork('./process-mqtt/mqtter_main.js', ['mqtter_main']);
 mqtt_p.on('message', function (message) {
     //console.log('[main] recv mqtt message, pid =', process.pid);
     console.log('[main] recv mqtt message, message =', JSON.stringify(message));

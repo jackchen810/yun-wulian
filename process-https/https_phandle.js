@@ -8,7 +8,7 @@ const logger = require( '../logs/logs.js');
 
 
 //创建一个工作进程
-const https_p = fork('./process-https/https_main.js');
+const https_p = fork('./process-https/https_main.js', ['https_main']);
 https_p.on('message', function () {
     console.log('[main] recv https message, pid =', process.pid);
 });

@@ -6,7 +6,7 @@ const logger = require( '../logs/logs.js');
 //console.log('[main] create http process...');
 
 //创建一个工作进程
-const http_p = fork('./process-http/http_main.js');
+const http_p = fork('./process-http/http_main.js', ['http_main']);
 http_p.on('message', function () {
     //config.process.http_pid = process.pid;
     console.log('[main] recv http message, pid =', process.pid);

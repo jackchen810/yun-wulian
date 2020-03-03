@@ -40,7 +40,7 @@ class MqttDispatchHandle {
         else if (topic_array[0] == 'yunWL') {
             var msg_string = iconv.decode(message, 'gb2312');
             if (process.env.NODE_ENV == 'local'){
-                console.log('[emqtt][yunWL] response:', topic, msg_string);
+                logger.debug('[emqtt][yunWL] response:', topic, msg_string);
             }
 
             this.onMessage_yunVendor(topic_array, topic, msg_string);
@@ -49,7 +49,7 @@ class MqttDispatchHandle {
         else if (topic_array[0] == 'yunADJC') {
             var msg_string = message.toString();
             if (process.env.NODE_ENV == 'local'){
-                console.log('[emqtt][yunADJC] response:', topic, msg_string);
+                logger.debug('[emqtt][yunADJC] response:', topic, msg_string);
             }
             this.onMessage_yunVendor(topic_array, topic, msg_string);
         }
@@ -57,36 +57,36 @@ class MqttDispatchHandle {
         //jdwx网关设备的回应是yunAC，数据上报topic yunJDWX
         else if (topic_array[0] == 'yunAC') {
             var msg_string = message.toString();
-            //console.log('[emqtt][yunAC] response:', message[89], message[90], message[91],message[92], message[93], message[94], message[95]);
-            console.log('[emqtt][yunAC] response:', topic, msg_string);
+            //logger.debug('[emqtt][yunAC] response:', message[89], message[90], message[91],message[92], message[93], message[94], message[95]);
+            logger.debug('[emqtt][yunAC] response:', topic, msg_string);
             msg_string = msg_string.replace(/(\r\n)|(\n)/g,"<br\>");//把里面的回车换行符替换掉
-            //console.log('[emqtt][yunAC] response2:', topic, msg_string);
+            //logger.debug('[emqtt][yunAC] response2:', topic, msg_string);
             this.onMessage_yunAC(topic_array, topic, msg_string);
         }
         else if (topic_array[0] == 'yunWTBL') {
             //  yunWTBL设备
             var msg_string = message.toString();
-            console.log('[emqtt][yunWTBL] response:', topic, msg_string);
+            logger.debug('[emqtt][yunWTBL] response:', topic, msg_string);
             if (process.env.NODE_ENV == 'local'){
-                console.log('[emqtt][yunWTBL] response:', topic, msg_string);
+                logger.debug('[emqtt][yunWTBL] response:', topic, msg_string);
             }
             this.onMessage_yunWTBL(topic_array, topic, msg_string);
         }
         else if (topic_array[0] == 'yunJDWX') {
             //  yyunJDWXL设备
             var msg_string = message.toString();
-            //console.log('[emqtt][yunJDWX] response:', topic, msg_string);
+            //logger.debug('[emqtt][yunJDWX] response:', topic, msg_string);
             if (process.env.NODE_ENV == 'local'){
-                console.log('[emqtt][yunJDWX] response:', topic, msg_string);
+                logger.debug('[emqtt][yunJDWX] response:', topic, msg_string);
             }
             this.onMessage_yunVendor(topic_array, topic, msg_string);
         }
         else {
             //  else  设备
             var msg_string = message.toString();
-            //console.log('[emqtt][else] response:', topic, msg_string);
+            //logger.debug('[emqtt][else] response:', topic, msg_string);
             if (process.env.NODE_ENV == 'local'){
-                console.log('[emqtt][else] response:', topic, msg_string);
+                logger.debug('[emqtt][else] response:', topic, msg_string);
             }
             this.onMessage_yunVendor(topic_array, topic, msg_string);
         }
@@ -101,7 +101,7 @@ class MqttDispatchHandle {
         var client_id = topic_array[4];
         var action = topic_array[5];
 
-        //console.log('emqtt $SYS:', router_mac, action);
+        //logger.debug('emqtt $SYS:', router_mac, action);
 
         //发送event 事件， data是josn对象格式，内部同一使用josn对象
         if (topic_array[5] == 'connected'){
@@ -119,11 +119,11 @@ class MqttDispatchHandle {
             var josnObj = JSON.parse(message); //由JSON字符串转换为JSON对象
         }
         catch (err) {
-            console.log('出错啦:' + err.message);
+            logger.debug('出错啦:' + err.message);
             return;
         }
 
-        console.log('parse response msg:', josnObj.id, josnObj.unixtime);
+        logger.debug('parse response msg:', josnObj.id, josnObj.unixtime);
 
         //解析mac地址
         var router_mac = topic_array[1];
@@ -141,11 +141,11 @@ class MqttDispatchHandle {
             var josnObj = JSON.parse(message); //由JSON字符串转换为JSON对象
         }
         catch (err) {
-            console.log('出错啦:' + err.message);
+            logger.debug('出错啦:' + err.message);
             return;
         }
 
-        //console.log('parse response msg:', josnObj.id, josnObj.item);
+        //logger.debug('parse response msg:', josnObj.id, josnObj.item);
 
         //解析mac地址
         //topic example：yunADJC/jinxi_1/post/plc
@@ -166,11 +166,11 @@ class MqttDispatchHandle {
             var josnObj = JSON.parse(message); //由JSON字符串转换为JSON对象
         }
         catch (err) {
-            console.log('出错啦:' + err.message);
+            logger.debug('出错啦:' + err.message);
             return;
         }
 
-        //console.log('parse response msg:', josnObj.id, josnObj.item);
+        //logger.debug('parse response msg:', josnObj.id, josnObj.item);
 
         //解析mac地址
         //topic example：yunWTBL/设备名称/post/plc
@@ -192,7 +192,7 @@ class MqttDispatchHandle {
         //如果restful接口需要接收网关的应答事件，在http进程里订阅了该消息
         //mqtt_route_entry.js文件
         emitter.emit(command, source, josnObj);
-        console.log('[emqtt][WTBL] response msg:', cmdId, source, message);
+        logger.debug('[emqtt][WTBL] response msg:', cmdId, source, message);
     }
 
 }

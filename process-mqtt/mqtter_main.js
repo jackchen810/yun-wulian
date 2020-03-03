@@ -1,6 +1,6 @@
 'use strict';
 const logger = require( '../logs/logs.js');
-logger.info('[mqtt] create mqtt process..., pid =', process.pid);
+logger.info('[mqtt] create mqtt process..., arg2:'+ process.argv[2], ',pid =', process.pid);
 
 
 

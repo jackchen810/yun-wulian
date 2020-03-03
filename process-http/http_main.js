@@ -1,6 +1,6 @@
 'use strict';
 const logger = require( '../logs/logs.js');
-logger.info('[http] create http process..., pid =', process.pid);
+logger.info('[http] create http process..., arg2:'+ process.argv[2], ',pid =', process.pid);
 
 
 require('../mongodb/db.js');

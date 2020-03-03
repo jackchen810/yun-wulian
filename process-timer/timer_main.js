@@ -1,7 +1,7 @@
 'use strict';
 
 const logger = require( '../logs/logs.js');
-logger.info('[timer] create timer process..., pid =', process.pid);
+logger.info('[timer] create timer process..., arg2:'+ process.argv[2], ',pid =', process.pid);
 
 
 require('../mongodb/db.js');
