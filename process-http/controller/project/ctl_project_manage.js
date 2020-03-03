@@ -38,9 +38,9 @@ class ProjectManageTable {
         if (user_type == 1) {
             let wherestr = {'user_account': user_account};
             let query = await DB.AccountTable.findOne(wherestr).exec();
-            console.log('[project] get result:', query);
+            logger.info('[project] get result:', query);
             if (query != null){
-                console.log('[project] get Own property', query['user_projects']);
+                logger.info('[project] get Own property', query['user_projects']);
                 filter['project_name'] = { $in: query['user_projects']};
             }
             else{
@@ -85,9 +85,9 @@ class ProjectManageTable {
         if (user_type == 1) {
             let wherestr = {'user_account': user_account};
             let query = await DB.AccountTable.findOne(wherestr).exec();
-            console.log('[project] get result:', query);
+            logger.info('[project] get result:', query);
             if (query != null){
-                 console.log('[project] get Own property', query['user_projects']);
+                 logger.info('[project] get Own property', query['user_projects']);
                  filter['project_name'] = { $in: query['user_projects']};
             }
             else{
@@ -113,8 +113,8 @@ class ProjectManageTable {
 
 
     async project_array(req, res, next) {
-        console.log('project array');
-        //console.log(req.body);
+        logger.info('project array');
+        //logger.info(req.body);
 
         let queryList = await DB.ProjectManageTable.find();
         let projectList = [];
@@ -123,7 +123,7 @@ class ProjectManageTable {
         }
 
         res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:projectList, total:queryList.length});
-        console.log('project array end');
+        logger.info('project array end');
     }
 
     async project_del(req, res, next) {
@@ -146,10 +146,10 @@ class ProjectManageTable {
 
         //删除文件
         try {
-            console.log('del image:', query['project_image']);
+            logger.info('del image:', query['project_image']);
             fs.unlinkSync(query['project_image']);
         }catch(err){
-            console.log('del image fail');
+            logger.info('del image fail');
         }
         res.send({ret_code: 0, ret_msg: '成功', extra: query});
         logger.info('project del end');
@@ -202,8 +202,8 @@ class ProjectManageTable {
      */
     async project_add(req, res, next){
 
-        console.log('project upload');
-        //console.log(req);
+        logger.info('project upload');
+        //logger.info(req);
 
         //生成multiparty对象，并配置上传目标路径
         /*
@@ -223,24 +223,24 @@ class ProjectManageTable {
 
         let fields = {};   //各个字段值
         form.on('field', function (field, value) {
-            console.log('upload field: ', field, value);
+            logger.info('upload field: ', field, value);
             fields[field] = value;
         });
 
         form.on('file', function (field, file) {
             fileName = file.name;
             uploadedPath = file.path;
-            console.log('upload file: ', fileName, uploadedPath);
+            logger.info('upload file: ', fileName, uploadedPath);
         });
 
         form.on('fileBegin', function () {
-            console.log('upload fileBegin...');
+            logger.info('upload fileBegin...');
         });
 
         form.on('end', function () {
-            console.log('upload end: ');
-            //console.log("uploadedPath:", uploadedPath);
-            //console.log("fields:", fields);
+            logger.info('upload end: ');
+            //logger.info("uploadedPath:", uploadedPath);
+            //logger.info("fields:", fields);
 
             //参数有效性检查
             if (!uploadedPath || !fields.project_name){
@@ -251,7 +251,7 @@ class ProjectManageTable {
 
             DB.ProjectManageTable.findOne({'project_name': fields.project_name}).exec(function (err, doc) {
                 if (doc != null){
-                    console.log('the same file already exist');
+                    logger.info('the same file already exist');
                     fs.unlinkSync(uploadedPath);
                     res.send({ret_code: 1008, ret_msg: '项目名重复', extra: fields.project_name});
                     return;
@@ -273,23 +273,23 @@ class ProjectManageTable {
                         'sort_time':mytime.getTime(),
                     };
 
-                    //console.log('romDocObj fields: ', romDocObj);
+                    //logger.info('romDocObj fields: ', romDocObj);
                     DB.ProjectManageTable.create(myDocObj);
                     res.send({ret_code: 0, ret_msg: '上传成功', extra: myDocObj});
                     return;
                 }
             });
 
-            console.log('new project:', fields.project_name);
+            logger.info('new project:', fields.project_name);
         });
 
         form.on('error', function(err) {
-            console.log('upload error', err.toString());
+            logger.info('upload error', err.toString());
             res.send({ret_code: -1, ret_msg: '上传出错', extra:err});
         });
 
         form.parse(req);
-        console.log('project upload ok');
+        logger.info('project upload ok');
     }
 
 }

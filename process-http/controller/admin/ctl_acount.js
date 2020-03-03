@@ -26,7 +26,7 @@ class Account extends BaseComponent {
         this.addDefaultAccount('admin', '123456');
         this.addDefaultAccount('18211162033', '18211162033');
         //this.resetPassword('admin', '123456');
-        console.log('add default account')
+        logger.info('add default account')
         //}
 	}
 
@@ -36,7 +36,7 @@ class Account extends BaseComponent {
     }
 
 	async login(req, res, next){
-	    console.log('account login');
+	    logger.info('account login');
 		let user_account = req.body.user_account;
 		let user_password = req.body.user_password;
 
@@ -48,7 +48,7 @@ class Account extends BaseComponent {
                 throw new Error('密码错误');
             }
         }catch(err){
-            console.log(err.message, err);
+            logger.info(err.message, err);
             res.send({ret_code: 1, ret_msg: err.message, extra: ''});
             return;
         }
@@ -56,24 +56,24 @@ class Account extends BaseComponent {
 		try {
 			const query = await DB.AccountTable.findOne({user_account});
 			if(!query) {
-                console.log('该用户不存在');
+                logger.info('该用户不存在');
                 res.send({ret_code: 1, ret_msg: '用户不存在', extra: ''});
                 return;
             }
 
 			if(user_password != query.user_password_md5) {
-				console.log('用户登录密码错误', query.user_password_md5);
+				logger.info('用户登录密码错误', query.user_password_md5);
 				res.send({ret_code: 1, ret_msg: '密码错误', extra: ''});
 				return;
 			}
 
             if(query.user_status === 1){
-                console.log('用户被冻结');
+                logger.info('用户被冻结');
                 res.send({ret_code:1011, ret_msg: '你已经被冻结', extra: ''});
                 return;
             }
 
-            console.log('登录成功');
+            logger.info('登录成功');
 
             let updatestr = {
                 'login_logs': [],
@@ -96,7 +96,7 @@ class Account extends BaseComponent {
             res.send({ret_code: 0, ret_msg: '欢迎你', extra: query.user_type});
 
 		}catch(err) {
-			console.log('登录失败', err);
+			logger.info('登录失败', err);
 			res.send({ret_code: 1, ret_msg: '登录失败', extra: ''});
 			return;
 		}
@@ -120,7 +120,7 @@ class Account extends BaseComponent {
 				throw new Error('密码错误');
 			}
 		}catch(err){
-			console.log(err.message, err);
+			logger.info(err.message, err);
 			res.send({ret_code: 1, ret_msg: '参数错误', extra: err.message});
 			return;
 		}
@@ -130,7 +130,7 @@ class Account extends BaseComponent {
         try{
             const admin = await DB.AccountTable.findOne({user_account});
             if(admin) {
-                console.log('用户已经存在');
+                logger.info('用户已经存在');
                 res.send({ret_code: 1, ret_msg: '用户已经存在', extra: ''});
                 return;
             }
@@ -159,13 +159,13 @@ class Account extends BaseComponent {
             res.send({ret_code: 0, ret_msg: '注册成功', extra: ''})
 
         }catch(err){
-            console.log('注册失败', err);
+            logger.info('注册失败', err);
             res.send({ret_code: 1, ret_msg: '注册失败', extra: ''})
         }
 	}
 
 	async changePassword(req, res, next){
-        console.log('[website] account changePassword');
+        logger.info('[website] account changePassword');
 	//	let user_account = req.body.user_account;
 		let user_account = req.body.user_account;
 		let user_password = req.body.user_password;
@@ -177,7 +177,7 @@ class Account extends BaseComponent {
 				throw new Error('请输入用户密码');
 			}
 		}catch(err){
-			console.log(err.message, err);
+			logger.info(err.message, err);
 			res.send({ret_code: 1,ret_msg: '参数错误',extra: err.message});
 			return;
 		}
@@ -187,12 +187,12 @@ class Account extends BaseComponent {
             let wherestr = {'user_account': user_account};
 			const admin = await DB.AccountTable.findOne(wherestr);
 			if(!admin) {
-                console.log('用户不存在');
+                logger.info('用户不存在');
                 res.send({ret_code: 1, ret_msg: '用户不存在', extra: ''});
                 return;
             }
             if(user_password != admin.user_password) {
-				console.log('密码错误', user_password);
+				logger.info('密码错误', user_password);
 				res.send({ret_code: 1, ret_msg: '密码错误',extra: ''});
 				return;
 			}
@@ -203,19 +203,19 @@ class Account extends BaseComponent {
 			};
 
             await DB.AccountTable.findByIdAndUpdate(admin['_id'], updatestr);
-            console.log('修改密码成功');
+            logger.info('修改密码成功');
             res.send({ret_code: 0, ret_msg: '修改密码成功',extra: ''});
 
 		}catch(err){
-			console.log('修改用户密码失败');
+			logger.info('修改用户密码失败');
 			res.send({ret_code: 1, ret_msg: '修改用户密码失败',extra: ''});
 			return;
 		}
-        console.log('[website] account changePassword end');
+        logger.info('[website] account changePassword end');
 	}
 
     async deleteAccount(req, res, next){
-        console.log('[website] account delete');
+        logger.info('[website] account delete');
         //	let user_account = req.body.user_account;
         //获取表单数据，josn
         let user_account = req.body['user_account'];
@@ -223,29 +223,29 @@ class Account extends BaseComponent {
         try{
             let wherestr = {'user_account': user_account};
             await DB.AccountTable.findOneAndRemove(wherestr);
-            console.log('删除账户成功');
+            logger.info('删除账户成功');
             res.send({ret_code: 0,ret_msg: '删除账户成功',extra: ''});
 
         }catch(err){
-            console.log('删除账户失败');
+            logger.info('删除账户失败');
             res.send({ret_code: 1,ret_msg: '删除账户失败',extra: ''});
         }
-        console.log('[website] account delete end');
+        logger.info('[website] account delete end');
     }
 
 	async revoke(req, res, next){
-        console.log('[website] account revoke');
+        logger.info('[website] account revoke');
 		try{
             let wherestr = {'user_account': req.body.user_account};
 			const admin = await DB.AccountTable.findOne(wherestr);
 			if(!admin){
-				console.log('用户不存在');
+				logger.info('用户不存在');
                 res.send({ret_code: 1,ret_msg: '用户不存在',extra: ''});
                 return;
 			}
 
 			if(admin.user_type === 0){
-				console.log('管理员不能冻结');
+				logger.info('管理员不能冻结');
 				res.send({ret_code: 1,ret_msg: '管理员不能冻结',extra:''});
 				return;
 			}
@@ -253,28 +253,28 @@ class Account extends BaseComponent {
             let updatestr = {'user_status': 1};
             await DB.AccountTable.findByIdAndUpdate(admin['_id'], updatestr);
             res.send({ret_code: 0,ret_msg: '用户已冻结',extra: '',});
-            console.log('用户已冻结');
+            logger.info('用户已冻结');
 		}catch(err){
-			console.log('冻结用户失败', err);
+			logger.info('冻结用户失败', err);
 			res.send({ret_code: 1,ret_msg: '冻结用户失败',extra: ''});
 		}
 
-        console.log('[website] account revoke end');
+        logger.info('[website] account revoke end');
 	}
 
 	async restore(req, res, next){
-        console.log('[website] account restore');
+        logger.info('[website] account restore');
 		try{
             let wherestr = {'user_account': req.body.user_account};
 			const admin = await DB.AccountTable.findOne(wherestr);
 			if(!admin){
-				console.log('用户不存在');
+				logger.info('用户不存在');
 				res.send({ret_code: 1,ret_msg: '用户不存在',extra: ''});
 				return;
 			}
 
 			if(admin.user_type === 0){
-				console.log('管理员不需要解冻');
+				logger.info('管理员不需要解冻');
 				res.send({ret_code:1,ret_msg:'管理员不需要解冻',extra:''});
 				return;
 			}
@@ -282,30 +282,30 @@ class Account extends BaseComponent {
             let updatestr = {'user_status': 0};
             await DB.AccountTable.findByIdAndUpdate(admin['_id'], updatestr);
             res.send({ret_code: 0,ret_msg: '用户已解冻',extra: ''});
-            console.log('用户已解冻');
+            logger.info('用户已解冻');
 		}catch(err){
-			console.log('解冻用户失败')
+			logger.info('解冻用户失败')
 			res.send({ret_code: 1,ret_msg: '解冻用户失败',extra: ''})
 		}
 
-        console.log('[website] account restore end');
+        logger.info('[website] account restore end');
 	}
 	async logout(req, res, next){
-        console.log('[website] account logout');
+        logger.info('[website] account logout');
 		try{
 			delete req.session.user_account;
 			delete req.session.user_type;
 			res.send({ret_code: 0,ret_msg: '退出成功',extra: ''});
 		}catch(err){
-			console.log('退出失败', err);
+			logger.info('退出失败', err);
 			res.send({ret_code: 1,ret_msg: '退出失败',extra: ''});
 		}
-        console.log('[website] account end');
+        logger.info('[website] account end');
 	}
 
 	async account_list(req, res, next) {
-        console.log('[website] account list');
-        //console.log(req.body);
+        logger.info('[website] account list');
+        //logger.info(req.body);
 
         //获取表单数据，josn
         let page_size = req.body['page_size'];
@@ -315,42 +315,42 @@ class Account extends BaseComponent {
 
         // 如果没有定义排序规则，添加默认排序
         if(typeof(sort)==="undefined"){
-            //console.log('sort undefined');
+            //logger.info('sort undefined');
             sort = {"sort_time":-1};
         }
 
         // 如果没有定义排序规则，添加默认排序
         if(typeof(filter)==="undefined"){
-            //console.log('filter undefined');
+            //logger.info('filter undefined');
             filter = {};
         }
 
-        //console.log('sort ', sort);
-        //console.log('filter ', filter);
+        //logger.info('sort ', sort);
+        //logger.info('filter ', filter);
         let total = await DB.AccountTable.count(filter).exec();
 
         //参数有效性检查
         if(typeof(page_size)==="undefined" && typeof(current_page)==="undefined"){
             let queryList = await DB.AccountTable.find(filter).sort(sort);
-            //console.log('queryList ', queryList);
+            //logger.info('queryList ', queryList);
             res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:queryList, total:total});
         }
         else if (page_size > 0 && current_page > 0) {
             let skipnum = (current_page - 1) * page_size;   //跳过数
             let queryList = await DB.AccountTable.find(filter).sort(sort).skip(skipnum).limit(page_size);
-            //console.log('queryList ', queryList);
+            //logger.info('queryList ', queryList);
             res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:queryList, total:total});
         }
         else{
             res.send({ret_code: 1002, ret_msg: 'json 参数无效', extra:req.body});
         }
 
-        console.log('[website] account list end');
+        logger.info('[website] account list end');
 	}
 
     async account_array(req, res, next) {
-        console.log('[website] account array');
-        //console.log(req.body);
+        logger.info('[website] account array');
+        //logger.info(req.body);
 
         let queryList = await DB.AccountTable.find();
         let accountList = [];
@@ -359,10 +359,10 @@ class Account extends BaseComponent {
         }
 
         res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:accountList, total:queryList.length});
-        console.log('[website] account array end');
+        logger.info('[website] account array end');
     }
     async getOwnProject(req, res, next) {
-        console.log('[website] account get own projects');
+        logger.info('[website] account get own projects');
 
         //获取表单数据，josn
         let user_account = req.body['user_account'];
@@ -380,7 +380,7 @@ class Account extends BaseComponent {
         else {
             let wherestr = {'user_account': user_account};
             let query = await DB.AccountTable.findOne(wherestr).exec();
-            console.log('[website] get result:', query);
+            logger.info('[website] get result:', query);
             if (query == null) {
                 res.send({ret_code: 0, ret_msg: '成功', extra: []});
             }
@@ -395,7 +395,7 @@ class Account extends BaseComponent {
         //获取表单数据，josn
         let user_projects = req.body['user_projects'];
         let user_account = req.body['user_account'];
-        console.log('[website] account update own projects', user_projects);
+        logger.info('[website] account update own projects', user_projects);
 
         let wherestr = {'user_account':user_account};
         let updatestr = {'user_projects': user_projects};
@@ -404,7 +404,7 @@ class Account extends BaseComponent {
     }
 
     async resetPassword(account, password){
-        console.log('[website] account resetPassword');
+        logger.info('[website] account resetPassword');
         //	let user_account = req.body.user_account;
         let user_account = account;
         let user_password = password;
@@ -418,9 +418,9 @@ class Account extends BaseComponent {
 
             await DB.AccountTable.findOneAndUpdate(wherestr, updatestr);
         }catch(err){
-            console.log('修改用户密码失败');
+            logger.info('修改用户密码失败');
         }
-        console.log('[website] account resetPassword end');
+        logger.info('[website] account resetPassword end');
     }
     async addDefaultAccount(user_account, user_password) {
 
@@ -447,7 +447,7 @@ class Account extends BaseComponent {
                 await DB.AccountTable.create(newAdmin);
             }
         } catch (err) {
-            console.log('注册失败', err);
+            logger.info('注册失败', err);
         }
 
 

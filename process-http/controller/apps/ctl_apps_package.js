@@ -357,8 +357,8 @@ class PkgHandle {
         return;
     }
     async list(req, res, next) {
-        console.log('rom list');
-        //console.log(req.body);
+        logger.info('rom list');
+        //logger.info(req.body);
 
         //获取表单数据，josn
         var page_size = req.body['page_size'];
@@ -368,13 +368,13 @@ class PkgHandle {
 
         // 如果没有定义排序规则，添加默认排序
         if(typeof(sort)==="undefined"){
-            console.log('sort undefined');
+            logger.info('sort undefined');
             sort = {"sort_time":-1};
         }
 
         // 如果没有定义排序规则，添加默认排序
         if(typeof(filter)==="undefined"){
-            console.log('filter undefined');
+            logger.info('filter undefined');
             filter = {};
         }
 
@@ -392,7 +392,7 @@ class PkgHandle {
         else{
             res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra:''});
         }
-        //console.log('rom list end');
+        //logger.info('rom list end');
     }
     async detail(req, res, next){
         logger.log('apps pkg detail');

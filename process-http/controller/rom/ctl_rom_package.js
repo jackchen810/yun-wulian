@@ -12,11 +12,11 @@ const formidable = require('formidable');
 
 class RomPkgHandle {
 	constructor(){
-        //console.log('RomPkgHandle constructor...');
+        //logger.info('RomPkgHandle constructor...');
 	}
 
 	async download_test(req, res) {
-        console.log('rom download');
+        logger.info('rom download');
 
         //获取表单数据，josn
         var id = req.body['_id'];
@@ -33,7 +33,7 @@ class RomPkgHandle {
             if(err){
                 //处理错误，可能只有部分内容被传输，所以检查一下res.headerSent
                 res.send({ret_code: -1, ret_msg: 'FAILED', extra:err});
-                console.log('err:', err);
+                logger.info('err:', err);
             }else{
                 //减少下载的积分值之类的。
                 //res.send({ret_code: 0, ret_msg: 'SUCCESS', extra: 'download ok'});
@@ -56,7 +56,7 @@ class RomPkgHandle {
 	}
 
     async download_check(req, res) {
-        console.log('rom download_check');
+        logger.info('rom download_check');
 
         //获取表单数据，josn
         var id = req.body['_id'];
@@ -68,11 +68,11 @@ class RomPkgHandle {
             return;
         }
 
-        //console.log('request fields: id:', id);
+        //logger.info('request fields: id:', id);
         //检查上下架状态
         try {
             var query = await DB.RomTable.findById(id).exec();
-            console.log('query rom_status:', query['rom_status'] );
+            logger.info('query rom_status:', query['rom_status'] );
             if (query['rom_status'] == 'revoke') {  //下架状态
                 res.send({ret_code: 1003, ret_msg: 'FAILED', extra: '固件已下架'});
                 return;
@@ -91,13 +91,13 @@ class RomPkgHandle {
         //直接访问文件进行下载
         var access_path = '/firmware/' + file_name;
         res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:{'access_path':access_path}});
-        console.log('rom download_check end');
+        logger.info('rom download_check end');
         return;
     }
 
 
     async download(req, res) {
-        console.log('rom download');
+        logger.info('rom download');
 
         //获取表单数据，josn
         var id = req.body['_id'];
@@ -109,11 +109,11 @@ class RomPkgHandle {
             return;
         }
 
-        //console.log('request fields: id:', id);
+        //logger.info('request fields: id:', id);
         //检查上下架状态
         try {
             var query = await DB.RomTable.findById(id).exec();
-            console.log('query rom_status:', query['rom_status'] );
+            logger.info('query rom_status:', query['rom_status'] );
             if (query['rom_status'] == 'revoke') {  //下架状态
                 res.send({ret_code: 1003, ret_msg: 'FAILED', extra: '固件已下架'});
                 return;
@@ -155,8 +155,8 @@ class RomPkgHandle {
      */
 	async upload(req, res){
 
-        console.log('upload');
-        //console.log(req);
+        logger.info('upload');
+        //logger.info(req);
 
         //生成multiparty对象，并配置上传目标路径
         /*
@@ -177,23 +177,23 @@ class RomPkgHandle {
 
         var fields = {};   //各个字段值
         form.on('field', function (field, value) {
-            //console.log('upload field: ', field, value);
+            //logger.info('upload field: ', field, value);
             fields[field] = value;
         });
 
         form.on('file', function (field, file) {
             fileName = file.name;
             uploadedPath = file.path;
-            console.log('upload file: ', fileName, uploadedPath);
+            logger.info('upload file: ', fileName, uploadedPath);
         });
 
         form.on('fileBegin', function () {
-            console.log('begin upload...');
+            logger.info('begin upload...');
         });
 
         form.on('end', async function () {
-            console.log('upload end: ');
-            //console.log(fields);
+            logger.info('upload end: ');
+            //logger.info(fields);
 
             //参数有效性检查
             if (typeof(fields.dev_type) === "undefined" || fields.dev_type == ""
@@ -207,7 +207,7 @@ class RomPkgHandle {
 
             var query = await DB.RomTable.findOne({'dev_type': fields.dev_type, 'rom_version': fields.rom_version}).exec();
             if (query != null){
-                console.log('the same version already exist');
+                logger.info('the same version already exist');
                 res.send({ret_code: 1009, ret_msg: '同类型设备版本号已存在', extra: ''});
                 fs.unlinkSync(uploadedPath);
                 return;
@@ -215,13 +215,13 @@ class RomPkgHandle {
 
             var query = await DB.RomTable.findOne({'file_name': fileName}).exec();
             if (query != null){
-                console.log('the same file already exist');
+                logger.info('the same file already exist');
                 res.send({ret_code: 1008, ret_msg: '同名文件已存在', extra: ''});
                 fs.unlinkSync(uploadedPath);
                 return;
             }
 
-            console.log('fs.rename');
+            logger.info('fs.rename');
             //重命名为真实文件名
             var dstPath = path.join(config.firmware_dir, fileName);
             fs.rename(uploadedPath, dstPath, function(err) {
@@ -244,7 +244,7 @@ class RomPkgHandle {
                         'sort_time':mytime.getTime(),
                     };
 
-                    //console.log('romDocObj fields: ', romDocObj);
+                    //logger.info('romDocObj fields: ', romDocObj);
                     DB.RomTable.create(romDocObj);
                 }
             });
@@ -255,14 +255,14 @@ class RomPkgHandle {
             readable.on('data', function(chunk){
                 //fileMatch = chunk.indexOf(fields.dev_type.toUpperCase());
                 fileMatch = chunk.indexOf(fields.dev_type);
-                console.log('read %d, match', chunk.length, fileMatch);
+                logger.info('read %d, match', chunk.length, fileMatch);
             });
 
             readable.on('end', async function(){
-                console.log('read end');
+                logger.info('read end');
                 /*
                 if (fileMatch < 0){
-                    console.log('romfile is not match dev_type');
+                    logger.info('romfile is not match dev_type');
                     res.send({ret_code: 1008, ret_msg: 'FAILED', extra: '设备类型和文件不匹配'});
                     fs.unlinkSync(uploadedPath);
                     return;
@@ -278,13 +278,13 @@ class RomPkgHandle {
         });
 
         form.parse(req);
-        console.log('upload ok');
+        logger.info('upload ok');
 
 	}
 
 	async list(req, res, next){
-        console.log('rom list');
-        //console.log(req.body);
+        logger.info('rom list');
+        //logger.info(req.body);
 
         //获取表单数据，josn
         var page_size = req.body['page_size'];
@@ -294,13 +294,13 @@ class RomPkgHandle {
 
         // 如果没有定义排序规则，添加默认排序
         if(typeof(sort)==="undefined"){
-            console.log('sort undefined');
+            logger.info('sort undefined');
             sort = {"sort_time":-1};
         }
 
         // 如果没有定义排序规则，添加默认排序
         if(typeof(filter)==="undefined"){
-            console.log('filter undefined');
+            logger.info('filter undefined');
             filter = {};
         }
 
@@ -318,12 +318,12 @@ class RomPkgHandle {
         else{
             res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra:''});
         }
-        //console.log('rom list end');
+        //logger.info('rom list end');
 	}
 	async del(req, res, next) {
 
-        console.log('rom delete');
-        //console.log(req.body);
+        logger.info('rom delete');
+        //logger.info(req.body);
 
         //获取表单数据，josn
         var id = req.body['_id'];
@@ -349,13 +349,13 @@ class RomPkgHandle {
         }catch(err){
             res.send({ret_code: -1, ret_msg: 'FAILED', extra:err});
         }
-        console.log('rom delete end');
+        logger.info('rom delete end');
 
     }
 
 
     async revoke(req, res, next){
-        console.log('rom revoke');
+        logger.info('rom revoke');
 
         //获取表单数据，josn
         var id = req.body['_id'];
@@ -368,7 +368,7 @@ class RomPkgHandle {
             return;
         }
 
-        //console.log('_id: ', id);
+        //logger.info('_id: ', id);
         //设置下架状态
         var updatestr = {'rom_status': 'revoke'};
         var query = await DB.RomTable.findByIdAndUpdate(id, updatestr);
@@ -378,7 +378,7 @@ class RomPkgHandle {
 
 
     async release(req, res, next) {
-        console.log('rom release');
+        logger.info('rom release');
 
         //获取表单数据，josn
         var id = req.body['_id'];
@@ -390,7 +390,7 @@ class RomPkgHandle {
             return;
         }
 
-        //console.log('romDocObj fields: ', romDocObj);
+        //logger.info('romDocObj fields: ', romDocObj);
         //设置上架状态
         var updatestr = {'rom_status': 'normal'};
         var query = await DB.RomTable.findByIdAndUpdate(id, updatestr);

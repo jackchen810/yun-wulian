@@ -13,7 +13,7 @@ const MqttSubHandle = require("../../../mqttclient/subscribe/mqtt_sub.js");
 class RomUpgradeHandle {
 	constructor(){
 
-        console.log('RomUpgradeHandle constructor...');
+        logger.info('RomUpgradeHandle constructor...');
 
         this.sysupgrade_update_status = this.sysupgrade_update_status.bind(this);
         this.sysupgrade_before_process = this.sysupgrade_before_process.bind(this);
@@ -774,7 +774,7 @@ class RomUpgradeHandle {
         this.recv_sysinfo = false;
         var self = this;
         setTimeout(function(){
-            //console.log('recv_sysinfo:', self.recv_sysinfo);
+            //logger.info('recv_sysinfo:', self.recv_sysinfo);
             // online之后150秒内， 没有收到sysinfo
             if (self.recv_sysinfo == false) {
                 self.romSysupgradeMode2Process(mac);

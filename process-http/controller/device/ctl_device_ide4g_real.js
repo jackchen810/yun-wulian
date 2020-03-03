@@ -49,7 +49,7 @@ class DeviceIde4gHandle {
             var skipnum = (current_page - 1) * page_size;   //跳过数
             var query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).skip(skipnum).limit(page_size);
             res.send({ret_code: 0, ret_msg: '成功', extra: query.data, total: query.data.length});
-            //console.log('Gateway_Real_Table:', query.data.C1_D1);
+            //logger.info('Gateway_Real_Table:', query.data.C1_D1);
         }
         else{
             res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: ''});
@@ -69,7 +69,7 @@ class DeviceIde4gHandle {
 
         logger.info('filter:', filter);
         logger.info('sort:', sort);
-        console.log('filter:', filter);
+        logger.info('filter:', filter);
 
 
         let query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).exec();

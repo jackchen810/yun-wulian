@@ -12,12 +12,12 @@ const MqttSubHandle = require("../../../mqttclient/subscribe/mqtt_sub.js");
 
 class CmdProcHandle {
 	constructor(){
-        //console.log('RomPkgHandle constructor...');
+        //logger.info('RomPkgHandle constructor...');
 	}
 
 
     async exec_shell_cmd(req, res, next){
-        console.log('cmd exec_shell_cmd');
+        logger.info('cmd exec_shell_cmd');
 
         //获取表单数据，josn
         var route_mac = req.body['route_mac'];
@@ -61,7 +61,7 @@ class CmdProcHandle {
 
 
     async exec_remote_ssh(req, res, next) {
-        console.log('cmd exec_remote_ssh');
+        logger.info('cmd exec_remote_ssh');
 
         //获取表单数据，josn
         var id = req.body['_id'];
@@ -73,7 +73,7 @@ class CmdProcHandle {
             return;
         }
 
-        //console.log('romDocObj fields: ', romDocObj);
+        //logger.info('romDocObj fields: ', romDocObj);
         //设置上架状态
         var updatestr = {'rom_status': 'normal'};
         var query = await DB.RomTable.findByIdAndUpdate(id, updatestr);
@@ -82,7 +82,7 @@ class CmdProcHandle {
     }
 
     async exec_remote_reboot(req, res, next) {
-        console.log('cmd exec_remote_reboot');
+        logger.info('cmd exec_remote_reboot');
 
         //获取表单数据，josn
         var id = req.body['_id'];
@@ -94,7 +94,7 @@ class CmdProcHandle {
             return;
         }
 
-        //console.log('romDocObj fields: ', romDocObj);
+        //logger.info('romDocObj fields: ', romDocObj);
         //设置上架状态
         var updatestr = {'rom_status': 'normal'};
         var query = await DB.RomTable.findByIdAndUpdate(id, updatestr);
@@ -103,7 +103,7 @@ class CmdProcHandle {
     }
 
     async exec_remote_set(req, res, next) {
-        console.log('cmd exec_remote_set');
+        logger.info('cmd exec_remote_set');
 
 
         //获取表单数据，josn

@@ -24,9 +24,9 @@ class CtlGatewayManageHandle {
 
         logger.info('device list');
         //logger.info('req.body', req.body);
-        //console.log('headers:', req.headers);
-        //console.log('session:', req.session);
-        //console.log('sessionID:', req.sessionID);
+        //logger.info('headers:', req.headers);
+        //logger.info('session:', req.session);
+        //logger.info('sessionID:', req.sessionID);
 
         //获取表单数据，josn
         let filter = req.body.hasOwnProperty('filter') ? req.body['filter'] : {};
@@ -53,7 +53,7 @@ class CtlGatewayManageHandle {
 
         let queryList = await DB.DevunitManageTable.find(filter).sort(sort).exec();
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
-        //console.log('queryList:', queryList[0]);
+        //logger.info('queryList:', queryList[0]);
         //logger.info('queryList.length:', queryList.length);
         logger.info('device list end');
     }
@@ -91,15 +91,15 @@ class CtlGatewayManageHandle {
         let skipnum = (current_page - 1) * page_size;   //跳过数
         let queryList = await DB.DevunitManageTable.find(filter).sort(sort).skip(skipnum).limit(page_size).exec();
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
-        //console.log('queryList:', queryList);
+        //logger.info('queryList:', queryList);
         logger.info('device page list end');
     }
 
 
 
     async device_array(req, res, next) {
-        console.log('device array');
-        //console.log(req.body);
+        logger.info('device array');
+        //logger.info(req.body);
 
         let queryList = await DB.DevunitManageTable.find();
         let deviceList = [];
@@ -108,13 +108,13 @@ class CtlGatewayManageHandle {
         }
 
         res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:deviceList, total:queryList.length});
-        console.log('device array end');
+        logger.info('device array end');
     }
 
 
     async device_cn_array(req, res, next) {
-        console.log('device cn array');
-        //console.log(req.body);
+        logger.info('device cn array');
+        //logger.info(req.body);
 
         let queryList = await DB.DevunitManageTable.find();
         let deviceCnList = [];
@@ -123,7 +123,7 @@ class CtlGatewayManageHandle {
         }
 
         res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:deviceCnList, total:queryList.length});
-        console.log('device cn array end');
+        logger.info('device cn array end');
     }
 
     async device_del(req, res, next) {
@@ -146,10 +146,10 @@ class CtlGatewayManageHandle {
 
         //删除文件
         try {
-            console.log('del image:', query['device_image']);
+            logger.info('del image:', query['device_image']);
             fs.unlinkSync(query['device_image']);
         }catch(err){
-            console.log('del image fail');
+            logger.info('del image fail');
         }
         res.send({ret_code: 0, ret_msg: '成功', extra: query});
         logger.info('device del end');
@@ -175,7 +175,7 @@ class CtlGatewayManageHandle {
      */
     async device_add(req, res, next){
         logger.info('device add');
-        //console.log(req);
+        //logger.info(req);
 
         //获取表单数据，josn
         var device_name = req.body['device_name'];
@@ -184,7 +184,7 @@ class CtlGatewayManageHandle {
         var gateway_vendor = req.body['gateway_vendor'];
         var comment = req.body['comment'];
 
-        //console.log(fields);
+        //logger.info(fields);
         logger.info('device_name:', device_name);
         logger.info('devunit_name:', devunit_name);
         logger.info('project_name:', project_name);
@@ -199,7 +199,7 @@ class CtlGatewayManageHandle {
 
         var query = await DB.DevunitManageTable.findOne({'device_name': device_name}).exec() ;
         if (query != null){
-            console.log('the same file already exist');
+            logger.info('the same file already exist');
             res.send({ret_code: 1008, ret_msg: '项目名重复', extra: device_name});
             return;
         }
@@ -222,15 +222,15 @@ class CtlGatewayManageHandle {
             'sort_time':mytime.getTime(),
         };
 
-        //console.log('romDocObj fields: ', romDocObj);
+        //logger.info('romDocObj fields: ', romDocObj);
         DB.DevunitManageTable.create(myDocObj);
         res.send({ret_code: 0, ret_msg: '添加成功', extra: myDocObj});
-        console.log('device add ok');
+        logger.info('device add ok');
     }
     async device_add_bak(req, res){
 
-        console.log('device add');
-        //console.log(req);
+        logger.info('device add');
+        //logger.info(req);
 
         //生成multiparty对象，并配置上传目标路径
         /*
@@ -250,23 +250,23 @@ class CtlGatewayManageHandle {
 
         let fields = {};   //各个字段值
         form.on('field', function (field, value) {
-            console.log('upload field: ', field, value);
+            logger.info('upload field: ', field, value);
             fields[field] = value;
         });
 
         form.on('file', function (field, file) {
             fileName = file.name;
             uploadedPath = file.path;
-            console.log('upload file: ', fileName, uploadedPath);
+            logger.info('upload file: ', fileName, uploadedPath);
         });
 
         form.on('fileBegin', function () {
-            console.log('begin upload...');
+            logger.info('begin upload...');
         });
 
         form.on('end', function () {
-            console.log('upload end: ');
-            //console.log(fields);
+            logger.info('upload end: ');
+            //logger.info(fields);
 
             //参数有效性检查
             if (!fields.device_name){
@@ -277,7 +277,7 @@ class CtlGatewayManageHandle {
 
             DB.DevunitManageTable.findOne({'device_name': fields.device_name}).exec(function (err, doc) {
                 if (doc != null){
-                    console.log('the same file already exist');
+                    logger.info('the same file already exist');
                     fs.unlinkSync(uploadedPath);
                     res.send({ret_code: 1008, ret_msg: '项目名重复', extra: fields.device_name});
                     return;
@@ -301,23 +301,23 @@ class CtlGatewayManageHandle {
                         'sort_time':mytime.getTime(),
                     };
 
-                    //console.log('romDocObj fields: ', romDocObj);
+                    //logger.info('romDocObj fields: ', romDocObj);
                     DB.DevunitManageTable.create(myDocObj);
                     res.send({ret_code: 0, ret_msg: '上传成功', extra: myDocObj});
                     return;
                 }
             });
 
-            console.log('new device:', fields.device_name);
+            logger.info('new device:', fields.device_name);
         });
 
         form.on('error', function(err) {
-            console.log('upload error', err.toString());
+            logger.info('upload error', err.toString());
             res.send({ret_code: -1, ret_msg: '上传出错', extra:err});
         });
 
         form.parse(req);
-        console.log('upload ok');
+        logger.info('upload ok');
     }
     async device_update(req, res, next) {
 
@@ -381,7 +381,7 @@ class CtlGatewayManageHandle {
         }
 
 
-        console.log('文件已被保存');
+        logger.info('文件已被保存');
         res.send({ret_code:0, ret_msg:'SUCCESS',extra: file_path});
     }
 
@@ -433,7 +433,7 @@ class CtlGatewayManageHandle {
                     varName.push(dataList[j].varName);
                 }
 
-                //console.log('varName...', varName.toString());
+                //logger.info('varName...', varName.toString());
                 sheetLine.push(varName);
             }
 
@@ -445,7 +445,7 @@ class CtlGatewayManageHandle {
                 varValue.push(dataList[j].varValue);
             }
 
-            //console.log('varValue...', varValue.toString());
+            //logger.info('varValue...', varValue.toString());
             sheetLine.push(varValue);
         }
 
@@ -457,9 +457,9 @@ class CtlGatewayManageHandle {
             ['li si', '11']
         ];
         */
-        console.log('xlsx.build....', sheetLine.length);
-        //console.log('xlsx.build....', sheetLine[0].toString());
-        //console.log('xlsx.build....', sheetLine[1].toString());
+        logger.info('xlsx.build....', sheetLine.length);
+        //logger.info('xlsx.build....', sheetLine[0].toString());
+        //logger.info('xlsx.build....', sheetLine[1].toString());
         let fileData = xlsx.build([
             {
                 name:'sheet1',
@@ -467,7 +467,7 @@ class CtlGatewayManageHandle {
             }
         ]);
 
-        //console.log('写文件....');
+        //logger.info('写文件....');
         //let time = moment().format('YYYYMMDDHHMMSS');
         //let file_path='/download/'+ time +'.xlsx';
         //let local_path = './public'+file_path;
@@ -475,15 +475,15 @@ class CtlGatewayManageHandle {
 
         fs.writeFile(local_path, fileData, (err) => {
             if(err)
-                console.log('写文件操作失败');
+                logger.info('写文件操作失败');
             else {
-                console.log('写文件操作成功');
+                logger.info('写文件操作成功');
             }
         });
 
 
 
-        console.log('文件已被保存');
+        logger.info('文件已被保存');
         res.send({ret_code:0, ret_msg:'SUCCESS',extra: file_path});
     }
 

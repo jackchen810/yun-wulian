@@ -11,11 +11,11 @@ class WechatLoginHandle {
     }
 
     async jscode2session(req, res, next) {
-        console.log('wechat jscode2session');
-        //console.log(req.body);
-        //console.log('headers:', req.headers);
-        //console.log('session:', req.session);
-        //console.log('sessionID:', req.sessionID);
+        logger.info('wechat jscode2session');
+        //logger.info(req.body);
+        //logger.info('headers:', req.headers);
+        //logger.info('session:', req.session);
+        //logger.info('sessionID:', req.sessionID);
 
         // update session
         req.session.user_account = 'admin';
@@ -38,7 +38,7 @@ class WechatLoginHandle {
         //你的后台服务(/wx/onlogin)接着需要使用这个传递过来的登录凭证，去调用微信接口换取openid和session_key，接口地址格式如下所示：
         //https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code
 
-        //console.log("options:", options);
+        //logger.info("options:", options);
         let httpres = https.get(options, function (response){
             let jsonstr ='';
             response.on('data',function(data){
@@ -56,17 +56,17 @@ class WechatLoginHandle {
         });
 
         //res.send({ret_code: 0, ret_msg: '成功', extra:''});
-        console.log('wechat jscode2session end');
+        logger.info('wechat jscode2session end');
     }
 
 
     async user2session(req, res, next) {
-        console.log('user2session ');
-        //console.log(req.body);
+        logger.info('user2session ');
+        //logger.info(req.body);
 
         //req.s
 
-        console.log('user2session end');
+        logger.info('user2session end');
     }
 }
 

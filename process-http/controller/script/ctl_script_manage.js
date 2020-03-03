@@ -321,8 +321,8 @@ class ScriptHandle {
 		}
     }
     async list(req, res, next) {
-        console.log('script list');
-        //console.log(req.body);
+        logger.info('script list');
+        //logger.info(req.body);
 
         //获取表单数据，josn
         var page_size = req.body['page_size'];
@@ -332,13 +332,13 @@ class ScriptHandle {
 
         // 如果没有定义排序规则，添加默认排序
         if(typeof(sort)==="undefined"){
-            console.log('sort undefined');
+            logger.info('sort undefined');
             sort = {"sort_time":-1};
         }
 
         // 如果没有定义排序规则，添加默认排序
         if(typeof(filter)==="undefined"){
-            console.log('filter undefined');
+            logger.info('filter undefined');
             filter = {};
         }
 
@@ -356,7 +356,7 @@ class ScriptHandle {
         else{
             res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra:''});
         }
-        //console.log('rom list end');
+        //logger.info('rom list end');
     }
 }
 

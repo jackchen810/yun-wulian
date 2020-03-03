@@ -25,7 +25,7 @@ class DeviceIde4gHandle {
 
             //查看data的属性, 遍历各个通道（C1_D1）
             for(let key in queryList[i].data){
-                //console.log('data key:', key);
+                //logger.info('data key:', key);
                 if (key == channel_name) {
                     let tagList = queryList[i].data[key];
                     //遍历各个Tag（Tag_H2O_wendu）
@@ -58,7 +58,7 @@ class DeviceIde4gHandle {
 
             //查看data的属性, 遍历各个通道（C1_D1）
             for(let key in queryList[i].data){
-                //console.log('data key:', key);
+                //logger.info('data key:', key);
                 if (key == channel_name) {
                     let tagList = queryList[i].data[key];
                     //遍历各个Tag（Tag_H2O_wendu）
@@ -102,7 +102,7 @@ class DeviceIde4gHandle {
                     else {
                         tagList[m].varValue = 35 + Math.random() * 14;
                     }
-                    console.log('new value:', tagList[m].varValue);
+                    logger.info('new value:', tagList[m].varValue);
                     await DB.Gateway_Minute_Table.findByIdAndUpdate(queryList[i]['_id'], queryList[i]).exec();
                     break;
                 }

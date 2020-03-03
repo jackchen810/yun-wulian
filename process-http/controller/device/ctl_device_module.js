@@ -350,7 +350,7 @@ class DeviceModuleHandle {
         let wherestr = {'project_name': project_name};
         let devList = await DB.DevunitManageTable.find(wherestr).exec();
         for (let p = 0; p < devList.length; p++) {
-            //console.log('devunit_name:', devList[p]['devunit_name']);
+            //logger.info('devunit_name:', devList[p]['devunit_name']);
 
             let wherestr = {'devunit_name': devList[p]['devunit_name']};
             let queryList = await DB.Gateway_Real_Table.find(wherestr).exec();
@@ -364,7 +364,7 @@ class DeviceModuleHandle {
                         continue;
                     }
                     if (tagList[m]['varName'].indexOf('臭氧发生器模块启动') >=0 ){
-                        //console.log('varName:', tagList[m]['varName']);
+                        //logger.info('varName:', tagList[m]['varName']);
 
                         if (tagList[m]['varValue'] == '1.000' || tagList[m]['varValue'] == '1'){
                             run_unit_count++;
@@ -374,7 +374,7 @@ class DeviceModuleHandle {
                         }
                     }
                     if (tagList[m]['varName'].indexOf('故障信号') >=0 ){
-                        //console.log('varName:', tagList[m]['varName']);
+                        //logger.info('varName:', tagList[m]['varName']);
 
                         if (tagList[m]['varValue'] == '1.000' || tagList[m]['varValue'] == '1'){
                             fault_unit_count++;
@@ -419,7 +419,7 @@ class DeviceModuleHandle {
                     continue;
                 }
                 if (tagList[m]['varName'].indexOf('功率给定值') >=0 ){
-                    //console.log('varName:', tagList[m]['varName']);
+                    //logger.info('varName:', tagList[m]['varName']);
 
                     if (tagList[m]['varValue'] == '1.000' || tagList[m]['varValue'] == '1'){
                         run_unit_count++;
