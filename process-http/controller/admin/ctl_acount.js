@@ -4,6 +4,7 @@ const DB = require('../../../models/models');
 const BaseComponent = require('../../../prototype/baseComponent.js');
 const crypto = require('crypto');
 const dtime = require('time-formater');
+const logger = require( '../../../logs/logs.js');
 
 
 
