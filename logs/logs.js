@@ -34,14 +34,14 @@ winston.remove(winston.transports.Console);  //这个只是将日志信息打印
 /*  根据启动时的环境变量 添加出输出到控制台 */
 if (process.env.LOG == process.argv[2]){
 
-    console.log("add console output");
+    console.log(process.argv[2]+ " add to console output");
     //这里是将日志信息放到somefile.log文件中
-    logger.add(winston.transports.Console, { level: 'info' });
+    logger.add(winston.transports.Console, { level: 'debug' });
 }
 else if (process.env.LOG == 'all'){
     //这里是将日志信息放到somefile.log文件中
-    console.log("add console output");
-    logger.add(winston.transports.Console, { level: 'info' });
+    console.log(process.argv[2]+ " add to console output");
+    logger.add(winston.transports.Console, { level: 'debug' });
 }
 
 logger.info('log start...', process.argv[2]);
