@@ -48,7 +48,7 @@ app.all('*', (req, res, next) => {
         res.end('welcome to options');
 	  	//res.send(200);
 	} else {
-		console.log('[http] method:', req.method, req.path);
+        logger.info('[http] method:', req.method, req.path);
 		///** 尼玛，打开下面开关后，文件上传不好使
 		/*   //不能开
         req.on('data', function (data) {

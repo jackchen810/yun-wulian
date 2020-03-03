@@ -33,11 +33,11 @@ app.all('*', (req, res, next) => {
     //res.setHeader("Set-Cookie", ["type=ninja", "language=javascript"]);
 	res.header("X-Powered-By", '3.2.1')
 	if (req.method == 'OPTIONS') {
-        console.log('[HTTPS] method:', req.method, req.path);
+        //logger.info('[HTTPS] method:', req.method, req.path);
         res.end('welcome to options');
 	  	//res.send(200);
 	} else {
-        console.log('[HTTPS] method:', req.method, req.path);
+        logger.info('[HTTPS] method:', req.method, req.path);
         ///** 尼玛，打开下面开关后，文件上传不好使
         /*   //不能开
         req.on('data', function (data) {
