@@ -1,8 +1,7 @@
 'use strict';
-
-
 const config = require('config-lite');
 const emitter = require("../../mqttclient/subscribe/mqtt_event.js");
+const logger = require( '../../logs/logs.js');
 
 
 //消息处理
@@ -15,26 +14,26 @@ function onMessage(topic, message)
     //var msg_string = message.toString();
     //var msg_string = iconv.decode(message, 'gb2312');
     //if (process.env.NODE_ENV == 'local'){
-    //    console.log('[emqtt] response:', topic, msg_string);
+    //    logger.debug('[emqtt] response:', topic, msg_string);
     //}
 
     //分解topic 字段
     var topic_array = topic.split('/');
     var msg_string = message.toString();
     msg_string = msg_string.replace(/(\r\n)|(\n)/gm,"<br>");//把里面的回车换行符替换掉
-    //console.log('[http][yunAC] response:', topic, msg_string);
+    //logger.debug('[http][yunAC] response:', topic, msg_string);
 
     try {
         var josnObj = JSON.parse(msg_string); //由JSON字符串转换为JSON对象
     }
     catch (err) {
-        console.log('[http] yunAC消息出错啦:' + err.message);
+        logger.debug('[http] yunAC消息出错啦:' + err.message);
         return;
     }
 
     if (topic_array[0] == 'yunAC') {
-        console.log('[http][yunAC] response:', topic, msg_string);
-        //console.log('[emqtt][yunAC] response2:', topic, msg_string);
+        logger.debug('[http][yunAC] response:', topic, msg_string);
+        //logger.debug('[emqtt][yunAC] response2:', topic, msg_string);
 
         //解析mac地址
         var router_mac = topic_array[1];
@@ -47,7 +46,7 @@ function onMessage(topic, message)
     else if (topic_array[0] == 'yunWTBL') {
         var msg_string = message.toString();
         msg_string = msg_string.replace(/(\r\n)|(\n)/gm,"<br>");//把里面的回车换行符替换掉
-        //console.log('[http][yunWTBL] response:', topic, msg_string);
+        //logger.debug('[http][yunWTBL] response:', topic, msg_string);
 
 
         //解析mac地址
@@ -73,7 +72,7 @@ function onMessage(topic, message)
         //mqtt_route_entry.js文件
         var gwSn = josnObj['gwSn'];
         emitter.emit(gwSn, gwSn, josnObj);
-        //console.log('[http][WTBL] response msg:',gwSn, josnObj);
+        logger.debug('[http][WTBL] response msg:',gwSn, josnObj);
 
     }
 
@@ -104,7 +103,7 @@ function onMessage(topic, message)
      //监听进程消息
      //process.on('message', MqttDispatchHandle.onMessage_sysinfo);
 
-     console.log('[mqtt] load router, pid =', process.pid);
+     logger.debug('[mqtt] load router, pid =', process.pid);
 }
 
 

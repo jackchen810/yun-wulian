@@ -21,9 +21,9 @@ const myLogFormatter = function (options) {
 const logger = new (winston.Logger)({
     transports: [
         new (winston.transports.File)({
+            formatter: myLogFormatter,
             filename: './logs/node.log',
             level: 'info',
-            timestamp: () => dtime().format('YYYY-MM-DD HH:mm:ss'),
             handleExceptions: true,
             maxsize: 5242880,
             maxFiles: 10
