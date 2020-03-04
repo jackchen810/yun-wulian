@@ -1,0 +1,2 @@
+setCssToHead([".",[1],"search-box { width: 95%; background-color: rgb(242, 242, 242); padding: 7.5px 2.5%; display: -webkit-box; display: -webkit-flex; display: flex; -webkit-box-pack: justify; -webkit-justify-content: space-between; justify-content: space-between; }\n.",[1],"uni-media-list-logo { width: ",[0,100],"; height: ",[0,100],"; }\n",],undefined,{path:"./pages/search/search.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/search/search.wxml') } }));

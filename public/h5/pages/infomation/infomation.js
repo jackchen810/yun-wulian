@@ -1,0 +1,2 @@
+setCssToHead(["body { background-color: #f1f1f1 }\n.",[1],"face { text-align: center; padding-top: ",[0,60],"; }\n.",[1],"face wx-image { width: ",[0,150],"; height: ",[0,150],"; border-radius: 100% }\n",],undefined,{path:"./pages/infomation/infomation.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/infomation/infomation.wxml') } }));
