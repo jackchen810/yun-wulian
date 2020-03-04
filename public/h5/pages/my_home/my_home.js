@@ -1,2 +1,0 @@
-setCssToHead([".",[1],"grid-item { display: block; height: ",[0,160],"; width: 40%; text-align:center; display:-webkit-box; display:-webkit-flex; display:flex; }\n",],undefined,{path:"./pages/my_home/my_home.wxss"})();
-document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/my_home/my_home.wxml') } }));
