@@ -74,7 +74,7 @@ class DeviceIde4gHandle {
 
         let query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).exec();
         if (!query) {
-            res.send({ret_code: -1,ret_msg: '失败，参数错误',extra: ''});
+            res.send({ret_code: -1,ret_msg: '数据不存在',extra: ''});
             return;
         }
 
