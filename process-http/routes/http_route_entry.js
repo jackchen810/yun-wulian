@@ -30,12 +30,12 @@ const path = require('path');
      app.use('/api', function(req, res, next) {
          if (!req.hasOwnProperty("session")){
              console.log('right check fail', req.cookies);
-             res.send({ret_code: 2002, ret_msg: '用户无权限', extra: req});
+             res.send({ret_code: 2001, ret_msg: '用户无权限，会话不存在', extra: req});
              return;
          }
          if (! req.session.hasOwnProperty("user_type")){
              console.log('right check fail', req.cookies);
-             res.send({ret_code: 2001, ret_msg: '用户无权限', extra: req.session});
+             res.send({ret_code: 2001, ret_msg: '用户无权限，用户类型无法识别', extra: req.session});
              return;
          }
          //console.log('right check ok ');
