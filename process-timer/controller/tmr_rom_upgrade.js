@@ -178,12 +178,32 @@ class GatewayTimerHandle {
 
 const gwTimerHnd = new GatewayTimerHandle();
 
+/*
+*
+官方文档：http://crontab.org/
+此模块中中cron有一定的差异，时间取值范围，且有六个字段，其中1秒是最精细的粒度。：
+        秒：0-59
+        分钟：0-59
+        小时：0-23
+        天：1-31
+        月份：0-11（1月至12月）
+        星期几：0-6（周日至周六）
+*
+* 排列顺序：
+  秒 分钟 小时 天 月份 星期几
+        *为通配符
+        -为时间段连接符
+        ,号为分隔符，可以在某一节输入多个值
+        /号为步进符
+*/
+
+
 //场景：每小时采样一次，记录历史数据, 0, 30 分的时候，更新两次，增加可靠性
 schedule.scheduleJob('0 0,30 * * * *', gwTimerHnd.hour1BackupProcess);
 //场景：超时失败, 每天夜里12:00, 中午12:00进行更新, 更新两次，增加可靠性
 schedule.scheduleJob('0 0 0,12 * * *', gwTimerHnd.day1BackupProcess);
-//场景：每小时，实时数据老化一次， 去重一次
-schedule.scheduleJob('10 1 * * * *', gwTimerHnd.dataAgeProcess);
+//场景：每半个小时，实时数据老化一次， 去重一次
+schedule.scheduleJob('10 11,41 * * * *', gwTimerHnd.dataAgeProcess);
 //场景：每10分钟执行一次, 存储历史数据，生成devunit_name 命名的数据集合
 schedule.scheduleJob('3 */10 * * * *', gwTimerHnd.minute10BackupProcess);
 //场景：test
