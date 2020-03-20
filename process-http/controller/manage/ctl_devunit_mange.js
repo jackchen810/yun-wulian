@@ -45,10 +45,8 @@ class CtlDevUnitManageHandle {
         //}
 
 
-        logger.info('user_account:', user_account);
-        logger.info('user_type:', user_type);
-        logger.info('filter:', filter);
-        logger.info('sort:', sort);
+        logger.info('user_account:', user_account, 'user_type:', user_type);
+        logger.info('filter:', filter, 'sort:', sort);
 
 
         let queryList = await DB.DevunitManageTable.find(filter).sort(sort).exec();
@@ -107,7 +105,7 @@ class CtlDevUnitManageHandle {
             deviceList.push(queryList[i]['device_name']);
         }
 
-        res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:deviceList, total:queryList.length});
+        res.send({ret_code: 0, ret_msg: '成功', extra:deviceList, total:queryList.length});
         logger.info('device array end');
     }
 
@@ -122,7 +120,7 @@ class CtlDevUnitManageHandle {
             deviceCnList.push(queryList[i]['device_name']);
         }
 
-        res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:deviceCnList, total:queryList.length});
+        res.send({ret_code: 0, ret_msg: '成功', extra:deviceCnList, total:queryList.length});
         logger.info('device cn array end');
     }
 
@@ -186,11 +184,8 @@ class CtlDevUnitManageHandle {
         var comment = req.body['comment'];
 
         //logger.info(fields);
-        logger.info('device_name:', device_name);
-        logger.info('devunit_name:', devunit_name);
-        logger.info('project_name:', project_name);
-        logger.info('gateway_vendor:', gateway_vendor);
-        logger.info('gateway_sn:', gateway_sn);
+        logger.info('device_name:', device_name, ', devunit_name:', devunit_name, ', project_name:', project_name);
+        logger.info('gateway_vendor:', gateway_vendor, ', gateway_sn:', gateway_sn);
 
 
         //参数有效性检查

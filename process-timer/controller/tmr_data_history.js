@@ -17,9 +17,9 @@ class GatewayTimerHandle {
 
     // 监听器 #1
     async hour1BackupProcess () {
-        logger.info('hour1 timer out:', dtime().format('YYYY-MM-DD HH:mm:ss'));
-
         let mytime = new Date();
+        logger.info('hour1 timer out:', dtime(mytime).format('YYYY-MM-DD HH:mm:ss'));
+
         let update_time = dtime(mytime).format('YYYY-MM-DD HH');
 
         // 将实时数据存储到历史数据库
@@ -66,9 +66,9 @@ class GatewayTimerHandle {
 
     // 监听器 #2
     async day1BackupProcess () {
-        logger.info('hour24 timer out:', dtime().format('YYYY-MM-DD HH:mm:ss'));
-
         let mytime = new Date();
+        logger.info('hour24 timer out:', dtime(mytime).format('YYYY-MM-DD HH:mm:ss'));
+
         let update_time = dtime(mytime).format('YYYY-MM-DD');
 
         // 将实时数据存储到历史数据库
@@ -111,9 +111,9 @@ class GatewayTimerHandle {
 
     // 监听器 #3
     async dataAgeProcess () {
-        logger.info('data age timer out:', dtime().format('YYYY-MM-DD HH:mm:ss'));
-
         let mytime = new Date();
+        logger.info('data age timer out:', dtime(mytime).format('YYYY-MM-DD HH:mm:ss'));
+
 
         // 将实时数据进行老化和去重复
         let queryList = await DB.Gateway_Real_Table.find();
@@ -140,9 +140,9 @@ class GatewayTimerHandle {
 
     // 监听器 #4
     async minute10BackupProcess () {
-        logger.info('minute10 timer out:', dtime().format('YYYY-MM-DD HH:mm:ss'));
-
         let mytime = new Date();
+        logger.info('minute10 timer out:', dtime(mytime).format('YYYY-MM-DD HH:mm:ss'));
+
         let update_time = dtime(mytime).format('YYYY-MM-DD HH:mm');
         let prefix = 'y' + mytime.getFullYear();
 
@@ -203,7 +203,7 @@ schedule.scheduleJob('0 0,30 * * * *', gwTimerHnd.hour1BackupProcess);
 //场景：超时失败, 每天夜里12:00, 中午12:00进行更新, 更新两次，增加可靠性
 schedule.scheduleJob('0 0 0,12 * * *', gwTimerHnd.day1BackupProcess);
 //场景：每半个小时，实时数据老化一次， 去重一次
-schedule.scheduleJob('10 11,41 * * * *', gwTimerHnd.dataAgeProcess);
+schedule.scheduleJob('10 15,35,55 * * * *', gwTimerHnd.dataAgeProcess);
 //场景：每10分钟执行一次, 存储历史数据，生成devunit_name 命名的数据集合
 schedule.scheduleJob('3 */10 * * * *', gwTimerHnd.minute10BackupProcess);
 //场景：test

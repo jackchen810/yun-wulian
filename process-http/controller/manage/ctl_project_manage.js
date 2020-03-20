@@ -19,7 +19,7 @@ class ProjectManageTable {
 
     async project_list(req, res, next) {
 
-        logger.info('project list');
+        logger.info('manage list');
         //logger.info(req.body);
 
         //获取表单数据，josn
@@ -38,33 +38,31 @@ class ProjectManageTable {
         if (user_type == 1) {
             let wherestr = {'user_account': user_account};
             let query = await DB.AccountTable.findOne(wherestr).exec();
-            logger.info('[project] get result:', query);
+            logger.info('[manage] get result:', query);
             if (query != null){
-                logger.info('[project] get Own property', query['user_projects']);
+                logger.info('[manage] get Own property', query['user_projects']);
                 filter['project_name'] = { $in: query['user_projects']};
             }
             else{
                 res.send({ret_code: 0, ret_msg: '成功', extra: query, total:0});
-                logger.info('project page list end');
+                logger.info('manage page list end');
                 return;
             }
         }
 
 
-        logger.info('user_account:', user_account);
-        logger.info('user_type:', user_type);
-        logger.info('filter:', filter);
-        logger.info('sort:', sort);
+        logger.info('user_account:', user_account, ', user_type:', user_type);
+        logger.info('filter:', filter, ', sort:', sort);
 
 
         let queryList = await DB.ProjectManageTable.find(filter).sort(sort).exec();
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
-        logger.info('project list end');
+        logger.info('manage list end');
     }
 
 
     async project_page_list(req, res, next) {
-        logger.info('project page list');
+        logger.info('manage page list');
         //logger.info(req.body);
 
         //获取表单数据，josn
@@ -85,35 +83,32 @@ class ProjectManageTable {
         if (user_type == 1) {
             let wherestr = {'user_account': user_account};
             let query = await DB.AccountTable.findOne(wherestr).exec();
-            logger.info('[project] get result:', query);
+            logger.info('[manage] get result:', query);
             if (query != null){
-                 logger.info('[project] get Own property', query['user_projects']);
+                 logger.info('[manage] get Own property', query['user_projects']);
                  filter['project_name'] = { $in: query['user_projects']};
             }
             else{
                 res.send({ret_code: 0, ret_msg: '成功', extra: query, total:0});
-                logger.info('project page list end');
+                logger.info('manage page list end');
                 return;
             }
         }
 
-        logger.info('user_account:', user_account);
-        logger.info('user_type:', user_type);
-        logger.info('page_size:', page_size);
-        logger.info('current_page:', current_page);
-        logger.info('filter:', filter);
-        logger.info('sort:', sort);
+        logger.info('user_account:', user_account, ', user_type:', user_type);
+        logger.info('page_size:', page_size, ', current_page:', current_page);
+        logger.info('filter:', filter, ', sort:', sort);
 
         let skipnum = (current_page - 1) * page_size;   //跳过数
         let queryList = await DB.ProjectManageTable.find(filter).sort(sort).skip(skipnum).limit(page_size).exec();
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
-        logger.info('project page list end');
+        logger.info('manage page list end');
     }
 
 
 
     async project_array(req, res, next) {
-        logger.info('project array');
+        logger.info('manage array');
         //logger.info(req.body);
 
         let queryList = await DB.ProjectManageTable.find();
@@ -123,12 +118,12 @@ class ProjectManageTable {
         }
 
         res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:projectList, total:queryList.length});
-        logger.info('project array end');
+        logger.info('manage array end');
     }
 
     async project_del(req, res, next) {
 
-        logger.info('project del');
+        logger.info('manage del');
         //logger.info(req.body);
 
         //获取表单数据，josn
@@ -152,14 +147,14 @@ class ProjectManageTable {
             logger.info('del image fail');
         }
         res.send({ret_code: 0, ret_msg: '成功', extra: query});
-        logger.info('project del end');
+        logger.info('manage del end');
     }
 
 
 
     async project_status_update(req, res, next) {
 
-        logger.info('project hide');
+        logger.info('manage hide');
         //logger.info(req.body);
 
         //获取表单数据，josn
@@ -178,7 +173,7 @@ class ProjectManageTable {
         let updatestr = {'project_status': project_status};
         let query = await DB.ProjectManageTable.findByIdAndUpdate(_id, updatestr).exec();
         res.send({ret_code: 0, ret_msg: '成功', extra: query});
-        logger.info('project hide end');
+        logger.info('manage hide end');
     }
 
 
@@ -202,7 +197,7 @@ class ProjectManageTable {
      */
     async project_add(req, res, next){
 
-        logger.info('project upload');
+        logger.info('manage upload');
         //logger.info(req);
 
         //生成multiparty对象，并配置上传目标路径
@@ -280,7 +275,7 @@ class ProjectManageTable {
                 }
             });
 
-            logger.info('new project:', fields.project_name);
+            logger.info('new manage:', fields.project_name);
         });
 
         form.on('error', function(err) {
@@ -289,7 +284,7 @@ class ProjectManageTable {
         });
 
         form.parse(req);
-        logger.info('project upload ok');
+        logger.info('manage upload ok');
     }
 
 }

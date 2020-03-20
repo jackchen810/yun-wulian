@@ -4,7 +4,7 @@ const logger = require( '../../../logs/logs.js');
 
 
 
-class DeviceIde4gHandle {
+class DeviceUnitM1Handle {
     constructor(){
         //logger.info('init 111');
         //this.tmp_correction_data_hour();
@@ -123,10 +123,9 @@ class DeviceIde4gHandle {
         let user_type = req.session.user_type;
 
 
-        logger.info('devunit_name:', devunit_name);
-        logger.info('var_name:', var_name);
-        logger.info('user_type:', user_type);
-        logger.info('limit:', limit);
+        logger.info('devunit_name:', devunit_name, ', limit:', limit);
+        logger.info('var_name:', var_name, 'user_type:', user_type);
+
 
         let dataList = [];
         let timeList = [];
@@ -258,5 +257,5 @@ class DeviceIde4gHandle {
 }
 
 
-module.exports = new DeviceIde4gHandle();
+module.exports = new DeviceUnitM1Handle();
 

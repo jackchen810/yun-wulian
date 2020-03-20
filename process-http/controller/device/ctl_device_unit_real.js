@@ -7,7 +7,7 @@ const logger = require( '../../../logs/logs.js');
 //引入事件模块
 const events = require("events");
 
-class DeviceIde4gHandle {
+class DeviceUnitRealHandle {
     constructor(){
         //logger.info('init 111');
         // 功率值矫正
@@ -67,10 +67,7 @@ class DeviceIde4gHandle {
         let filter = req.body.hasOwnProperty('filter') ? req.body['filter'] : {};
         let sort = req.body.hasOwnProperty('sort') ? req.body['sort'] : {"sort_time":-1};
 
-        logger.info('filter:', filter);
-        logger.info('sort:', sort);
-        logger.info('filter:', filter);
-
+        logger.info('filter:', filter, ', sort:', sort);
 
         let query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).exec();
         if (!query) {
@@ -102,10 +99,8 @@ class DeviceIde4gHandle {
         }
 
 
-        logger.info('page_size:', page_size);
-        logger.info('current_page:', current_page);
-        logger.info('filter:', filter);
-        logger.info('sort:', sort);
+        logger.info('page_size:', page_size, ', current_page:', current_page);
+        logger.info('filter:', filter, ', sort:', sort);
 
 
         let skipnum = (current_page - 1) * page_size;   //跳过数
@@ -125,8 +120,7 @@ class DeviceIde4gHandle {
         let sort = req.body.hasOwnProperty('sort') ? req.body['sort'] : {"sort_time":-1};
 
 
-        logger.info('filter:', filter);
-        logger.info('sort:', sort);
+        logger.info('filter:', filter, 'sort:', sort);
 
 
         let query = await DB.Gateway_Real_Table.findOne(filter).sort(sort).exec();
@@ -142,5 +136,5 @@ class DeviceIde4gHandle {
 }
 
 
-module.exports = new DeviceIde4gHandle();
+module.exports = new DeviceUnitRealHandle();
 

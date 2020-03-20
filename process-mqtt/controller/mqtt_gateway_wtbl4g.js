@@ -4,6 +4,7 @@ const MqttSubHandle = require("../../mqttclient/subscribe/mqtt_sub.js");
 const DB = require( "../../models/models.js");
 const dtime = require( 'time-formater');
 const logger = require( '../../logs/logs.js');
+const mqtt_rxtx = require( '../mqtter_rxtx.js');
 
 //每个设备保持记录数
 const keep_record_num = config.keep_record_num;
@@ -29,11 +30,24 @@ class MqttDeviceWTBL4gHndle {
             return;
         }
 
+
+        //cmdId = 103  :   数据上报
+
+        //cmdId = 87  :   写变量
+        //cmdId = 88  :   写变量返回
+
+        //cmdId = 89  :   读取配置信息
+        //cmdId = 90  :   读取配置信息返回
+        //数据上报在mqtt进程进行处理
         switch (josnObj['cmdId']){
             case 103:
                 if (josnObj.hasOwnProperty('devList')){
                     this.updateDeviceInfo(devunit_name, josnObj);
                 }
+                break;
+            case 88:
+                //将命令行的回应消息发到http进程
+                mqtt_rxtx.send(josnObj, "88", "response", "http");
                 break;
             case 1:
                 break;
@@ -59,7 +73,7 @@ class MqttDeviceWTBL4gHndle {
         if(!map_value_obj){
             map_value_obj = {
                 'devunit_name': devunit_name,
-                'list_data': new Map(),   //hash表中
+                'list_data': new Map(),   //hash表中, 示例{ varName: '故障信号36',varValue: '0',readTime: '2020-03-19 23:25:10',varId: 70,isWarn: 0 }
                 'update_time':mytime.getTime(),
             };
         }
@@ -67,6 +81,7 @@ class MqttDeviceWTBL4gHndle {
         /// 向hash表中添加数据
         for(let item of josnObj['devList'][0]['varList']) {
             //console.log('item:', item);
+            //{key, value}，{key, value}
             map_value_obj['list_data'].set(item.varName, item);
         }
 
@@ -75,8 +90,7 @@ class MqttDeviceWTBL4gHndle {
         //console.log('map_value_obj set[]:', [...map_value_obj['list_data'].values()]);
 
 
-
-        // 保存到hash表中
+        // 1.保存到hash表中
         this.hash_data.set(devunit_name, map_value_obj);
 
         // 防止重复进入，wtbl数据网关上送如果太大会拆分成两个包
@@ -84,7 +98,9 @@ class MqttDeviceWTBL4gHndle {
             logger.info('Hello wtbl exit, repeat into');
             return;
         }
-        map_value_obj['list_data'].set('update_time', mytime.getTime());
+
+        //var maplist = map_value_obj['list_data'].values();
+        //console.log('map_value_obj set[]:', maplist);
 
         // 1. 更新到设备数据库，Gateway_Real_Table
         let wherestr = { 'devunit_name': devunit_name};
@@ -102,6 +118,7 @@ class MqttDeviceWTBL4gHndle {
         };
 
         //console.log('Gateway_Real_Table data:', updatestr['data']);
+        //console.log('Gateway_Real_Table data:', map_value_obj['list_data'].values());
         await DB.Gateway_Real_Table.findOneAndUpdate(wherestr, updatestr,{upsert: true}).exec();
 
 
@@ -119,6 +136,10 @@ class MqttDeviceWTBL4gHndle {
             logger.info('delete record of Gateway_Minute_Table, condition:', wheredel);
             DB.Gateway_Minute_Table.deleteMany(wheredel).exec();
         }
+
+
+        //4.将命令行的回应消息发到timer进程，做告警和动作的日志记录
+        //mqtt_rxtx.send([...maplist], "realdata", "trigger", "timer");
 
 
         logger.info('Hello wtbl exit');

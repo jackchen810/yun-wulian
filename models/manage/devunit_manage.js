@@ -13,7 +13,7 @@ const deviceUnitManageSchema = new mongoose.Schema({
 
     devunit_name: {type: String, default: ''},    //设备的数据库字段，例如 jinxi_1
 
-    project_name: {type: String, default: ''},   //设备的所属项目， 等同于[project.project_name] 可能多个设备对应同一项目
+    project_name: {type: String, default: ''},   //设备的所属项目， 等同于[manage.project_name] 可能多个设备对应同一项目
     user_account: {type: String, default: ''},   //用户账号
 
     gateway_vendor: {type: String, default: ''},   //网关厂商

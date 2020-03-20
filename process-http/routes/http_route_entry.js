@@ -7,6 +7,7 @@ const prj_manage_router = require('./rt_project_manage.js');
 const dev_manage_router = require('./rt_device_manage.js');
 const dev_module_router = require('./rt_device_module.js');
 const devtype_router = require('./rt_device_type.js');
+const trigger_router = require('./rt_trigger_manage.js');
 const rom_pkg_router = require('./rt_rom_package.js');
 const rom_task_router = require('./rt_rom_task.js');
 const script_router = require('./rt_script_manage.js');
@@ -14,6 +15,7 @@ const apps_pkg_router = require('./rt_apps_package.js');
 const apps_task_router = require('./rt_apps_task.js');
 const wechat_router = require('./rt_wechat.js');
 const cmd_proc_router = require('./rt_cmd_process.js');
+const logs_alarm_router = require('./rt_logs_alarm.js');
 const config = require( "config-lite");
 const fs = require("fs");
 const path = require('path');
@@ -26,7 +28,7 @@ const path = require('path');
      //wechat 登录相关
      app.use('/api/wechat', wechat_router);
 
-     // right check, 所有都要检查
+     // right check, 所有都要检查, router按挂接顺序依次匹配
      app.use('/api', function(req, res, next) {
          if (!req.hasOwnProperty("session")){
              console.log('right check fail', req.cookies);
@@ -56,6 +58,14 @@ const path = require('path');
 
      //设备类型相关
      app.use('/api/devtype', devtype_router);
+
+
+     //设备触发器相关
+     app.use('/api/trigger', trigger_router);
+
+
+     app.use('/api/alarm/logs', logs_alarm_router);
+
 
      //固件相关
      app.use('/api/rom', rom_pkg_router);

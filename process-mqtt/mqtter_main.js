@@ -7,6 +7,7 @@ logger.info('[mqtt] create mqtt process..., arg2:'+ process.argv[2], ',pid =', p
 const mqttClient = require('../mqttclient/mqttclient.js');
 const mqtt_router = require('./routes/mqtt_route_entry.js');
 const config = require('config-lite');
+const  mqtterRxTx = require("./mqtter_rxtx");
 
 
 require('../mongodb/db.js');
@@ -35,3 +36,7 @@ process.on('unhandledRejection', (reason, p) => {
 process.on('uncaughtException', (err) => {
     logger.error("[mqtt] uncaughtException：", err);
 });
+
+
+//监听进程消息, //进程通讯服务
+process.on('message', mqtterRxTx.onMessage);

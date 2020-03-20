@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const CtlProjectManage = require('../controller/project/ctl_project_manage.js');
+const CtlProjectManage = require('../controller/manage/ctl_project_manage.js');
 const router = express.Router();
 
 console.log("enter route of project");

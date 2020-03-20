@@ -14,6 +14,7 @@ const connectMongo = require('connect-mongo');
 const fs = require("fs");
 const mqttClient = require('../mqttclient/mqttclient.js');
 const mqtt_router = require('./routes/mqtt_route_entry.js');
+const  HttpRxTxHandle = require("./http_rxtx.js");
 
 //注册mqtt分发
 mqtt_router(mqttClient);
@@ -124,3 +125,7 @@ process.on('unhandledRejection', (reason, p) => {
 process.on('uncaughtException', (err) => {
     logger.error("[http] uncaughtException：", err);
 });
+
+
+//监听进程消息, //进程通讯服务
+process.on('message', HttpRxTxHandle.onMessage);

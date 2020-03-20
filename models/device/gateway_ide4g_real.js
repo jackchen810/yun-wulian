@@ -11,11 +11,12 @@ const Mixed = mongoose.Schema.Types.Mixed;
 const gatewayDataSchema = new mongoose.Schema({
     devunit_name:String,  //key
     devunit_id:String,   //设备元的id，例如标识的plcid，  物通博联上报的devId
-    gateway_sn: {type: String, default: ''},    //设备sn， 设备唯一表示， 金大万翔使用mac地址（大写），物通博联使用sn标识
+    gateway_sn: {type: String, default: ''},    //网关的sn， 设备书架的通道， 金大万翔使用mac地址（大写），物通博联使用sn标识
     devunit_local: {type: String, default: ''},    //设备位置
     devunit_type: String,   //设备型号
     devunit_link_status: String,   //设备链路状态
     devunit_run_status: String,   //设备运行状态
+    devunit_enable_write: Number,   //0, disable   1, enable
 
     update_time:String, //状态更新时间
     data: Mixed,   //数据

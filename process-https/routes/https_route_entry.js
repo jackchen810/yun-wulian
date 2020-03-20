@@ -16,8 +16,8 @@ const device_router = require('../../process-http/routes/rt_device_manage.js');
      //stats
      app.use('/api/gateway', gateway_router);
 
-     //project
-     app.use('/api/project', project_router);
+     //manage
+     app.use('/api/manage', project_router);
 
      //device
      app.use('/api/device', device_router);
