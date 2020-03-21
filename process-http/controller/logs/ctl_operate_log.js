@@ -7,7 +7,7 @@ const logger = require( '../../../logs/logs.js');
 //引入事件模块
 const events = require("events");
 
-class AlarmLogsHandle {
+class OperateLogsHandle {
     constructor(){
         //logger.info('init 111');
 
@@ -15,7 +15,7 @@ class AlarmLogsHandle {
 
     async list(req, res, next) {
 
-        logger.info('alarm logs list');
+        logger.info('operate logs list');
         //logger.info(req.body);
 
         //获取表单数据，josn
@@ -25,7 +25,7 @@ class AlarmLogsHandle {
         logger.info('filter:', filter, ', sort:', sort);
 
         //参数有效性检查
-        let queryList = await DB.DevunitAlarmLogsTable.find(filter).sort(sort).exec();
+        let queryList = await DB.DevunitOperateLogsTable.find(filter).sort(sort).exec();
         if (queryList.length == 0) {
             res.send({ret_code: -1, ret_msg: '数据不存在', extra: ''});
             return;
@@ -33,12 +33,11 @@ class AlarmLogsHandle {
 
 
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList});
-        logger.info('alarm logs list end');
+        logger.info('operate logs list end');
     }
 
     async page_list(req, res, next) {
-
-        logger.info('alarm logs list');
+        logger.info('operate logs page list');
         //logger.info(req.body);
 
         //获取表单数据，josn
@@ -59,16 +58,14 @@ class AlarmLogsHandle {
         //logger.info('filter:', filter, ', sort:', sort);
 
 
-        let total = await DB.DevunitAlarmLogsTable.count(filter);
+        let total = await DB.DevunitOperateLogsTable.count(filter);
         let skipnum = (current_page - 1) * page_size;   //跳过数
-        let queryList = await DB.DevunitAlarmLogsTable.find(filter).sort(sort).skip(skipnum).limit(page_size).exec();
+        let queryList = await DB.DevunitOperateLogsTable.find(filter).sort(sort).skip(skipnum).limit(page_size).exec();
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: total});
-        logger.info('alarm logs list end');
+        logger.info('operate logs page list end');
     }
-
-
 }
 
 
-module.exports = new AlarmLogsHandle();
+module.exports = new OperateLogsHandle();
 

@@ -16,6 +16,8 @@ const apps_task_router = require('./rt_apps_task.js');
 const wechat_router = require('./rt_wechat.js');
 const cmd_proc_router = require('./rt_cmd_process.js');
 const logs_alarm_router = require('./rt_logs_alarm.js');
+const logs_run_router = require('./rt_logs_run.js');
+const logs_operate_router = require('./rt_logs_operate.js');
 const config = require( "config-lite");
 const fs = require("fs");
 const path = require('path');
@@ -41,7 +43,7 @@ const path = require('path');
              return;
          }
          //console.log('right check ok ');
-         next()
+         next();
      });
 
      //stats
@@ -64,7 +66,12 @@ const path = require('path');
      app.use('/api/trigger', trigger_router);
 
 
+     //运行日志
      app.use('/api/alarm/logs', logs_alarm_router);
+     //告警日志
+     app.use('/api/run/logs', logs_run_router);
+     //操作日志
+     app.use('/api/operate/logs', logs_operate_router);
 
 
      //固件相关

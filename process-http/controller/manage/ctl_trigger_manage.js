@@ -138,8 +138,8 @@ class CtlTriggerManageHandle {
         //获取表单数据，josn
         var device_name = req.body['device_name'];
         var devunit_name = req.body['devunit_name'];
-        var varName = req.body['varName'];
-        var varValue = req.body['varValue'];
+        var var_name = req.body['var_name'];
+        var var_value = req.body['var_value'];
         var if_number = req.body['if_number'];
         var if_symbol = req.body['if_symbol'];
         var if_true_comment = req.body['if_true_comment'];
@@ -148,7 +148,7 @@ class CtlTriggerManageHandle {
 
         //logger.info(fields);
         logger.info('devunit_name:', devunit_name, ', logs_type:', logs_type);
-        logger.info('varName:', varName, ', varValue:', varValue);
+        logger.info('var_name:', var_name, ', var_value:', var_value);
         logger.info('if_symbol:', if_symbol, ', if_number:', if_number);
         logger.info('if_true_comment:', if_true_comment, ', if_false_comment', if_false_comment);
 
@@ -165,8 +165,8 @@ class CtlTriggerManageHandle {
         let myDocObj = {
             "device_name" : device_name,
             "devunit_name" : devunit_name,
-            "varName" : varName,
-            "varValue" : varValue,
+            "var_name" : var_name,
+            //"var_value" : var_value,
             "if_number": if_number,
             "if_symbol" : if_symbol,
             "if_true_comment" : if_true_comment,
@@ -177,9 +177,22 @@ class CtlTriggerManageHandle {
             'sort_time':mytime.getTime(),
         };
 
-        //logger.info('romDocObj fields: ', romDocObj);
-        DB.DevunitTriggerTable.create(myDocObj);
-        res.send({ret_code: 0, ret_msg: '添加成功', extra: myDocObj});
+        let wherestr = {
+            "devunit_name" : devunit_name,
+            "var_name" : var_name,
+            "if_number": if_number,
+            "if_symbol" : if_symbol,
+        };
+
+        let query = await DB.DevunitTriggerTable.findOne(wherestr);
+        if (query == null){
+            DB.DevunitTriggerTable.create(myDocObj);
+            res.send({ret_code: 0, ret_msg: '添加成功', extra: wherestr});
+        }
+        else{
+            res.send({ret_code: 1001, ret_msg: '触发器重复，无法添加', extra: wherestr});
+        }
+
         logger.info('device add ok');
     }
     async trigger_update(req, res, next) {

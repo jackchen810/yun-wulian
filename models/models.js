@@ -22,6 +22,7 @@ const AccountTable = require('./admin/account.js');
 const historySchema= require("./history_gateway/gateway_minute.js");
 const DevunitTriggerTable= require("./logs/devunit_log_trigger.js");
 const DevunitAlarmLogsTable= require("./logs/devunit_alarm_logs.js");
+const DevunitRunLogsTable= require("./logs/devunit_run_logs.js");
 const DevunitOperateLogsTable= require("./logs/devunit_operate_logs.js");
 
 
@@ -49,7 +50,9 @@ function DB() {
     this.getNowFormatDate = getNowFormatDate;
 
     this.DevunitTriggerTable = DevunitTriggerTable;
+
     this.DevunitAlarmLogsTable = DevunitAlarmLogsTable;
+    this.DevunitRunLogsTable = DevunitRunLogsTable;
     this.DevunitOperateLogsTable = DevunitOperateLogsTable;
 
 }

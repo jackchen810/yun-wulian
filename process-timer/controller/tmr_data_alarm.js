@@ -17,12 +17,30 @@ class LogTimerHandle {
         this.trigger_tbl =  new Map();
 
         //从日志记录里恢复记录信息到内存，hash表记录日志的触发信息，防治统一信息重复记录
-        this.recover_hash_table();
+        this.recover_run_table();
+        this.recover_alarm_table();
 
 	}
 
 
-    async recover_hash_table(){
+    async recover_run_table(){
+
+        //参数有效性检查
+        let queryList = await DB.DevunitRunLogsTable.find().sort({"sort_time":1}).limit(200).exec();
+        if (queryList.length == 0) {
+            return;
+        }
+
+        // /实时数据中的变量列表
+        for(let n = 0; n < queryList.length; n++) {
+            console.log("recover_run_table update_time:", queryList[n].update_time);
+            let var_value = queryList[n].var_value;
+            let hash_key = queryList[n].device_name + queryList[n].devunit_name + queryList[n].var_name;
+            this.trigger_tbl.set(hash_key, var_value);
+        }
+	}
+
+    async recover_alarm_table(){
 
         //参数有效性检查
         let queryList = await DB.DevunitAlarmLogsTable.find().sort({"sort_time":1}).limit(200).exec();
@@ -32,14 +50,12 @@ class LogTimerHandle {
 
         // /实时数据中的变量列表
         for(let n = 0; n < queryList.length; n++) {
-            console.log("recover_hash_table update_time:", queryList[n].update_time);
-            let varValue = queryList[n].varValue;
-            let hash_key = queryList[n].device_name + queryList[n].devunit_name + queryList[n].varName;
-            this.trigger_tbl.set(hash_key, varValue);
+            console.log("recover_alarm_table update_time:", queryList[n].update_time);
+            let var_value = queryList[n].var_value;
+            let hash_key = queryList[n].device_name + queryList[n].devunit_name + queryList[n].var_name;
+            this.trigger_tbl.set(hash_key, var_value);
         }
-	}
-
-
+    }
     async trigger_reactor(number1, if_operate_symbol, number2){
 
 	    if (if_operate_symbol == '>' && number1 > number2){
@@ -81,24 +97,24 @@ class LogTimerHandle {
         //遍历触发器，挨个判断触发项
         for(let m = 0; m < triggerList.length; m++){
             let device_name = triggerList[m].device_name;
-            let varName = triggerList[m].varName;
+            let var_name = triggerList[m].var_name;
             let number2 = triggerList[m].if_number;
             let logs_type = triggerList[m].logs_type;
             let if_operate_symbol = triggerList[m].if_symbol;
             let if_true_comment = triggerList[m].if_true_comment;
             let if_false_comment = triggerList[m].if_false_comment;
 
-            console.log("[timer][alarmlog], logs_type:", logs_type, ", varName:", varName);
+            console.log("[timer][alarmlog], logs_type:", logs_type, ", var_name:", var_name);
             //let varList = realList.data;
             // /实时数据中的变量列表
             for(let n = 0; n < varList.length; n++){
-                if (varName != varList[n].varName){
+                if (var_name != varList[n].varName){
                     continue;
                 }
 
-                let varValue = varList[n].varValue;
+                let var_value = varList[n].varValue;
                 //let hash_key = { devunit_name: devunit_name,  varName: varName};
-                let hash_key = device_name + devunit_name + varName;
+                let hash_key = device_name + devunit_name + var_name;
                 //let save_value = this.trigger_tbl.get(hash_key);
                 //let aaa = this.trigger_tbl.has(hash_key);
                 let save_value = this.trigger_tbl.get(hash_key);
@@ -108,16 +124,16 @@ class LogTimerHandle {
                 //console.log("[timer][alarmlog], query hashdata， aaa:", aaa);
                 //console.log("[timer][alarmlog], query hashdata， size:", this.trigger_tbl.size);
                 console.log("[timer][alarmlog], query hashdata， hash_key:", hash_key);
-                console.log("[timer][alarmlog], query hashdata， save_value:", save_value, ", varValue:", varValue);
+                console.log("[timer][alarmlog], query hashdata， save_value:", save_value, ", var_value:", var_value);
 
                 //说明数据和上次没有变化，就不记录日志了
-                if (save_value == varValue){
+                if (save_value == var_value){
                     continue;
                 }
                 else{
                     //保存这个数据，hash表
                     //这个hash表防治重复记录日志
-                    this.trigger_tbl.set(hash_key, varValue);
+                    this.trigger_tbl.set(hash_key, var_value);
                     //let value = this.trigger_tbl.get(hash_key);
                     //console.log("[timer][alarmlog], add tbl， hash_key:", hash_key, ", value:", value);
                 }
@@ -127,36 +143,37 @@ class LogTimerHandle {
                 let updatestr = {
                     'device_name': device_name,
                     'devunit_name': devunit_name,
-                    'varName': varName,
-                    'varValue': varValue,
+                    'var_name': var_name,
+                    'var_value': var_value,
                     'comment': '',
                     'sort_time': mytime.getTime(),
                     'update_time': update_time,
                 };
 
                 // 触发器判断， if判断   if true 的判断
-                if (this.trigger_reactor(varValue, if_operate_symbol, number2) && if_true_comment.length > 0){
+                if (this.trigger_reactor(var_value, if_operate_symbol, number2) && if_true_comment.length > 0){
                     //记录日志
                     updatestr['comment'] = if_true_comment;
                 }
 
                 // 触发器判断, else 判断
-                if ( !this.trigger_reactor(varValue, if_operate_symbol, number2) && if_false_comment.length > 0){
+                if ( !this.trigger_reactor(var_value, if_operate_symbol, number2) && if_false_comment.length > 0){
                     //记录日志
                     updatestr['comment'] = if_false_comment;
                 }
 
                 // 记录日志到数据库
                 if (updatestr['comment'] != ''){
-                    //console.log("[timer][alarmlog], record log, devunit_name:", devunit_name," updatestr:", updatestr);
+                    console.log("[timer][alarmlog], record log, devunit_name:", devunit_name," comment:", updatestr['comment']);
+                    console.log("[timer][alarmlog], record log, logs_type:", logs_type," comment:", updatestr['comment']);
 
                     if(logs_type == '告警日志') {
                         //生成告警日志
                         DB.DevunitAlarmLogsTable.create(updatestr);
                     }
-                    else if(logs_type == '操作日志') {
-                        //生成操作日志
-                        DB.DevunitOperateLogsTable.create(updatestr);
+                    else if(logs_type == '运行日志') {
+                        //生成告警日志
+                        DB.DevunitRunLogsTable.create(updatestr);
                     }
                 }
             }

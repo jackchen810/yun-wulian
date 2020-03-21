@@ -23,6 +23,6 @@ router.all('/exec/remote/reboot', CmdProcHandle.exec_remote_reboot);
 
 
 //执行远程set命令
-router.all('/exec/remote/set', CmdProcHandle.exec_remote_set);
+router.all('/exec/remote/set', CmdProcHandle.record_operate_log, CmdProcHandle.exec_remote_set);
 
 module.exports = router;

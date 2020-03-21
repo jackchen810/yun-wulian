@@ -92,8 +92,12 @@ function onMessage(topic, message)
      // 发布 MAC/yunAC/CMD_EXE/reboot
      // 源设备要唯一代表该设备
 
+
+     //金大万翔网关设备返回值从yuAC的topic返回，和数据上报的topic不一样
      client.subscribe('yunAC/+/#',{qos:1});
-     client.subscribe('yunWTBL/+/#',{qos:1});
+
+     //wtbl返回值和数据上报topic一致
+     //client.subscribe('yunWTBL/+/#',{qos:1});
      //client.subscribe('$SYS/#',{qos:1});
      //client.subscribe('yunWL/+/CMD_GET/',{qos:1});
 

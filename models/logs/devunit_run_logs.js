@@ -6,7 +6,7 @@ const Mixed = mongoose.Schema.Types.Mixed;
 
 
 //设备建立全量的表，不同设备公用，如果没有的项 填写NA
-const devunitAlarmSchema = new mongoose.Schema({
+const devunitRunSchema = new mongoose.Schema({
     device_name:String,  //设备名称
     devunit_name:String,  //设备元
     var_name:String,  //变量名
@@ -17,7 +17,7 @@ const devunitAlarmSchema = new mongoose.Schema({
     sort_time:Number, //排序时间戳，
 });
 
-const devunitAlarmTable = mongoose.model('devunitAlarmTable', devunitAlarmSchema);
+const devunitRunTable = mongoose.model('devunitRunTable', devunitRunSchema);
 
 //导出模块
-module.exports = devunitAlarmTable;
+module.exports = devunitRunTable;

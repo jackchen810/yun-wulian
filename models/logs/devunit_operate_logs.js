@@ -9,9 +9,11 @@ const Mixed = mongoose.Schema.Types.Mixed;
 const devunitOperateSchema = new mongoose.Schema({
     user_account:String,  //操作者
     device_name:String,  //设备名称
+
     devunit_name:String,  //设备元
-    varName:String,  //变量名
-    varValue:String,  //变量值
+    var_name:String,  //变量名
+
+    var_value:String,  //变量值
     comment:String, //内容
 
     update_time:String, //操作时间时间

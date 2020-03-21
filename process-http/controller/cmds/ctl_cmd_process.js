@@ -13,6 +13,9 @@ const MqttSubHandle = require("../../../mqttclient/subscribe/mqtt_sub.js");
 class CmdProcHandle {
 	constructor(){
         //logger.info('RomPkgHandle constructor...');
+        this.trigger_reactor = this.trigger_reactor.bind(this);
+        this.record_operate_log = this.record_operate_log.bind(this);
+
 	}
 
 
@@ -102,6 +105,96 @@ class CmdProcHandle {
 
     }
 
+    async trigger_reactor(number1, if_operate_symbol, number2){
+
+        if (if_operate_symbol == '>' && number1 > number2){
+            return true;
+        }
+        else if (if_operate_symbol == '<' && number1 < number2){
+            return true;
+        }
+        else if (if_operate_symbol == '=' && number1 == number2){
+            return true;
+        }
+        else if (if_operate_symbol == '!=' && number1 != number2){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
+    // 记录操作日志
+    async record_operate_log(req, res, next) {
+        logger.info('cmd record_operate_log');
+
+
+        //获取表单数据，josn
+        var devunit_name = req.body['devunit_name'];
+        var var_name = req.body['var_name'];
+        var var_value = req.body['var_value'];
+
+        let wherestr = {
+            'logs_type': "操作日志",
+            'var_name': var_name,
+            'devunit_name': devunit_name
+        };
+
+        //触发器的列表
+        let triggerList = await DB.DevunitTriggerTable.find(wherestr).exec();
+        if (triggerList.length == 0){
+            next();
+        }
+
+        let mytime = new Date();
+        let update_time = dtime(mytime).format('YYYY-MM-DD HH:mm:ss');
+
+        // /实时数据中的变量列表
+        for(let m = 0; m < triggerList.length; m++) {
+            let device_name = triggerList[m].device_name;
+            let number2 = triggerList[m].if_number;
+            let if_operate_symbol = triggerList[m].if_symbol;
+            let if_true_comment = triggerList[m].if_true_comment;
+            let if_false_comment = triggerList[m].if_false_comment;
+
+
+            // 数据有变化，根据触发条件记录日志
+            let updatestr = {
+                'user_account': req.session.user_account,
+                'device_name': device_name,
+                'devunit_name': devunit_name,
+                'var_name': var_name,
+                'var_value': var_value,
+                'comment': '',
+                'sort_time': mytime.getTime(),
+                'update_time': update_time,
+            };
+
+            // 触发器判断， if判断   if true 的判断
+            if (this.trigger_reactor(var_value, if_operate_symbol, number2) && if_true_comment.length > 0){
+                //记录日志
+                updatestr['comment'] = if_true_comment;
+            }
+
+            // 触发器判断, else 判断
+            if ( !this.trigger_reactor(var_value, if_operate_symbol, number2) && if_false_comment.length > 0){
+                //记录日志
+                updatestr['comment'] = if_false_comment;
+            }
+
+
+            // 记录日志到数据库
+            if (updatestr['comment'] != '') {
+                //console.log("[timer][alarmlog], record log, devunit_name:", devunit_name," updatestr:", updatestr);
+                //生成告警日志
+                DB.DevunitOperateLogsTable.create(updatestr);
+            }
+        }
+
+        //继续处理
+        next();
+    }
     async exec_remote_set(req, res, next) {
         logger.info('cmd exec_remote_set');
 
@@ -109,22 +202,23 @@ class CmdProcHandle {
         //获取表单数据，josn
         var gw_sn = req.body['gw_sn'];
         var devunit_name = req.body['devunit_name'];
-        var dev_id = req.body['dev_id'];
-        var var_id = req.body['var_id'];
         var var_name = req.body['var_name'];
+        var devunit_id = req.body['dev_id'];
+        var var_id = req.body['var_id'];
+
         var var_value = req.body['var_value'];
 
 
         //logger.info(req.hostname , req.url, req.protocol, req.ip);
         logger.info('gw_sn:', gw_sn);
-        logger.info('dev_id:', dev_id, devunit_name);
+        logger.info('devunit_id:', devunit_id, devunit_name);
         logger.info('var_id:', var_id, var_name, var_value);
 
 
         //支持批量任务下发
         var taskHandle = await MqttPubHandle.createTaskHandle(req.session.user_account, 'NA', '/'+ gw_sn);
         //执行固件升级命令
-        var taskid = await MqttPubHandle.WTBL_CMD_SET.set_var_value(taskHandle, gw_sn, dev_id, var_id, var_value);
+        var taskid = await MqttPubHandle.WTBL_CMD_SET.set_var_value(taskHandle, gw_sn, devunit_id, var_id, var_value);
         //res.send({ret_code: 0, ret_msg: 'SUCCESS', extra: taskid});
 
 
@@ -172,7 +266,7 @@ class CmdProcHandle {
         //监听下发任务的结果, 超时5000ms
         //监听下发任务的结果
 
-        await MqttSubHandle.addOnceListener(gw_sn, listener, 10000);
+        await MqttSubHandle.addOnceListener(gw_sn, listener, 20000);
     }
 
 
