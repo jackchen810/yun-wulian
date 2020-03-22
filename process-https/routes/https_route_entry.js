@@ -5,7 +5,7 @@ const http_router = require('../../process-http/routes/http_route_entry.js');
 const gateway_router = require("../../process-http/routes/rt_gateway_ide4g.js");
 const admin_router = require('../../process-http/routes/rt_acount.js');
 const project_router = require('../../process-http/routes/rt_project_manage.js');
-const device_router = require('../../process-http/routes/rt_device_manage.js');
+const device_router = require('../../process-http/routes/rt_devunit_manage.js');
 
 
  function https_web_router(app) {

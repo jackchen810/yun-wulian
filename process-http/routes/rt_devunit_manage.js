@@ -4,7 +4,7 @@ const express = require('express');
 const CtlDeviceManage = require('../controller/manage/ctl_devunit_mange.js');
 const router = express.Router();
 
-console.log("enter route of device");
+console.log("enter route of devunit");
 
 
 router.all('/list',  CtlDeviceManage.device_list);

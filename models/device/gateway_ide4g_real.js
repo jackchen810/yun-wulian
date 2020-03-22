@@ -9,7 +9,7 @@ const Mixed = mongoose.Schema.Types.Mixed;
 // 此表定义为设备元，表示PLC，只能仪表，只能模块等设备的书架
 // 设备的一些实时书架，设备的标识
 const gatewayDataSchema = new mongoose.Schema({
-    devunit_name:String,  //key
+    devunit_name:String,  //key, 设备元的名称
     devunit_id:String,   //设备元的id，例如标识的plcid，  物通博联上报的devId
     gateway_sn: {type: String, default: ''},    //网关的sn， 设备书架的通道， 金大万翔使用mac地址（大写），物通博联使用sn标识
     devunit_local: {type: String, default: ''},    //设备位置

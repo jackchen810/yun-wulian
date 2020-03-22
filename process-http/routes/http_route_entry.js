@@ -4,7 +4,7 @@
 const gateway_router = require("./rt_gateway_ide4g.js");
 const admin_router = require('./rt_acount.js');
 const prj_manage_router = require('./rt_project_manage.js');
-const dev_manage_router = require('./rt_device_manage.js');
+const dev_manage_router = require('./rt_devunit_manage.js');
 const dev_module_router = require('./rt_device_module.js');
 const devtype_router = require('./rt_device_type.js');
 const trigger_router = require('./rt_trigger_manage.js');
@@ -53,7 +53,7 @@ const path = require('path');
      app.use('/api/project/manage', prj_manage_router);
 
      //device
-     app.use('/api/device/manage', dev_manage_router);
+     app.use('/api/devunit/manage', dev_manage_router);
 
      //module
      app.use('/api/module', dev_module_router);
