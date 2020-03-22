@@ -10,8 +10,10 @@ console.log("enter route of run logs");
 
 
 //获取渠道下的设备信息列表
-router.all('/list', OpLogHandle.list);
-router.all('/page/list', OpLogHandle.page_list);
+router.all('/logs/list', OpLogHandle.list);
+router.all('/logs/page/list', OpLogHandle.page_list);
+router.all('/project/logs/list', OpLogHandle.prj_list);
+router.all('/project/logs/page/list', OpLogHandle.prj_page_list);
 
 
 

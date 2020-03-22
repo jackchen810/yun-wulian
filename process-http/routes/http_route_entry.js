@@ -67,11 +67,11 @@ const path = require('path');
 
 
      //运行日志
-     app.use('/api/alarm/logs', logs_alarm_router);
+     app.use('/api/alarm', logs_alarm_router);
      //告警日志
-     app.use('/api/run/logs', logs_run_router);
+     app.use('/api/run', logs_run_router);
      //操作日志
-     app.use('/api/operate/logs', logs_operate_router);
+     app.use('/api/operate', logs_operate_router);
 
 
      //固件相关

@@ -10,9 +10,10 @@ console.log("enter route of alarm logs");
 
 
 //获取渠道下的设备信息列表
-router.all('/list', AlarmLogHandle.list);
-router.all('/page/list', AlarmLogHandle.page_list);
-
+router.all('/logs/list', AlarmLogHandle.list);
+router.all('/logs/page/list', AlarmLogHandle.page_list);
+router.all('/project/logs/list', AlarmLogHandle.prj_list);
+router.all('/project/logs/page/list', AlarmLogHandle.prj_page_list);
 
 
 module.exports = router;
