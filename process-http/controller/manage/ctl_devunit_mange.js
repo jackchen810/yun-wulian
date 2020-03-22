@@ -78,12 +78,9 @@ class CtlDevUnitManageHandle {
             filter['user_account'] = user_account;
         }
 
-        logger.info('user_account:', user_account);
-        logger.info('user_type:', user_type);
-        logger.info('page_size:', page_size);
-        logger.info('current_page:', current_page);
-        logger.info('filter:', filter);
-        logger.info('sort:', sort);
+        logger.info('user_account:', user_account, 'user_type:', user_type);
+        logger.info('page_size:', page_size, ', current_page:', current_page);
+        logger.info('filter:', filter, ', sort:', sort);
 
 
         let skipnum = (current_page - 1) * page_size;   //跳过数
@@ -102,7 +99,7 @@ class CtlDevUnitManageHandle {
         let queryList = await DB.DevunitManageTable.find();
         let deviceList = [];
         for (let i = 0; i < queryList.length; i++){
-            deviceList.push(queryList[i]['device_name']);
+            deviceList.push(queryList[i]['dev_cn_name']);
         }
 
         res.send({ret_code: 0, ret_msg: '成功', extra:deviceList, total:queryList.length});
@@ -117,7 +114,7 @@ class CtlDevUnitManageHandle {
         let queryList = await DB.DevunitManageTable.find();
         let deviceCnList = [];
         for (let i = 0; i < queryList.length; i++){
-            deviceCnList.push(queryList[i]['device_name']);
+            deviceCnList.push(queryList[i]['dev_cn_name']);
         }
 
         res.send({ret_code: 0, ret_msg: '成功', extra:deviceCnList, total:queryList.length});
@@ -176,7 +173,7 @@ class CtlDevUnitManageHandle {
         //logger.info(req);
 
         //获取表单数据，josn
-        var device_name = req.body['device_name'];
+        var dev_cn_name = req.body['dev_cn_name'];
         var devunit_name = req.body['devunit_name'];
         var project_name = req.body['project_name'];
         var gateway_vendor = req.body['gateway_vendor'];
@@ -184,27 +181,27 @@ class CtlDevUnitManageHandle {
         var comment = req.body['comment'];
 
         //logger.info(fields);
-        logger.info('device_name:', device_name, ', devunit_name:', devunit_name, ', project_name:', project_name);
+        logger.info('dev_cn_name:', dev_cn_name, ', devunit_name:', devunit_name, ', project_name:', project_name);
         logger.info('gateway_vendor:', gateway_vendor, ', gateway_sn:', gateway_sn);
 
 
         //参数有效性检查
-        if (!device_name){
+        if (!dev_cn_name){
             res.send({ret_code: 1002, ret_msg: 'FAILED', extra: '用户输入参数无效'});
             return;
         }
 
-        var query = await DB.DevunitManageTable.findOne({'device_name': device_name}).exec() ;
+        var query = await DB.DevunitManageTable.findOne({'dev_cn_name': dev_cn_name}).exec() ;
         if (query != null){
             logger.info('the same file already exist');
-            res.send({ret_code: 1008, ret_msg: '项目名重复', extra: device_name});
+            res.send({ret_code: 1008, ret_msg: '项目名重复', extra: dev_cn_name});
             return;
         }
 
         let mytime =  new Date();
         //写入数据库
         let myDocObj = {
-            "device_name" : device_name,
+            "dev_cn_name" : dev_cn_name,
             "devunit_name" : devunit_name,
             "project_name": project_name,
             "gateway_vendor" : gateway_vendor,
@@ -267,24 +264,24 @@ class CtlDevUnitManageHandle {
             //logger.info(fields);
 
             //参数有效性检查
-            if (!fields.device_name){
+            if (!fields.dev_cn_name){
                 res.send({ret_code: 1002, ret_msg: 'FAILED', extra: '用户输入参数无效'});
                 fs.unlinkSync(uploadedPath);
                 return;
             }
 
-            DB.DevunitManageTable.findOne({'device_name': fields.device_name}).exec(function (err, doc) {
+            DB.DevunitManageTable.findOne({'dev_cn_name': fields.dev_cn_name}).exec(function (err, doc) {
                 if (doc != null){
                     logger.info('the same file already exist');
                     fs.unlinkSync(uploadedPath);
-                    res.send({ret_code: 1008, ret_msg: '项目名重复', extra: fields.device_name});
+                    res.send({ret_code: 1008, ret_msg: '项目名重复', extra: fields.dev_cn_name});
                     return;
                 }
                 else{
                     let mytime =  new Date();
                     //写入数据库
                     let myDocObj = {
-                        "device_name" : fields.device_name,
+                        "dev_cn_name" : fields.dev_cn_name,
                         "devunit_name" : fields.devunit_name,
                         "project_name": fields.project_name,
                         "gateway_vendor" : fields.gateway_vendor,
@@ -306,7 +303,7 @@ class CtlDevUnitManageHandle {
                 }
             });
 
-            logger.info('new device:', fields.device_name);
+            logger.info('new device:', fields.dev_cn_name);
         });
 
         form.on('error', function(err) {

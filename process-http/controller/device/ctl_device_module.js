@@ -402,9 +402,9 @@ class DeviceModuleHandle {
 
 
         //获取表单数据，josn
-        let device_name = req.body['device_name'];
+        let dev_cn_name = req.body['dev_cn_name'];
         let devunit_name = req.body['devunit_name'];
-        logger.info('device_name:', device_name);
+        logger.info('dev_cn_name:', dev_cn_name);
         logger.info('devunit_name:', devunit_name);
 
         let wherestr = {'devunit_name': devunit_name};

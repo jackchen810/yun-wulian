@@ -77,12 +77,9 @@ class CtlTriggerManageHandle {
             filter['user_account'] = user_account;
         }
 
-        logger.info('user_account:', user_account);
-        logger.info('user_type:', user_type);
-        logger.info('page_size:', page_size);
-        logger.info('current_page:', current_page);
-        logger.info('filter:', filter);
-        logger.info('sort:', sort);
+        logger.info('user_account:', user_account, 'user_type:', user_type);
+        logger.info('page_size:', page_size, ', current_page:', current_page);
+        logger.info('filter:', filter, ', sort:', sort);
 
 
         let skipnum = (current_page - 1) * page_size;   //跳过数
@@ -101,7 +98,7 @@ class CtlTriggerManageHandle {
         let queryList = await DB.DevunitTriggerTable.find();
         let deviceList = [];
         for (let i = 0; i < queryList.length; i++){
-            deviceList.push(queryList[i]['device_name']);
+            deviceList.push(queryList[i]['dev_cn_name']);
         }
 
         res.send({ret_code: 0, ret_msg: 'SUCCESS', extra:deviceList, total:queryList.length});
@@ -136,7 +133,7 @@ class CtlTriggerManageHandle {
         //logger.info(req);
 
         //获取表单数据，josn
-        var device_name = req.body['device_name'];
+        var dev_cn_name = req.body['dev_cn_name'];
         var devunit_name = req.body['devunit_name'];
         var var_name = req.body['var_name'];
         var var_value = req.body['var_value'];
@@ -163,7 +160,7 @@ class CtlTriggerManageHandle {
         let mytime =  new Date();
         //写入数据库
         let myDocObj = {
-            "device_name" : device_name,
+            "dev_cn_name" : dev_cn_name,
             "devunit_name" : devunit_name,
             "var_name" : var_name,
             //"var_value" : var_value,
@@ -177,6 +174,7 @@ class CtlTriggerManageHandle {
             'sort_time':mytime.getTime(),
         };
 
+        //查找触发器表
         let wherestr = {
             "devunit_name" : devunit_name,
             "var_name" : var_name,
@@ -217,9 +215,33 @@ class CtlTriggerManageHandle {
         }
 
         res.send({ret_code: 0, ret_msg: '成功', extra: ''});
-        logger.info('device update end');
+        logger.info('trigger update end');
     }
 
+    async device_update(req, res, next) {
+
+        logger.info('trigger update');
+        //logger.info(req.body);
+
+        //获取表单数据，josn
+        let list_data = req.body['list_data'];
+
+        //参数有效性检查
+        if (!list_data){
+            res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: req.body});
+            return;
+        }
+
+        logger.info('list_data:', list_data);
+
+        for (let i = 0; i < list_data.length; i++){
+            let _id = list_data[i]['_id'];
+            await DB.DevunitTriggerTable.findByIdAndUpdate(_id, list_data[i]).exec();
+        }
+
+        res.send({ret_code: 0, ret_msg: '成功', extra: ''});
+        logger.info('trigger update end');
+    }
 
 }
 

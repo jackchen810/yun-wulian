@@ -35,7 +35,7 @@ class LogTimerHandle {
         for(let n = 0; n < queryList.length; n++) {
             console.log("recover_run_table update_time:", queryList[n].update_time);
             let var_value = queryList[n].var_value;
-            let hash_key = queryList[n].device_name + queryList[n].devunit_name + queryList[n].var_name;
+            let hash_key = queryList[n].dev_cn_name + queryList[n].devunit_name + queryList[n].var_name;
             this.trigger_tbl.set(hash_key, var_value);
         }
 	}
@@ -52,7 +52,7 @@ class LogTimerHandle {
         for(let n = 0; n < queryList.length; n++) {
             console.log("recover_alarm_table update_time:", queryList[n].update_time);
             let var_value = queryList[n].var_value;
-            let hash_key = queryList[n].device_name + queryList[n].devunit_name + queryList[n].var_name;
+            let hash_key = queryList[n].dev_cn_name + queryList[n].devunit_name + queryList[n].var_name;
             this.trigger_tbl.set(hash_key, var_value);
         }
     }
@@ -96,7 +96,7 @@ class LogTimerHandle {
 
         //遍历触发器，挨个判断触发项
         for(let m = 0; m < triggerList.length; m++){
-            let device_name = triggerList[m].device_name;
+            let dev_cn_name = triggerList[m].dev_cn_name;
             let var_name = triggerList[m].var_name;
             let number2 = triggerList[m].if_number;
             let logs_type = triggerList[m].logs_type;
@@ -114,7 +114,7 @@ class LogTimerHandle {
 
                 let var_value = varList[n].varValue;
                 //let hash_key = { devunit_name: devunit_name,  varName: varName};
-                let hash_key = device_name + devunit_name + var_name;
+                let hash_key = dev_cn_name + devunit_name + var_name;
                 //let save_value = this.trigger_tbl.get(hash_key);
                 //let aaa = this.trigger_tbl.has(hash_key);
                 let save_value = this.trigger_tbl.get(hash_key);
@@ -141,7 +141,7 @@ class LogTimerHandle {
 
                 // 数据有变化，根据触发条件记录日志
                 let updatestr = {
-                    'device_name': device_name,
+                    'dev_cn_name': dev_cn_name,
                     'devunit_name': devunit_name,
                     'var_name': var_name,
                     'var_value': var_value,

@@ -10,7 +10,7 @@ console.log("enter route of trigger");
 router.all('/page/list',  CtlTriggerManage.trigger_page_list);
 router.all('/add',  CtlTriggerManage.trigger_add);
 router.all('/del',  CtlTriggerManage.trigger_del);
-//router.all('/update',  CtlTriggerManage.device_update);
+router.all('/update',  CtlTriggerManage.trigger_update);
 
 
 module.exports = router;

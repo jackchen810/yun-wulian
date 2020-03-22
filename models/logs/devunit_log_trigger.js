@@ -10,7 +10,7 @@ const devunitTriggerSchema = new mongoose.Schema({
     devunit_name:String,  //设备元名称，key1
     var_name:String,  //变量名称，key2
 
-    device_name:String,  //设备名称，中文信息， 界面显示使用
+    dev_cn_name:String,  //设备名称，中文信息， 界面显示使用
 
     if_number:String,  //变量需要比较的值
     if_symbol:String, //操作符号，等于，不等于，小于，大于

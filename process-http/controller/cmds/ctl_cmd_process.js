@@ -152,7 +152,7 @@ class CmdProcHandle {
 
         // /实时数据中的变量列表
         for(let m = 0; m < triggerList.length; m++) {
-            let device_name = triggerList[m].device_name;
+            let dev_cn_name = triggerList[m].dev_cn_name;
             let number2 = triggerList[m].if_number;
             let if_operate_symbol = triggerList[m].if_symbol;
             let if_true_comment = triggerList[m].if_true_comment;
@@ -162,7 +162,7 @@ class CmdProcHandle {
             // 数据有变化，根据触发条件记录日志
             let updatestr = {
                 'user_account': req.session.user_account,
-                'device_name': device_name,
+                'dev_cn_name': dev_cn_name,
                 'devunit_name': devunit_name,
                 'var_name': var_name,
                 'var_value': var_value,

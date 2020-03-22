@@ -8,7 +8,7 @@ const Mixed = mongoose.Schema.Types.Mixed;
 //设备建立全量的表，不同设备公用，如果没有的项 填写NA
 const devunitOperateSchema = new mongoose.Schema({
     user_account:String,  //操作者
-    device_name:String,  //设备名称
+    dev_cn_name:String,  //设备名称
 
     devunit_name:String,  //设备元
     var_name:String,  //变量名
