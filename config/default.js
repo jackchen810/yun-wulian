@@ -14,8 +14,8 @@ module.exports = {
 	keep_record_num: '120',  //记录的数据数量
 	ssl:{
 		port: 443,
-		key:'../ssl/2891095_dsjiaqi.cn.key',
-		cert:'../ssl/2891095_dsjiaqi.cn.pem',
+		key:'../ssl/3640936_dsjiaqi.cn.key',
+		cert:'../ssl/3640936_dsjiaqi.cn.pem',
 	},
 	session: {
 		name: 'SID',
