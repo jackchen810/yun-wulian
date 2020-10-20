@@ -7,7 +7,7 @@ const accountSchema = new Schema({
 	user_account: String,   //用户账号
     user_region: String,   //用户名称, 渠道名称
     user_type: Number, //0:管理员, 1:用户
-
+    user_belong:String,
 	user_password: String,
     user_password_md5: String,
     user_email: String,

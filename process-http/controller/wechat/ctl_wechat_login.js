@@ -11,8 +11,9 @@ class WechatLoginHandle {
     }
 
     async jscode2session(req, res, next) {
+        
         logger.info('wechat jscode2session');
-        //logger.info(req.body);
+        logger.info('(req.body',req.body);
         //logger.info('headers:', req.headers);
         //logger.info('session:', req.session);
         //logger.info('sessionID:', req.sessionID);

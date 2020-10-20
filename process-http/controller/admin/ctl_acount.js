@@ -12,7 +12,8 @@ class Account extends BaseComponent {
 	constructor() {
 		super();
 		this.login = this.login.bind(this);
-		this.register = this.register.bind(this);
+        this.register = this.register.bind(this);
+        this.dragregister = this.dragregister.bind(this);
 		this.changePassword = this.changePassword.bind(this);
         this.deleteAccount = this.deleteAccount.bind(this);
 		this.revoke = this.revoke.bind(this);
@@ -61,7 +62,8 @@ class Account extends BaseComponent {
                 res.send({ret_code: 1, ret_msg: '用户不存在', extra: ''});
                 return;
             }
-
+           
+           
 			if(user_password != query.user_password_md5) {
 				logger.info('用户登录密码错误', query.user_password_md5);
 				res.send({ret_code: 1, ret_msg: '密码错误', extra: ''});
@@ -93,7 +95,7 @@ class Account extends BaseComponent {
             // update session
             req.session.user_account = query.user_account;
             req.session.user_type = query.user_type;
-
+            
             res.send({ret_code: 0, ret_msg: '欢迎你', extra: query.user_type});
 
 		}catch(err) {
@@ -111,9 +113,16 @@ class Account extends BaseComponent {
 		let user_phone = req.body.user_phone;
         let user_city = req.body.user_city;
         let user_prov = req.body.user_prov;
-		let user_type = 1;   //用户
+        let user_belong = req.body.user_belong;
+        let user_detail = req.body.user_detail;
+        let user_type
+        if(user_belong){
+            user_type = 3;   //用户
+        }else{
+           user_type = 1;   //用户
+        }
+		
 		let user_status = 0;
-
 		try {
 			if(!user_account) {
 				throw new Error('账号名错误');
@@ -147,7 +156,8 @@ class Account extends BaseComponent {
                 user_last_login_time: dtime(mytime).format('YYYY-MM-DD HH:mm'),
                 user_type: user_type,
                 user_status: user_status,
-
+                user_belong: user_belong,
+                user_detail:user_detail,
                 user_city: user_city,
                 user_prov: user_prov,
 
@@ -313,6 +323,7 @@ class Account extends BaseComponent {
         let current_page = req.body['current_page'];
         let sort = req.body['sort'];
         let filter = req.body['filter'];
+        let user_account = req.body['user_account'];
 
         // 如果没有定义排序规则，添加默认排序
         if(typeof(sort)==="undefined"){
@@ -323,9 +334,16 @@ class Account extends BaseComponent {
         // 如果没有定义排序规则，添加默认排序
         if(typeof(filter)==="undefined"){
             //logger.info('filter undefined');
-            filter = {};
+            filter = {
+                user_type : {$ne:3}
+            };
         }
-
+        if(typeof(user_account)!="undefined"){
+            filter = {
+                user_account:user_account
+            }
+        }
+        console.log(filter);   
         //logger.info('sort ', sort);
         //logger.info('filter ', filter);
         let total = await DB.AccountTable.count(filter).exec();
@@ -426,8 +444,8 @@ class Account extends BaseComponent {
     async addDefaultAccount(user_account, user_password) {
 
         //await DB.AccountTable.findOneAndRemove({'user_account': user_account});
-
         try {
+            let mytime = new Date();
             const admin = await DB.AccountTable.findOne({'user_account': user_account});
             if (admin == null) {
                 const newAdmin = {
@@ -436,10 +454,12 @@ class Account extends BaseComponent {
                     'user_password_md5': this.Md5(user_password),
                     'user_email':'chenzejun',
                     'user_phone':'18211162033',
-                    'user_create_time': dtime().format('YYYY-MM-DD HH:mm'),
-                    'user_last_login_time': dtime().format('YYYY-MM-DD HH:mm'),
+                    'user_create_time': dtime(mytime).format('YYYY-MM-DD HH:mm'),
+                    'user_last_login_time': dtime(mytime).format('YYYY-MM-DD HH:mm'),
                     'user_type':0,
                     'user_status':0,
+                    'user_belong':'',
+                    'user_detail':'',
                     'user_city':'beijing',
                     'user_device_count': 0,
                     'user_online_count': 0,
@@ -453,6 +473,65 @@ class Account extends BaseComponent {
 
 
     }
+    async dragregister(req, res, next){
+		let user_account = req.body.user_account;
+		let user_password = req.body.user_password;
+        let user_region = req.body.user_region;
+		let user_phone = req.body.user_phone;
+        let user_city = req.body.user_city;
+        let user_prov = req.body.user_prov;
+		let user_type = 3;   //用户
+		let user_status = 0;
+		try {
+			if(!user_account) {
+				throw new Error('账号名错误');
+			}else if(!user_password){
+				throw new Error('密码错误');
+			}
+		}catch(err){
+			logger.info(err.message, err);
+			res.send({ret_code: 1, ret_msg: '参数错误', extra: err.message});
+			return;
+		}
+
+
+        let mytime = new Date();
+        try{
+            const admin = await DB.AccountTable.findOne({user_account});
+            if(admin) {
+                logger.info('用户已经存在');
+                res.send({ret_code: 1, ret_msg: '用户已经存在', extra: ''});
+                return;
+            }
+
+            //const newpassword = this.encryption(user_password);
+            const newAdmin = {
+                user_account: user_account,
+                user_password: user_password,
+                user_password_md5: this.Md5(user_password),
+                user_region: user_region,
+                user_phone: user_phone,
+                user_create_time: dtime(mytime).format('YYYY-MM-DD HH:mm'),
+                user_last_login_time: dtime(mytime).format('YYYY-MM-DD HH:mm'),
+                user_type: user_type,
+                user_status: user_status,
+
+                user_city: user_city,
+                user_prov: user_prov,
+
+                user_device_count: 0,
+                user_online_count: 0,
+                login_logs:[]
+            };
+
+            await DB.AccountTable.create(newAdmin);
+            res.send({ret_code: 0, ret_msg: '注册成功', extra: ''})
+
+        }catch(err){
+            logger.info('注册失败', err);
+            res.send({ret_code: 1, ret_msg: '注册失败', extra: ''})
+        }
+	}
 
 }
 

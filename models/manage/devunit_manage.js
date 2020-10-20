@@ -7,10 +7,8 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 //设备建立全量的表，不同设备公用，如果没有的项 填写NA
 const deviceUnitManageSchema = new mongoose.Schema({
     dev_cn_name: {type: String, default: ''},    //设备的名称，例如 津西1#高级氧化设备
-
     devunit_id: {type: String, default: ''},    //通道的数据库字段名称，例如 C1_D1, 爱德设备,  设备单元号, 暂时不用
                                                      //设备元的id，例如标识的plcid，  物通博联上报的devId
-
     devunit_name: {type: String, default: ''},    //设备的数据库字段，例如 jinxi_1
 
     project_name: {type: String, default: ''},   //设备的所属项目， 等同于[manage.project_name] 可能多个设备对应同一项目

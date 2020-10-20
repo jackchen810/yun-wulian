@@ -4,6 +4,9 @@
 const gateway_router = require("./rt_gateway_ide4g.js");
 const admin_router = require('./rt_acount.js');
 const prj_manage_router = require('./rt_project_manage.js');
+
+const rt_drag_drop = require('./rt_drag_drop.js');
+
 const dev_manage_router = require('./rt_devunit_manage.js');
 const dev_module_router = require('./rt_device_module.js');
 const devtype_router = require('./rt_device_type.js');
@@ -18,6 +21,7 @@ const cmd_proc_router = require('./rt_cmd_process.js');
 const logs_alarm_router = require('./rt_logs_alarm.js');
 const logs_run_router = require('./rt_logs_run.js');
 const logs_operate_router = require('./rt_logs_operate.js');
+const rt_sensor = require('./rt_sensor.js');
 const config = require( "config-lite");
 const fs = require("fs");
 const path = require('path');
@@ -51,6 +55,12 @@ const path = require('path');
 
      //project
      app.use('/api/project/manage', prj_manage_router);
+
+      //拖动
+     app.use('/api/drag', rt_drag_drop);
+     
+     // 设备传感器相关
+     app.use('/api/sensor', rt_sensor);
 
      //device
      app.use('/api/devunit/manage', dev_manage_router);

@@ -32,7 +32,7 @@ function onMessage(topic, message)
     }
 
     if (topic_array[0] == 'yunAC') {
-        logger.debug('[http][yunAC] response:', topic, msg_string);
+        // logger.debug('[http][yunAC] response:', topic, msg_string);
         //logger.debug('[emqtt][yunAC] response2:', topic, msg_string);
 
         //解析mac地址

@@ -9,6 +9,7 @@ console.log("enter route of account");
 
 router.all('/login', /*Check.checkAdminStatus,*/ Account.login);
 router.all('/register',/*Check.checkSuperAdmin,*/ Account.register);
+router.all('/dragregister',/*Check.checkSuperAdmin,*/ Account.dragregister);
 router.all('/logout', Check.checkAdminStatus,Account.logout);
 router.all('/change',/* Check.checkSuperAdmin,*/ Account.changePassword);
 router.all('/delete', Check.checkSuperAdmin, Account.deleteAccount);

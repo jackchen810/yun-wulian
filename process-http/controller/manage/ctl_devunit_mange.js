@@ -34,6 +34,14 @@ class CtlDevUnitManageHandle {
         let user_account = req.session.user_account;
         let user_type = req.session.user_type;
 
+        let project_name = req.body['project_name'];
+        if(project_name){
+            let queryList = await DB.DevunitManageTable.find({project_name},{devunit_name:1,  dev_cn_name:1,   project_name:1}).exec();
+            res.send({ret_code:200, ret_msg: '成功', extra: queryList,});
+            return;
+        }
+
+
         //参数有效性检查
         if (!user_account){
             res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: req.body});
@@ -50,11 +58,35 @@ class CtlDevUnitManageHandle {
 
 
         let queryList = await DB.DevunitManageTable.find(filter).sort(sort).exec();
+
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
         //logger.info('queryList:', queryList[0]);
         //logger.info('queryList.length:', queryList.length);
         logger.info('device list end');
     }
+
+    // async projectaddress_list(req, res, next) {
+
+    //     logger.info('device list');
+    //     let filter = req.body.hasOwnProperty('filter') ? req.body['filter'] : {};
+    //     let sort = req.body.hasOwnProperty('sort') ? req.body['sort'] : {};
+    //     let pct_address = req.address;
+ 
+    //     //参数有效性检查
+    //     if (!pct_address){
+    //         res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: req.body});
+    //         return;
+    //     }
+
+    //     let queryList = await DB.DevunitManageTable.find(filter).sort(sort).exec();
+
+    //     res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
+    //     //logger.info('queryList:', queryList[0]);
+    //     //logger.info('queryList.length:', queryList.length);
+    //     logger.info('device list end');
+    // }
+
+
 
     async device_page_list(req, res, next) {
         logger.info('device page list');
@@ -68,6 +100,7 @@ class CtlDevUnitManageHandle {
         let user_account = req.session.user_account;
         let user_type = req.session.user_type;
 
+      
         //参数有效性检查
         if (!page_size || !current_page){
             res.send({ret_code: 1002, ret_msg: '用户输入参数无效', extra: req.body});
@@ -85,7 +118,8 @@ class CtlDevUnitManageHandle {
 
         let skipnum = (current_page - 1) * page_size;   //跳过数
         let queryList = await DB.DevunitManageTable.find(filter).sort(sort).skip(skipnum).limit(page_size).exec();
-        res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
+        let queryListd = await DB.DevunitManageTable.find(filter).sort(sort).exec();
+        res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryListd.length});
         //logger.info('queryList:', queryList);
         logger.info('device page list end');
     }

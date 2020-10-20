@@ -15,8 +15,6 @@ class ProjectManageTable {
         //this.tmp_correction_data_hour();
         //this.tmp_correction_data_day();
     }
-
-
     async project_list(req, res, next) {
 
         logger.info('manage list');
@@ -50,14 +48,11 @@ class ProjectManageTable {
             }
         }
 
-
         logger.info('user_account:', user_account, ', user_type:', user_type);
         logger.info('filter:', filter, ', sort:', sort);
-
-
         let queryList = await DB.ProjectManageTable.find(filter).sort(sort).exec();
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
-        logger.info('manage list end');
+        logger.info('manage list end'+ queryListd.length);
     }
 
 
@@ -101,7 +96,8 @@ class ProjectManageTable {
 
         let skipnum = (current_page - 1) * page_size;   //跳过数
         let queryList = await DB.ProjectManageTable.find(filter).sort(sort).skip(skipnum).limit(page_size).exec();
-        res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryList.length});
+        let queryListd = await DB.ProjectManageTable.find(filter).sort(sort).skip(skipnum).exec(); //总数
+        res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryListd.length});
         logger.info('manage page list end');
     }
 
@@ -196,8 +192,8 @@ class ProjectManageTable {
      * callback 读取文件后的回调函数，参数默认第一个err,第二个data 数据
      */
     async project_add(req, res, next){
-
-        logger.info('manage upload');
+       
+        logger.info('imgup=======================');
         //logger.info(req);
 
         //生成multiparty对象，并配置上传目标路径

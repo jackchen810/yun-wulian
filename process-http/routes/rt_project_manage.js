@@ -8,6 +8,7 @@ console.log("enter route of project");
 
 
 router.all('/list',  CtlProjectManage.project_list);
+
 router.all('/page/list',  CtlProjectManage.project_page_list);
 router.all('/array',  CtlProjectManage.project_array);
 router.all('/add',  CtlProjectManage.project_add);

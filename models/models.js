@@ -25,6 +25,10 @@ const DevunitAlarmLogsTable= require("./logs/devunit_alarm_logs.js");
 const DevunitRunLogsTable= require("./logs/devunit_run_logs.js");
 const DevunitOperateLogsTable= require("./logs/devunit_operate_logs.js");
 
+const HttpDrag= require("./drag/http_drag.js");
+const SensorTable= require("./sensor/sensor.js");
+// const HttpDrag= require("./drag/http_drag.js");
+
 
 //mqtt 命令
 function DB() {
@@ -54,6 +58,9 @@ function DB() {
     this.DevunitAlarmLogsTable = DevunitAlarmLogsTable;
     this.DevunitRunLogsTable = DevunitRunLogsTable;
     this.DevunitOperateLogsTable = DevunitOperateLogsTable;
+
+    this.HttpDrag = HttpDrag;
+    this.SensorTable = SensorTable;
 
 }
 

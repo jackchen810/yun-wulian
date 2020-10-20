@@ -132,6 +132,22 @@ class DeviceUnitRealHandle {
         }
         logger.info('device real data end');
     }
+    async real_objdata(req, res, next) {
+        var devunit_name = req.body['devunit_name'];
+
+        //获取表单数据，josn
+      
+        let sort = req.body.hasOwnProperty('sort') ? req.body['sort'] : {"sort_time":-1};
+        
+        let query = await DB.Gateway_Real_Table.find({devunit_name:{$in:devunit_name}}).sort(sort).exec();
+        if (query == null){
+            res.send({ret_code: -1, ret_msg: '设备数据不存在', extra: []});
+        }
+        else {
+            res.send({ret_code: 0, ret_msg: '成功', extra: query});
+        }
+        logger.info('device real data end');
+    }
 
 }
 
