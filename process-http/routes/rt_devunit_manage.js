@@ -8,6 +8,7 @@ console.log("enter route of devunit");
 
 
 router.all('/list',  CtlDeviceManage.device_list);
+router.all('/listv',  CtlDeviceManage.device_listv);
 router.all('/page/list',  CtlDeviceManage.device_page_list);
 router.all('/add',  CtlDeviceManage.device_add);
 router.all('/array',  CtlDeviceManage.device_array);

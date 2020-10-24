@@ -8,9 +8,10 @@ const fs = require("fs");
 const path = require('path');
 const xlsx = require('node-xlsx');
 const moment = require('moment');
+const ws = require('nodejs-websocket')
 //const multiparty = require('multiparty');
 const formidable = require('formidable');
-
+// import ws from 'nodejs-websocket'
 /* 设备元的管理，以智能设备为key，对齐属性管理 */
 class CtlDevUnitManageHandle {
     constructor(){
@@ -20,8 +21,17 @@ class CtlDevUnitManageHandle {
 
     }
 
-    async device_list(req, res, next) {
+    async device_listv(req, res, next) {
+        
+            console.info('server=================================================:');
+        
+    }
+      
 
+
+    async device_list(req, res, next) {
+        
+          
         logger.info('device list');
         //logger.info('req.body', req.body);
         //logger.info('headers:', req.headers);

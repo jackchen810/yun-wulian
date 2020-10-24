@@ -40,7 +40,7 @@ class MqttDispatchHandle {
         else if (topic_array[0] == 'yunWL') {
             var msg_string = iconv.decode(message, 'gb2312');
             if (process.env.NODE_ENV == 'local'){
-                logger.debug('[emqtt][yunWL] response:', topic, msg_string);
+                //logger.debug('[emqtt][yunWL] response:', topic, msg_string);
             }
 
             this.onMessage_yunVendor(topic_array, topic, msg_string);
@@ -49,7 +49,7 @@ class MqttDispatchHandle {
         else if (topic_array[0] == 'yunADJC') {
             var msg_string = message.toString();
             if (process.env.NODE_ENV == 'local'){
-                logger.debug('[emqtt][yunADJC] response:', topic, msg_string);
+                //logger.debug('[emqtt][yunADJC] response:', topic, msg_string);
             }
             this.onMessage_yunVendor(topic_array, topic, msg_string);
         }
@@ -58,7 +58,7 @@ class MqttDispatchHandle {
         else if (topic_array[0] == 'yunAC') {
             var msg_string = message.toString();
             //logger.debug('[emqtt][yunAC] response:', message[89], message[90], message[91],message[92], message[93], message[94], message[95]);
-            logger.debug('[emqtt][yunAC] response:', topic, msg_string);
+            //logger.debug('[emqtt][yunAC] response:', topic, msg_string);
             msg_string = msg_string.replace(/(\r\n)|(\n)/g,"<br\>");//把里面的回车换行符替换掉
             //logger.debug('[emqtt][yunAC] response2:', topic, msg_string);
             this.onMessage_yunAC(topic_array, topic, msg_string);
@@ -66,29 +66,29 @@ class MqttDispatchHandle {
         else if (topic_array[0] == 'yunWTBL') {
             //  yunWTBL设备
             var msg_string = message.toString();
-            logger.debug('[emqtt][yunWTBL] response:', topic, msg_string);
+            //logger.debug('[emqtt][yunWTBL] response:', topic, msg_string);
             if (process.env.NODE_ENV == 'local'){
                 logger.debug('[emqtt][yunWTBL] response:', topic, msg_string);
             }
-            this.onMessage_yunWTBL(topic_array, topic, msg_string);
+            //this.onMessage_yunWTBL(topic_array, topic, msg_string);
         }
         else if (topic_array[0] == 'yunJDWX') {
             //  yyunJDWXL设备
             var msg_string = message.toString();
             //logger.debug('[emqtt][yunJDWX] response:', topic, msg_string);
             if (process.env.NODE_ENV == 'local'){
-                logger.debug('[emqtt][yunJDWX] response:', topic, msg_string);
+                l//ogger.debug('[emqtt][yunJDWX] response:', topic, msg_string);
             }
-            this.onMessage_yunVendor(topic_array, topic, msg_string);
+            //this.onMessage_yunVendor(topic_array, topic, msg_string);
         }
         else {
             //  else  设备
             var msg_string = message.toString();
             //logger.debug('[emqtt][else] response:', topic, msg_string);
             if (process.env.NODE_ENV == 'local'){
-                logger.debug('[emqtt][else] response:', topic, msg_string);
+                //logger.debug('[emqtt][else] response:', topic, msg_string);
             }
-            this.onMessage_yunVendor(topic_array, topic, msg_string);
+            //this.onMessage_yunVendor(topic_array, topic, msg_string);
         }
 
     }

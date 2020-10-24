@@ -27,7 +27,7 @@ const fs = require("fs");
 const path = require('path');
 
  function http_web_router(app) {
-
+        
       //用户登录相关
      app.use('/api/admin', admin_router);
 
@@ -75,7 +75,6 @@ const path = require('path');
      //设备触发器相关
      app.use('/api/trigger', trigger_router);
 
-
      //运行日志
      app.use('/api/alarm', logs_alarm_router);
      //告警日志
@@ -100,16 +99,8 @@ const path = require('path');
      //插件级任务相关
      app.use('/api/apps/task', apps_task_router);
 
-
-
-
-
      //插件级任务相关
      app.use('/api/cmd', cmd_proc_router);
-
-
-
-
      // Welcome download
      app.use('/download', function(req, res) {
          //console.log('req.baseUrl', req.baseUrl);

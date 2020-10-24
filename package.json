@@ -12,6 +12,7 @@
     "mqtt": "cross-env NODE_ENV=development LOG=mqtter_main supervisor --max_old_space_size=8000 --harmony index.js",
     "http": "cross-env NODE_ENV=development LOG=http_main supervisor --max_old_space_size=8000 --harmony index.js",
     "timer": "cross-env NODE_ENV=development LOG=timer_main supervisor --max_old_space_size=8000 --harmony index.js",
+    "socket": "node appsocket.js",
     "local": "cross-env NODE_ENV=production supervisor  --max_old_space_size=8000  --harmony index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cross-env NODE_ENV=production pm2 start index.js --node-args='--max_old_space_size=8000 --harmony' --name 'yun-wulian'",
@@ -52,6 +53,7 @@
     "node-fetch": "^1.7.3",
     "node-schedule": "*",
     "node-xlsx": "*",
+    "nodejs-websocket": "^1.7.2",
     "pinyin": "^2.8.3",
     "pm2": "^2.10.4",
     "qiniu": "^6.1.13",
@@ -59,6 +61,7 @@
     "supervisor": "^0.12.0",
     "time-formater": "^1.0.3",
     "time-stamp": "^2.1.0",
+    "websocket": "^1.0.32",
     "winston": "^2.4.4"
   },
   "devDependencies": {

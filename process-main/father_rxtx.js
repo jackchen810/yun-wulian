@@ -60,8 +60,6 @@ class FatherRxTx extends BaseProcessTx {
     async setSendCallback(callback){
         this.send_function = callback;
     }
-
-
     //onInit  ----不需要用户修改
     async send(message, type, action, dest){
         //参数为1，使用默认参数

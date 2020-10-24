@@ -7,6 +7,7 @@ const http_hnd = require('./process-http/http_phandle.js');
 const mqtter_hnd = require('./process-mqtt/mqtter_phandle.js');
 const timer_hnd = require("./process-timer/timer_phandle.js");
 const https_hnd = require("./process-https/https_phandle.js");
+const socket_hnd = require("./process-socket/socket_phandle.js");
 
 
 //注册进程间消息接收
@@ -16,6 +17,7 @@ http_hnd.on('message', process_message_reactor);
 mqtter_hnd.on('message', process_message_reactor);
 timer_hnd.on('message', process_message_reactor);
 https_hnd.on('message', process_message_reactor);
+socket_hnd.on('message', process_message_reactor);
 
 //logger.info('[main] this is main process..., pid =', process.pid);
 //require("./process-https/https_main.js");
@@ -57,7 +59,7 @@ console.log('create process https');
 * }
 */
 function process_message_reactor(message) {
-
+   
     var head = message['head'];
     var source = head['source'];
     var dest = head['dest'];
@@ -96,11 +98,15 @@ function process_message_reactor(message) {
             //父进程，直接调用
             FatherRxTx.onMessage(message);
         }
+        else if (dest_list[i] == 'wss') {
+            //父进程，直接调用
+          
+            // http_hnd.send(message);
+        }
     }
 
     return;
 }
-
 
 
 process.on('exit', (err) => {

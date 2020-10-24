@@ -4,10 +4,7 @@ const logger = require( '../logs/logs.js');
 //const emitter = require("../mqttclient/subscribe/mqtt_event.js");
 //const config = require('config-lite');
 
-
 //console.log('[main] create mqtt process...');
-
-
 
 //创建一个工作进程
 const mqtt_p = fork('./process-mqtt/mqtter_main.js', ['mqtter_main']);
