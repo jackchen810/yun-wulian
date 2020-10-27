@@ -13,7 +13,7 @@
         "restart": "pm2 restart build/dev-server.js --name 'yun-wulian-vue'"
     },
     "dependencies": {
-        "axios": "^0.15.3",
+        "axios": "^0.18.1",
         "babel-polyfill": "^6.23.0",
         "babili-webpack-plugin": "^0.1.2",
         "element": "^0.1.4",
