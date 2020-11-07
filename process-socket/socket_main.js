@@ -12,7 +12,7 @@ const { json } = require('body-parser');
 const WebSocketServer = WebSocket.Server;
 
 const wss = new WebSocketServer({
-    port: 3301
+    port:8000
 });
 
 wss.on('connection', function (ws) {

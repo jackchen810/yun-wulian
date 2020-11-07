@@ -127,5 +127,5 @@ process.on('uncaughtException', (err) => {
 });
 
 
-//监听进程消息, //进程通讯服务
+//监听进程消息, //进程通讯服务务
 process.on('message', HttpRxTxHandle.onMessage);
