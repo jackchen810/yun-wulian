@@ -101,6 +101,7 @@ class DevtypeHandlev {
     }
    
     async drag_list(req, res, next) {
+    
         var page_size = req.body['page_size'];
         var current_page = req.body['current_page'];
         var user_account = req.body['user_account'];
@@ -113,20 +114,21 @@ class DevtypeHandlev {
             }
         }else{
             dargdata = {
-                user_account,
+                'user_account':user_account,
             };
         }
-      
-        if (typeof (page_size) === "undefined" && typeof (current_page) === "undefined") {
+        // console.log('dargdata============',dargdata);
+        if (typeof page_size === "undefined" && typeof current_page === "undefined") {
+          
             var query = await DB.HttpDrag.find(dargdata).sort({ 'sort_time': -1 });
             res.send({ ret_code: 0, ret_msg: 'SUCCESS', extra: query });
         }
         else if (page_size > 0 && current_page > 0) {
             //var ret = await DB.DevtypeTable.findByPage(condition, page_size, current_page, sort);
-            console.log(dargdata);
+        
             var skipnum = (current_page - 1) * page_size;   //跳过数
             // let query = await DB.AccountTable.find({user_belong:user_account}).skip(skipnum).limit(page_size).sort({'user_create_time':-1})
-            var query = await DB.HttpDrag.find({}).skip(skipnum).limit(page_size).sort({'sort_time':-1});
+            var query = await DB.HttpDrag.find(dargdata).skip(skipnum).limit(page_size).sort({'sort_time':-1});
             let queryListd = await DB.HttpDrag.find(dargdata); //总数
             res.send({ ret_code: 0, ret_msg: 'SUCCESS', extra: query, total:queryListd.length});
         }
@@ -141,6 +143,7 @@ class DevtypeHandlev {
         var page_size = req.body['page_size'];
         var current_page = req.body['current_page'];
         var project_showname = req.body['project_showname']
+       
         var dargdata = {
             "project_showname": project_showname,
         };
