@@ -248,7 +248,7 @@ class DevtypeHandlev {
             projectname:projectname
         }
         console.log(dargjsondata);
-        DB.HttpDrag.findByIdAndUpdate(hid, updata,
+        DB.HttpDrag.findByIdAndUpdate(hid, $set(updata),
             function(err){
                 if (err){
                     res.send({ ret_code: 0, ret_msg: 'FAILED', extra: err });
