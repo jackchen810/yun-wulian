@@ -248,15 +248,26 @@ class DevtypeHandlev {
             projectname:projectname
         }
         console.log(dargjsondata);
-        DB.HttpDrag.findByIdAndUpdate(hid, $set(updata),
+        if(!dargjsondata){
+          return  DB.HttpDrag.findByIdAndUpdate(hid, {project_showname:project_showname},
+                function(err){
+                    if (err){
+                        res.send({ ret_code: 0, ret_msg: 'FAILED', extra: err });
+                    }else{
+                        res.send({ ret_code: 200, ret_msg: 'SUCCESS22222'});
+                    }   
+                })
+        }
+        DB.HttpDrag.findByIdAndUpdate(hid, updata,
             function(err){
-                if (err){
+                if (err)
+                {
                     res.send({ ret_code: 0, ret_msg: 'FAILED', extra: err });
-                }else{
-                    res.send({ ret_code: 200, ret_msg: 'SUCCESS' });
+                }else
+                {
+                    res.send({ ret_code: 200, ret_msg: 'SUCCESS11111'});
                 }   
             })
-
     }
     async drag_adduser(req,res,next){
 
