@@ -96,7 +96,7 @@ class ProjectManageTable {
 
         let skipnum = (current_page - 1) * page_size;   //跳过数
         let queryList = await DB.ProjectManageTable.find(filter).sort(sort).skip(skipnum).limit(page_size).exec();
-        let queryListd = await DB.ProjectManageTable.find(filter).sort(sort).skip(skipnum).exec(); //总数
+        let queryListd = await DB.ProjectManageTable.find().exec(); //总数
         res.send({ret_code: 0, ret_msg: '成功', extra: queryList, total: queryListd.length});
         logger.info('manage page list end');
     }
