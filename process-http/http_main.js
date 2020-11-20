@@ -115,8 +115,6 @@ app.listen(config.backend_port);
 console.log('[http] Http listening at ' + config.backend_port);
 
 
-
-
 process.on('unhandledRejection', (reason, p) => {
     logger.info("[http] Unhandled Rejection:", p);
     // application specific logging, throwing an error, or other logic here
@@ -125,7 +123,6 @@ process.on('unhandledRejection', (reason, p) => {
 process.on('uncaughtException', (err) => {
     logger.error("[http] uncaughtException：", err);
 });
-
 
 //监听进程消息, //进程通讯服务务
 process.on('message', HttpRxTxHandle.onMessage);
