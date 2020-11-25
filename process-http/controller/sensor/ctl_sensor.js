@@ -56,7 +56,7 @@ class DevtypeHandlev {
         }
 
         if(pct_name){
-            var query = await DB.SensorTable.find({project_name:pct_name},{sensor_facility:1, sensor_name:1,sensor_No:1,project_name:1,sensor_unit:1});
+            var query = await DB.SensorTable.find({project_name:pct_name},{sensor_facility:1, sensor_name:1,sensor_No:1,project_name:1,sensor_unit:1,sensor_type:1});
                 res.send({ ret_code: 200, ret_msg: 'SUCCESS', extra: query});
                 return;     
         }
